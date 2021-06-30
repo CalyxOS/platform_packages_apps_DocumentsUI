@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d29bee75_7d959c66",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-06-30T20:40:33Z",
+      "side": 1,
+      "message": "Uploaded using `git-review`, as is tradition.",
+      "revId": "da7abbea213dcf272e6e2fa6a5a89bfaba9f0326",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
