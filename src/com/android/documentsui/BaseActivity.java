@@ -407,6 +407,11 @@ public abstract class BaseActivity
                         .getResources()
                         .getBoolean(R.bool.show_hidden_files_by_default));
 
+        if (UserId.CURRENT_USER.isSystem()) {
+            state.supportsCrossProfile = true;
+            state.canShareAcrossProfile = true;
+        }
+
         includeState(state);
 
         if (DEBUG) {
