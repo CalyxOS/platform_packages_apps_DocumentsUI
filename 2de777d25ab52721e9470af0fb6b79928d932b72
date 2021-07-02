@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "366abacd_c05865c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-02T22:33:31Z",
+      "side": 1,
+      "message": "I think this should be fine for the most part but I\u0027ll give it another look at a better time and merge.\n\nWorks ok in testing.",
+      "revId": "2de777d25ab52721e9470af0fb6b79928d932b72",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
