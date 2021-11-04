@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca432cac_afb5f524",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-11-04T13:10:34Z",
+      "side": 1,
+      "message": "So it rebased fine. Does it actually work though?",
+      "revId": "e01dadeb3ce0090f0adb8d9c81809169fc0422d6",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
