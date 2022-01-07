@@ -133,7 +133,11 @@ public abstract class ResolvedResourcesJob extends Job {
 
             DocumentInfo doc;
             try {
-                doc = DocumentInfo.fromUri(resolver, uri, UserId.DEFAULT_USER);
+                UserId userId = UserId.DEFAULT_USER;
+                try {
+                    userId = UserId.of(Integer.parseInt(uri.getUserInfo()));
+                } catch (NumberFormatException ignored) {}
+                doc = DocumentInfo.fromUri(resolver, uri, userId);
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Failed to resolve content from Uri: " + uri
                         + ". Skipping to next resource.", e);
@@ -155,4 +159,5 @@ public abstract class ResolvedResourcesJob extends Job {
 
         return docsLoaded;
     }
+
 }
