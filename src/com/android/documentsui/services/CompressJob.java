@@ -111,8 +111,12 @@ final class CompressJob extends CopyJob {
         }
 
         try {
+            UserId userId = UserId.DEFAULT_USER;
+            try {
+                userId = UserId.of(Integer.parseInt(mArchiveUri.getUserInfo()));
+            } catch (NullPointerException | NumberFormatException ignored) {}
             mDstInfo = DocumentInfo.fromUri(resolver, ArchivesProvider.buildUriForArchive(
-                    mArchiveUri, ParcelFileDescriptor.MODE_WRITE_ONLY), UserId.DEFAULT_USER);
+                    mArchiveUri, ParcelFileDescriptor.MODE_WRITE_ONLY), userId);
             ArchivesProvider.acquireArchive(getClient(mDstInfo), mDstInfo.derivedUri);
         } catch (FileNotFoundException e) {
             Log.e(TAG, "Failed to create dstInfo.", e);
