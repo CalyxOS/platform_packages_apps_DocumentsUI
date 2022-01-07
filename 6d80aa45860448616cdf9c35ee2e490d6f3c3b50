@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f70e977a_aca6587b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-01-07T15:47:47Z",
+      "side": 1,
+      "message": "Works with https://review.calyxos.org/c/CalyxOS/platform_frameworks_base/+/4241/1\nI can try again without it but saw the same exception that patch solved for usb backup while testing deletion once and picked it since",
+      "revId": "6d80aa45860448616cdf9c35ee2e490d6f3c3b50",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
