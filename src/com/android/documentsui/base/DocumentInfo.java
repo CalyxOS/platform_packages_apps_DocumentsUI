@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.FileUtils;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.UserHandle;
 import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsProvider;
@@ -227,7 +228,16 @@ public class DocumentInfo implements Durable, Parcelable {
 
     @VisibleForTesting
     void deriveFields() {
-        derivedUri = DocumentsContract.buildDocumentUri(authority, documentId);
+        derivedUri = UserId.CURRENT_USER.equals(userId) ? DocumentsContract.buildDocumentUri(
+                getAuthorityWithoutUserId(authority), documentId)
+                : DocumentsContract.buildDocumentUriAsUser(getAuthorityWithoutUserId(authority),
+                        documentId, UserHandle.of(userId.getIdentifier()));
+    }
+
+    private static String getAuthorityWithoutUserId(String auth) {
+        if (auth == null) return null;
+        int end = auth.lastIndexOf('@');
+        return auth.substring(end+1);
     }
 
     @Override
@@ -430,9 +440,13 @@ public class DocumentInfo implements Durable, Parcelable {
     }
 
     public static Uri getUri(Cursor cursor) {
-        return DocumentsContract.buildDocumentUri(
-            getCursorString(cursor, RootCursorWrapper.COLUMN_AUTHORITY),
-            getCursorString(cursor, Document.COLUMN_DOCUMENT_ID));
+        UserId userId = getUserId(cursor);
+        String authority = getCursorString(cursor, RootCursorWrapper.COLUMN_AUTHORITY);
+        String documentId = getCursorString(cursor, Document.COLUMN_DOCUMENT_ID);
+        return UserId.CURRENT_USER.equals(userId) ? DocumentsContract.buildDocumentUri(
+                getAuthorityWithoutUserId(authority), documentId)
+                : DocumentsContract.buildDocumentUriAsUser(getAuthorityWithoutUserId(authority),
+                        documentId, UserHandle.of(userId.getIdentifier()));
     }
 
     public static UserId getUserId(Cursor cursor) {

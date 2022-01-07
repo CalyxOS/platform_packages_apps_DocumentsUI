@@ -21,6 +21,7 @@ import static com.android.documentsui.services.FileOperationService.OPERATION_DE
 
 import android.app.Notification;
 import android.app.Notification.Builder;
+import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
@@ -101,11 +102,15 @@ final class DeleteJob extends ResolvedResourcesJob {
     void start() {
         ContentResolver resolver = appContext.getContentResolver();
 
-        DocumentInfo parentDoc;
+        DocumentInfo parentDoc = null;
         try {
-            parentDoc = mParentUri != null
-                ? DocumentInfo.fromUri(resolver, mParentUri, UserId.DEFAULT_USER)
-                : null;
+            if (mParentUri != null) {
+                UserId userId = UserId.DEFAULT_USER;
+                try {
+                    userId = UserId.of(Integer.parseInt(mParentUri.getUserInfo()));
+                } catch (NumberFormatException ignored) {}
+                parentDoc = DocumentInfo.fromUri(resolver, mParentUri, userId);
+            }
         } catch (FileNotFoundException e) {
           Log.e(TAG, "Failed to resolve parent from Uri: " + mParentUri + ". Cannot continue.", e);
           failureCount += this.mResourceUris.getItemCount();

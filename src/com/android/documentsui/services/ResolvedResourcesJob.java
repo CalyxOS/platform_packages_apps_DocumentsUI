@@ -16,10 +16,12 @@
 
 package com.android.documentsui.services;
 
+import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.documentsui.archives.ArchivesProvider;
@@ -133,7 +135,11 @@ public abstract class ResolvedResourcesJob extends Job {
 
             DocumentInfo doc;
             try {
-                doc = DocumentInfo.fromUri(resolver, uri, UserId.DEFAULT_USER);
+                UserId userId = UserId.DEFAULT_USER;
+                try {
+                    userId = UserId.of(Integer.parseInt(uri.getUserInfo()));
+                } catch (NumberFormatException ignored) {}
+                doc = DocumentInfo.fromUri(resolver, uri, userId);
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Failed to resolve content from Uri: " + uri
                         + ". Skipping to next resource.", e);
@@ -155,4 +161,23 @@ public abstract class ResolvedResourcesJob extends Job {
 
         return docsLoaded;
     }
+
+//    private static Uri maybeAddUserId(Uri uri, int userId) {
+//        if (uri == null) return null;
+//        if (userId != UserId.CURRENT_USER.getIdentifier()
+//                && ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+//            if (!uriHasUserId(uri)) {
+//                //We don't add the user Id if there's already one
+//                Uri.Builder builder = uri.buildUpon();
+//                builder.encodedAuthority("" + userId + "@" + uri.getEncodedAuthority());
+//                return builder.build();
+//            }
+//        }
+//        return uri;
+//    }
+//
+//    private static boolean uriHasUserId(Uri uri) {
+//        if (uri == null) return false;
+//        return !TextUtils.isEmpty(uri.getUserInfo());
+//    }
 }

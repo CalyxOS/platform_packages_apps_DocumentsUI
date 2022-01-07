@@ -97,8 +97,12 @@ final class MoveJob extends CopyJob {
     public boolean setUp() {
         if (mSrcParentUri != null) {
             try {
+                UserId userId = UserId.DEFAULT_USER;
+                try {
+                    userId = UserId.of(Integer.parseInt(mSrcParentUri.getUserInfo()));
+                } catch (NumberFormatException ignored) {}
                 mSrcParent = DocumentInfo.fromUri(appContext.getContentResolver(), mSrcParentUri,
-                        UserId.DEFAULT_USER);
+                        userId);
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Failed to create srcParent.", e);
                 failureCount = mResourceUris.getItemCount();
