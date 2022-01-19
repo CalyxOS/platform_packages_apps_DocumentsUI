@@ -429,9 +429,9 @@ class CopyJob extends ResolvedResourcesJob {
         // contents (bytes or children).
         Uri dstUri = null;
         try {
-            dstUri = DocumentsContract.createDocument(
-                    wrap(getClient(dest)), dest.derivedUri, dstMimeType, dstDisplayName);
-        } catch (FileNotFoundException | RemoteException | RuntimeException e) {
+            dstUri = DocumentsContract.createDocument(dest.userId.getContentResolver(service),
+                    dest.derivedUri, dstMimeType, dstDisplayName);
+        } catch (FileNotFoundException | RuntimeException e) {
             if (e instanceof DeadObjectException) {
                 releaseClient(dest);
             }
