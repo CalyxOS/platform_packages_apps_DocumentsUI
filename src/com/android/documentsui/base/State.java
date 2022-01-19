@@ -89,12 +89,12 @@ public class State implements android.os.Parcelable {
     /**
      * Represents whether the state supports cross-profile file picking.
      */
-    public boolean supportsCrossProfile = false;
+    public boolean supportsCrossProfile = true;
 
     /**
      * Represents whether the intent is a cross-profile intent
      */
-    public boolean canShareAcrossProfile = false;
+    public boolean canShareAcrossProfile = true;
 
     /**
      * Returns true if we are allowed to interact with the user.
