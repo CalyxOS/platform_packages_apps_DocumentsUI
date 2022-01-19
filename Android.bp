@@ -56,7 +56,7 @@ java_defaults {
         proguard_flags_files: ["proguard.flags"],
     },
 
-    sdk_version: "system_current",
+    platform_apis: true,
     target_sdk_version: "30",
     min_sdk_version: "29",
 
