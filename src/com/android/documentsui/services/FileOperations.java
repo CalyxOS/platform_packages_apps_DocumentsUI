@@ -27,8 +27,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.VisibleForTesting;
+
+import android.os.UserHandle;
 import android.util.Log;
 
+import com.android.documentsui.BaseActivity;
 import com.android.documentsui.services.FileOperationService.OpType;
 
 import java.lang.annotation.Retention;
@@ -69,7 +72,14 @@ public final class FileOperations {
                     operation.getSrc().getItemCount());
         }
 
-        context.startService(intent);
+        if (context instanceof BaseActivity) {
+            BaseActivity baseActivity = (BaseActivity) context;
+            final Context userContext = context.createContextAsUser(UserHandle.of(
+                    baseActivity.getCurrentRoot().userId.getIdentifier()), 0 /* flags */);
+            userContext.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
 
         return newJobId;
     }
@@ -84,7 +94,10 @@ public final class FileOperations {
         intent.putExtra(EXTRA_CANCEL, true);
         intent.putExtra(EXTRA_JOB_ID, jobId);
 
-        activity.startService(intent);
+        BaseActivity baseActivity = (BaseActivity) activity;
+        final Context userContext = activity.createContextAsUser(UserHandle.of(
+                baseActivity.getCurrentRoot().userId.getIdentifier()), 0 /* flags */);
+        userContext.startForegroundService(intent);
     }
 
     /**

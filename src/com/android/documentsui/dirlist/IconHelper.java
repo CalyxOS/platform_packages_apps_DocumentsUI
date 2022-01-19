@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.UserManager;
 import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
 import android.util.Log;
@@ -67,8 +68,6 @@ public class IconHelper {
     private Point mCurrentSize;
     private boolean mThumbnailsEnabled = true;
     private final boolean mMaybeShowBadge;
-    @Nullable
-    private final UserId mManagedUser;
     private final UserManagerState mUserManagerState;
     private final ConfigStore mConfigStore;
 
@@ -77,8 +76,6 @@ public class IconHelper {
      */
     public IconHelper(Context context, int mode, boolean maybeShowBadge, ConfigStore configStore) {
         this(context, mode, maybeShowBadge, DocumentsApplication.getThumbnailCache(context),
-                configStore.isPrivateSpaceInDocsUIEnabled() ? null
-                        : DocumentsApplication.getUserIdManager(context).getManagedUser(),
                 configStore.isPrivateSpaceInDocsUIEnabled()
                         ? DocumentsApplication.getUserManagerState(context) : null,
                 configStore);
@@ -86,12 +83,10 @@ public class IconHelper {
 
     @VisibleForTesting
     IconHelper(Context context, int mode, boolean maybeShowBadge, ThumbnailCache thumbnailCache,
-            @Nullable UserId managedUser, @Nullable UserManagerState userManagerState,
-            ConfigStore configStore) {
+            @Nullable UserManagerState userManagerState, ConfigStore configStore) {
         mContext = context;
         setViewMode(mode);
         mThumbnailCache = thumbnailCache;
-        mManagedUser = managedUser;
         mMaybeShowBadge = maybeShowBadge;
         mUserManagerState = userManagerState;
         mConfigStore = configStore;
@@ -276,7 +271,8 @@ public class IconHelper {
                     && mUserManagerState.getUserIds().size() > 1
                     && ActivityManager.getCurrentUser() != userIdIdentifier;
         }
-        return mMaybeShowBadge && mManagedUser != null
-                && mManagedUser.getIdentifier() == userIdIdentifier;
+        final UserManager userManager =
+                (UserManager) mContext.getSystemService(Context.USER_SERVICE);
+        return mMaybeShowBadge && userManager.isManagedProfile(userIdIdentifier);
     }
 }
