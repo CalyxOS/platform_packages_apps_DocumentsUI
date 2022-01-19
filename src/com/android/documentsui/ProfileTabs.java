@@ -22,6 +22,7 @@ import static com.android.documentsui.DevicePolicyResources.Strings.PERSONAL_TAB
 import static com.android.documentsui.DevicePolicyResources.Strings.WORK_TAB;
 
 import android.app.admin.DevicePolicyManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.UserManager;
 import android.view.View;
@@ -179,6 +180,8 @@ public class ProfileTabs implements ProfileTabsAddons {
             mUserIds = new ArrayList<>();
             mUserIds.addAll(userIds);
             mTabs.removeAllTabs();
+            final UserManager userManager =
+                    (UserManager)mTabsContainer.getContext().getSystemService(Context.USER_SERVICE);
             if (mUserIds.size() > 1) {
                 if (mConfigStore.isPrivateSpaceInDocsUIEnabled() && SdkLevel.isAtLeastS()) {
                     addTabsPrivateSpaceEnabled();
@@ -211,14 +214,16 @@ public class ProfileTabs implements ProfileTabsAddons {
     }
 
     private void addTabsPrivateSpaceDisabled() {
-        // set setSelected to false otherwise it will trigger callback.
-        assert mUserIdManager != null;
-        mTabs.addTab(createTab(
-                getEnterpriseString(PERSONAL_TAB, R.string.personal_tab),
-                mUserIdManager.getSystemUser()), /* setSelected= */false);
-        mTabs.addTab(createTab(
-                getEnterpriseString(WORK_TAB, R.string.work_tab),
-                mUserIdManager.getManagedUser()), /* setSelected= */false);
+        final UserManager userManager =
+                (UserManager)mTabsContainer.getContext().getSystemService(Context.USER_SERVICE);
+        for (UserId userId : mUserIds) {
+            // set setSelected to false otherwise it will trigger callback.
+            mTabs.addTab(createTab(
+                    userId.isManagedProfile(userManager)
+                            ? getEnterpriseString(WORK_TAB, R.string.work_tab)
+                            : getEnterpriseString(PERSONAL_TAB, R.string.personal_tab),
+                    userId), /* setSelected= */false);
+        }
     }
 
     private String getEnterpriseString(String updatableStringId, int defaultStringId) {
