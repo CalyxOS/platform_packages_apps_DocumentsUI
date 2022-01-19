@@ -16,6 +16,24 @@
       "message": "across.\n\nAlso, this is only for user 0 right? Should mention that.",
       "revId": "ab87bb752cac0a5bdf78ef68342959164849585f",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3cc9d01_a37f8cc8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-19T20:55:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8debe087_add3a452",
+      "revId": "ab87bb752cac0a5bdf78ef68342959164849585f",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }
   ]
 }
