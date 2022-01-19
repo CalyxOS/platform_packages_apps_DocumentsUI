@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "01dcca72_188e3797",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-01-19T16:38:15Z",
+      "side": 1,
+      "message": "Works as expected. Does not require OS changes anymore",
+      "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
