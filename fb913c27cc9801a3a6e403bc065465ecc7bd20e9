@@ -18,6 +18,24 @@
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2e585bc_0a362812",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-01-20T13:10:22Z",
+      "side": 1,
+      "message": "UI does show a message saying it\u0027s not an allowed operation. But maybe you mean documentation?",
+      "parentUuid": "42b43867_31dc7d34",
+      "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "01dcca72_188e3797",
@@ -48,6 +66,24 @@
       "writtenOn": "2022-01-19T20:55:55Z",
       "side": 1,
       "message": "In theory this should mostly be fine, but it\u0027s still something I\u0027d like to double check.",
+      "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b0a0c04_6e8d8261",
+        "filename": "Android.bp",
+        "patchSetId": 11
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-01-20T13:10:22Z",
+      "side": 1,
+      "message": "If there\u0027s other ways to call the startForegroundServiceAsUser functions I\u0027m fine with that",
+      "parentUuid": "b1c05d16_b2f26861",
       "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }
