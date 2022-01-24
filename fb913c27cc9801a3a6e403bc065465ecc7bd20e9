@@ -53,6 +53,23 @@
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3d3686b_4172b6bc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-01-24T19:00:01Z",
+      "side": 1,
+      "message": "https://review.calyxos.org/c/CalyxOS/platform_frameworks_base/+/8602\n\nIt may be possible to also do this feature by allowing all the intents similar to the patch above but it would probably apply beyond the scope of the Files app which I think would not be desirable",
+      "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b1c05d16_b2f26861",
