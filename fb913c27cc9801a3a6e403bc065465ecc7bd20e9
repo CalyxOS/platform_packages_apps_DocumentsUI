@@ -103,6 +103,24 @@
       "parentUuid": "b1c05d16_b2f26861",
       "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b40c344_02b0dc21",
+        "filename": "Android.bp",
+        "patchSetId": 11
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000034
+      },
+      "writtenOn": "2022-02-07T20:45:20Z",
+      "side": 1,
+      "message": "afaik all you need is Manifest.permission.INTERACT_ACROSS_USERS",
+      "parentUuid": "4b0a0c04_6e8d8261",
+      "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }
   ]
 }
