@@ -121,6 +121,24 @@
       "parentUuid": "4b0a0c04_6e8d8261",
       "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6643c960_4b1e1fc0",
+        "filename": "Android.bp",
+        "patchSetId": 11
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-02-07T20:46:13Z",
+      "side": 1,
+      "message": "It doesn\u0027t compile without this iirc",
+      "parentUuid": "3b40c344_02b0dc21",
+      "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }
   ]
 }
