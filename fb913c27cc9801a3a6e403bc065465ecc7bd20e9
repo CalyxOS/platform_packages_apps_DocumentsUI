@@ -157,6 +157,24 @@
       "parentUuid": "3b40c344_02b0dc21",
       "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a85d0bbc_d6c749d7",
+        "filename": "Android.bp",
+        "patchSetId": 11
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-02-28T23:16:45Z",
+      "side": 1,
+      "message": "That method is @UnsupportedAppUsage(maxTargetSdk \u003d Build.VERSION_CODES.R)\n\nDocumentsUI targets SDK 30.",
+      "parentUuid": "6643c960_4b1e1fc0",
+      "revId": "fb913c27cc9801a3a6e403bc065465ecc7bd20e9",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }
   ]
 }
