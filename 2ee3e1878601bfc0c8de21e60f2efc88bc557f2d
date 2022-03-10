@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7ccc80e_df8d30f5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-03-10T19:05:13Z",
+      "side": 1,
+      "message": "Files app open in work profile A1\n\nTried to copy a file from user A0 Downloads to work profile A1\n\nFile is copied but 0B, and won\u0027t open.",
+      "revId": "2ee3e1878601bfc0c8de21e60f2efc88bc557f2d",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
