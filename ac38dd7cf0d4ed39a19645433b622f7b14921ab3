@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8f5325b9_ffb09ff4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-03-23T11:42:19Z",
+      "side": 1,
+      "message": "Source and destination profile can be either. Was explicitly vague so both are tested as source and destination",
+      "parentUuid": "ab58b0ed_f1a9be3e",
+      "revId": "ac38dd7cf0d4ed39a19645433b622f7b14921ab3",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ffea3c22_24246cbb",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -65,6 +83,24 @@
       "writtenOn": "2022-03-23T11:33:03Z",
       "side": 1,
       "message": "Doesn\u0027t this just test it one way?",
+      "revId": "ac38dd7cf0d4ed39a19645433b622f7b14921ab3",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a64393ac_d9523295",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-03-23T11:42:19Z",
+      "side": 1,
+      "message": "Answered in first comment",
+      "parentUuid": "2c001642_403f3389",
       "revId": "ac38dd7cf0d4ed39a19645433b622f7b14921ab3",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }
