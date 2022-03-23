@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab58b0ed_f1a9be3e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-03-23T11:33:03Z",
+      "side": 1,
+      "message": "Can you use \u0027main user\u0027 and \u0027work profile\u0027 instead?",
+      "revId": "ac38dd7cf0d4ed39a19645433b622f7b14921ab3",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ffea3c22_24246cbb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-03-23T11:33:03Z",
+      "side": 1,
+      "message": "Download \"some zip file\" is ok.",
+      "revId": "ac38dd7cf0d4ed39a19645433b622f7b14921ab3",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e05a22b9_4c2466b9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-03-23T11:33:03Z",
+      "side": 1,
+      "message": "See above. Also \"Files\" instead of DocumentsUI",
+      "revId": "ac38dd7cf0d4ed39a19645433b622f7b14921ab3",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c001642_403f3389",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-03-23T11:33:03Z",
+      "side": 1,
+      "message": "Doesn\u0027t this just test it one way?",
+      "revId": "ac38dd7cf0d4ed39a19645433b622f7b14921ab3",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
