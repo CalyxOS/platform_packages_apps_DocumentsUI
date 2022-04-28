@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9e3a4e8_ddbe8e3b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-04-28T18:24:03Z",
+      "side": 1,
+      "message": "Works as expected, thanks for the detailed Test steps.\n\nFor files I used\nf-droid.org F-Droid.apk\nand then just search for \u0027sample pdf\u0027, \u0027sample mp3\u0027, \u0027sample mp4\u0027 and download.\n\nAlso need the relevant apps in the work profile to actually open them, e.g. MuPDF, Gallery, Music, VLC.",
+      "revId": "c580055b8748923d4c6b87857e1d943802e544c1",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
