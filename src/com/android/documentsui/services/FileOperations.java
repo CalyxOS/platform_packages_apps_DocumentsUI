@@ -72,9 +72,13 @@ public final class FileOperations {
                     operation.getSrc().getItemCount());
         }
 
-        BaseActivity baseActivity = (BaseActivity) context;
-        context.startForegroundServiceAsUser(intent,
-                UserHandle.of(baseActivity.getCurrentRoot().userId.getIdentifier()));
+        if (context instanceof BaseActivity) {
+            BaseActivity baseActivity = (BaseActivity) context;
+            context.startForegroundServiceAsUser(intent,
+                    UserHandle.of(baseActivity.getCurrentRoot().userId.getIdentifier()));
+        } else {
+            context.startService(intent);
+        }
 
         return newJobId;
     }
