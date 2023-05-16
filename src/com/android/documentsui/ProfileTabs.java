@@ -23,6 +23,7 @@ import static com.android.documentsui.DevicePolicyResources.Strings.WORK_TAB;
 
 import android.app.admin.DevicePolicyManager;
 import android.os.Build;
+import android.os.UserManager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -154,12 +155,13 @@ public class ProfileTabs implements ProfileTabsAddons {
             mTabs.removeAllTabs();
             if (mUserIds.size() > 1) {
                 // set setSelected to false otherwise it will trigger callback.
-                mTabs.addTab(createTab(
-                        getEnterpriseString(PERSONAL_TAB, R.string.personal_tab),
-                        mUserIdManager.getSystemUser()), /* setSelected= */false);
-                mTabs.addTab(createTab(
-                        getEnterpriseString(WORK_TAB, R.string.work_tab),
-                        mUserIdManager.getManagedUser()), /* setSelected= */false);
+                for (UserId userId : mUserIds) {
+                    mTabs.addTab(createTab(
+                            userId.isManagedProfile(UserManager.get(mTabsContainer.getContext()))
+                                    ? getEnterpriseString(WORK_TAB, R.string.work_tab)
+                                    : getEnterpriseString(PERSONAL_TAB, R.string.personal_tab),
+                            userId), /* setSelected= */false);
+                }
             }
         }
     }
