@@ -31,7 +31,6 @@ import android.os.UserManager;
 import android.util.Log;
 
 import androidx.annotation.GuardedBy;
-import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.documentsui.base.Features;
@@ -40,6 +39,7 @@ import com.android.documentsui.util.VersionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Interface to query user ids.
@@ -51,20 +51,6 @@ public interface UserIdManager {
      * include {@link UserId#CURRENT_USER}.
      */
     List<UserId> getUserIds();
-
-    /**
-     * Returns the system user from {@link #getUserIds()} if the list at least 2 users. Otherwise,
-     * returns null.
-     */
-    @Nullable
-    UserId getSystemUser();
-
-    /**
-     * Returns the managed user from {@link #getUserIds()} if the list at least 2 users. Otherwise,
-     * returns null.
-     */
-    @Nullable
-    UserId getManagedUser();
 
     /**
      * Creates an implementation of {@link UserIdManager}.
@@ -86,10 +72,6 @@ public interface UserIdManager {
 
         @GuardedBy("mUserIds")
         private final List<UserId> mUserIds = new ArrayList<>();
-        @GuardedBy("mUserIds")
-        private UserId mSystemUser = null;
-        @GuardedBy("mUserIds")
-        private UserId mManagedUser = null;
 
         private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
 
@@ -129,26 +111,6 @@ public interface UserIdManager {
             return mUserIds;
         }
 
-        @Override
-        public UserId getSystemUser() {
-            synchronized (mUserIds) {
-                if (mUserIds.isEmpty()) {
-                    getUserIds();
-                }
-            }
-            return mSystemUser;
-        }
-
-        @Override
-        public UserId getManagedUser() {
-            synchronized (mUserIds) {
-                if (mUserIds.isEmpty()) {
-                    getUserIds();
-                }
-            }
-            return mManagedUser;
-        }
-
         private List<UserId> getUserIdsInternal() {
             final List<UserId> result = new ArrayList<>();
             result.add(mCurrentUser);
@@ -169,44 +131,32 @@ public interface UserIdManager {
                 return result;
             }
 
-            UserId systemUser = null;
-            UserId managedUser = null;
-
-            for (UserHandle userHandle : userProfiles) {
-                if (userHandle.isSystem()) {
-                    systemUser = UserId.of(userHandle);
-                    continue;
+            final UserHandle currentUser = UserHandle.of(mCurrentUser.getIdentifier());
+            final UserHandle profileParent = userManager.getProfileParent(currentUser);
+            if (mCurrentUser.isManagedProfile(userManager)) {
+                // 1. If the current user is a managed user, add the parent user.
+                if (profileParent == null) {
+                    Log.e(TAG, "managed user has no parent!");
+                } else {
+                    result.add(0, UserId.of(profileParent));
                 }
-                if (managedUser == null
-                        && userManager.isManagedProfile(userHandle.getIdentifier())) {
-                    managedUser = UserId.of(userHandle);
-                }
-            }
-
-            if (mCurrentUser.isSystem()) {
-                // 1. If the current user is system (personal), add the managed user.
-                if (managedUser != null) {
-                    result.add(managedUser);
-                }
-            } else if (mCurrentUser.isManagedProfile(userManager)) {
-                // 2. If the current user is a managed user, add the personal user.
-                // Since we don't have MANAGED_USERS permission to get the parent user, we will
-                // treat the system as personal although the system can theoretically in the profile
-                // group but not being the parent user(personal) of the managed user.
-                if (systemUser != null) {
-                    result.add(0, systemUser);
-                }
+            } else if (profileParent == null || currentUser.equals(profileParent)) {
+                // 2. There is no parent user, so we can reasonably assume this is a full user,
+                // adding any and all of its managed profiles.
+                result.addAll(userProfiles.stream()
+                        .map(UserId::of)
+                        .filter(userId ->
+                                !mCurrentUser.equals(userId) && userId.isManagedProfile(userManager)
+                        ).collect(Collectors.toList()));
             } else {
                 // 3. If we cannot resolve the users properly, we will disable the cross-profile
                 // feature by returning just the current user.
                 if (DEBUG) {
-                    Log.w(TAG, "The current user " + UserId.CURRENT_USER
-                            + " is neither system nor managed user. has system user: "
-                            + (systemUser != null));
+                    Log.w(TAG, "The current user " + mCurrentUser.getIdentifier()
+                            + " is neither full nor managed user.");
                 }
             }
-            mSystemUser = systemUser;
-            mManagedUser = managedUser;
+
             return result;
         }
 
