@@ -74,8 +74,9 @@ public final class FileOperations {
 
         if (context instanceof BaseActivity) {
             BaseActivity baseActivity = (BaseActivity) context;
-            context.startForegroundServiceAsUser(intent,
-                    UserHandle.of(baseActivity.getCurrentRoot().userId.getIdentifier()));
+            final Context userContext = context.createContextAsUser(UserHandle.of(
+                    baseActivity.getCurrentRoot().userId.getIdentifier()), 0 /* flags */);
+            userContext.startForegroundService(intent);
         } else {
             context.startService(intent);
         }
@@ -94,8 +95,9 @@ public final class FileOperations {
         intent.putExtra(EXTRA_JOB_ID, jobId);
 
         BaseActivity baseActivity = (BaseActivity) activity;
-        activity.startForegroundServiceAsUser(intent,
-                UserHandle.of(baseActivity.getCurrentRoot().userId.getIdentifier()));
+        final Context userContext = activity.createContextAsUser(UserHandle.of(
+                baseActivity.getCurrentRoot().userId.getIdentifier()), 0 /* flags */);
+        userContext.startForegroundService(intent);
     }
 
     /**
