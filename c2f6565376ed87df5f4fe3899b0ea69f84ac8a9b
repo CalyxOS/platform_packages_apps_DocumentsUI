@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb76eb29_ff802caf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2023-05-19T17:08:29Z",
+      "side": 1,
+      "message": "Fails to build [without platform_apis](https://review.calyxos.org/c/CalyxOS/platform_packages_apps_DocumentsUI/+/17302) (cannot find symbols: `UserManager.get`, `userManager.getUserInfo`; incompatible types: int cannot be converted to UserHandle for `mCurrentUser.getIdentifier(`).\n\nIf we end up using that, I can look into making some tweaks to this, but we\u0027re currently not shipping DocumentsUI separately anyway.",
+      "revId": "c2f6565376ed87df5f4fe3899b0ea69f84ac8a9b",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "75e3fa01_17e9af6a",
