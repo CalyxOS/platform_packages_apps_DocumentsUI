@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6fa2fa64_8d49c2dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2023-05-19T18:32:22Z",
+      "side": 1,
+      "message": "Made minor changes so that this does not need the added QUERY_USERS permission and so that it works without platform_apis. Added back some comments/debug line, modified as appropriate.",
+      "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
