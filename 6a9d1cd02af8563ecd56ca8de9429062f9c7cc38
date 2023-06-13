@@ -53,6 +53,24 @@
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "edab2500_366c39b2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2023-06-13T17:52:53Z",
+      "side": 1,
+      "message": "tl;dr to everything below: There will only ever be a single user returned by `getUserProfiles` that is *not* a profile. Everything else will be a profile. And we can always tell which of these is the parent of the group because `getProfileParent` will return `null` for it, by implementation; anything other elements will have a parent, because that\u0027s how `getUserProfiles` decides what to return anyway. So, we should be fine.\n\n--\n\nTrying to remind myself what we\u0027re doing here, because it\u0027s easy to lose track of what matters:\n- We want to add tabs for all managed profiles, not just one.\n- We want this to work on secondary users, which previously did not support this feature at all.\n\nWe use `UserManager.getUserProfiles()` to retrieve the profiles. This returns all profiles (except, according to the doc, \"restricted profiles\") that have the same profileGroupId, or that are the same user being queried about -- see `getProfileIdsLU` / `isProfileOf`.\n\n`getProfileParent` returns `null` when consulted about a user that is either the parent user of the group, or not a profile at all.\n\nIt makes no sense for `getUserProfiles()` to return anything that isn\u0027t a profile at all, unless it\u0027s the parent.\n\nSo, let\u0027s try to imagine where something could go wrong.\n\nRight now, we account for these current-user scenarios:\n1. The current user is a managed profile. In this case, all we do is add the parent, so that Files in the work profile can have the Personal tab.\n2. The current user has no parent. In this case, we add any profiles that are not the current user and *are* managed profiles.\n3. The current user is none of the above: it\u0027s not a managed profile, but it has a parent. Presumably it\u0027s a regular profile of some kind. We do nothing with it except log it.\n\nScenario 2 is the only place I can think of where something even *could* reasonably go wrong, and that\u0027s the one we\u0027ve been looking at.\n\nIt\u0027s possible to end up in scenario 2 and not be a \"full user\", but I think that was simply the term I chose to use to replace \"system user\". The point is that it\u0027s not a profile. IMO, if it\u0027s not a profile, we should treat it like a user; after all, it was retrieved with `getUserProfiles()`, which will only return the user we\u0027re calling about, and any users with the same profileGroupId. So, in the worst case, there\u0027s only one element returned by `getUserProfiles()`, which leads to no managed profiles being added.\n\nAs for scenario 3, this means we\u0027re not supporting non-managed profiles, but neither did the original code.",
+      "parentUuid": "7feda7e9_95c66452",
+      "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9db8a4c7_31b69011",
@@ -119,6 +137,23 @@
         "endLine": 138,
         "endChar": 44
       },
+      "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14f01672_12d83aef",
+        "filename": "src/com/android/documentsui/UserIdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2023-06-13T17:52:53Z",
+      "side": 1,
+      "message": "The second case here, `currentUser.equals(profileParent)`, should never happen and can be removed. The implementation returns `null` if the user being queried about is the profileGroupId (parent of the group), just as it does if the user has no parent.",
       "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
