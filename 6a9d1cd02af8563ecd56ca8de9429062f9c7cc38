@@ -18,6 +18,23 @@
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b985c555_680dc695",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2023-06-13T16:14:28Z",
+      "side": 1,
+      "message": "Given that we may not be able to query if user is considered as \"full\" type with public APIs, this should suffice",
+      "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9db8a4c7_31b69011",
