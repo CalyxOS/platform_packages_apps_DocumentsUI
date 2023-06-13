@@ -94,6 +94,30 @@
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea34e24b_269291e4",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2023-06-13T18:09:12Z",
+      "side": 1,
+      "message": "Do you mean there should be a space after the cast? I think it\u0027s okay. Otherwise it would need to expand onto yet another line. The same file has other instances of this type of spacing, e.g. `int tabHeightInDp \u003d (int)mTabsContainer.getContext().getResources().`",
+      "parentUuid": "9db8a4c7_31b69011",
+      "range": {
+        "startLine": 158,
+        "startChar": 20,
+        "endLine": 158,
+        "endChar": 47
+      },
+      "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b145c3b0_a2717784",
@@ -154,6 +178,24 @@
       "writtenOn": "2023-06-13T17:52:53Z",
       "side": 1,
       "message": "The second case here, `currentUser.equals(profileParent)`, should never happen and can be removed. The implementation returns `null` if the user being queried about is the profileGroupId (parent of the group), just as it does if the user has no parent.",
+      "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f152e88_2f4246f5",
+        "filename": "src/com/android/documentsui/UserIdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2023-06-13T18:09:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "14f01672_12d83aef",
       "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
