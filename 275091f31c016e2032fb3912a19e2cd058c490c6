@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3064be3e_ed22c7d0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2023-06-13T18:16:29Z",
+      "side": 1,
+      "message": "Minor (imo) bug/quirk: deleted profiles may or may not still appear as tabs when returning to an existing instance of the Files app on the personal side. Swiping it away and opening it again resolves this. Trying to access the work tab for a profile that has been removed just shows an hourglass with \"Can\u0027t load content at the moment\".\n\nI looked at this a while back but couldn\u0027t easily find the reason.",
+      "revId": "275091f31c016e2032fb3912a19e2cd058c490c6",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
