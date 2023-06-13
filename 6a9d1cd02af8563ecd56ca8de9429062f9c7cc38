@@ -64,6 +64,30 @@
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "08945da6_8e789328",
+        "filename": "src/com/android/documentsui/UserIdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2023-06-13T16:05:09Z",
+      "side": 1,
+      "message": "As far as I know, it shouldn\u0027t happen, but yes, that\u0027s the reason I didn\u0027t use `Log.wtf`",
+      "parentUuid": "b145c3b0_a2717784",
+      "range": {
+        "startLine": 138,
+        "startChar": 16,
+        "endLine": 138,
+        "endChar": 44
+      },
+      "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1f08cd7f_fc1d56f7",
@@ -77,6 +101,30 @@
       "writtenOn": "2023-06-13T15:15:28Z",
       "side": 1,
       "message": "In practice I believe this is the case, but in theory I think any user can have a parent set (e.g. managed users). There\u0027s no way to check if the user type is full with APIs that don\u0027t cause trouble for APEX?",
+      "range": {
+        "startLine": 144,
+        "startChar": 22,
+        "endLine": 144,
+        "endChar": 94
+      },
+      "revId": "6a9d1cd02af8563ecd56ca8de9429062f9c7cc38",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7824e5d8_7e2c6951",
+        "filename": "src/com/android/documentsui/UserIdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2023-06-13T16:05:09Z",
+      "side": 1,
+      "message": "Not that I could find...",
+      "parentUuid": "1f08cd7f_fc1d56f7",
       "range": {
         "startLine": 144,
         "startChar": 22,
