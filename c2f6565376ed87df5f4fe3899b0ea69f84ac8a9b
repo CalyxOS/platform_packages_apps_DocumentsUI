@@ -51,6 +51,24 @@
       "parentUuid": "75e3fa01_17e9af6a",
       "revId": "c2f6565376ed87df5f4fe3899b0ea69f84ac8a9b",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8417be67_64052495",
+        "filename": "src/com/android/documentsui/UserIdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2023-06-13T15:15:28Z",
+      "side": 1,
+      "message": "For features that can benefit other profile types I like filtering by the generic type. But if this helps for APEX we can do without it since we don\u0027t make use of other profile types",
+      "parentUuid": "7222ef20_168c87af",
+      "revId": "c2f6565376ed87df5f4fe3899b0ea69f84ac8a9b",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }
   ]
 }
