@@ -49,6 +49,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a421eadc_be5ada54",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2024-06-11T20:20:11Z",
+      "side": 1,
+      "message": "I don\u0027t think so, at least not yet. Would be pretty interesting to see how it looks with private space enabled, but it\u0027s not something we support yet and won\u0027t be fully available until Android 15.",
+      "parentUuid": "c01658e3_2670df2a",
+      "range": {
+        "startLine": 204,
+        "startChar": 17,
+        "endLine": 204,
+        "endChar": 43
+      },
+      "revId": "c8fbd7cd71f57547abfbd5290c2dba3459ecc99c",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f9c0d39d_6335e65d",
         "filename": "src/com/android/documentsui/ProfileTabs.java",
         "patchSetId": 1
@@ -60,6 +84,30 @@
       "writtenOn": "2024-06-11T20:17:11Z",
       "side": 1,
       "message": "How does this look with multiple profiles?",
+      "range": {
+        "startLine": 217,
+        "startChar": 8,
+        "endLine": 217,
+        "endChar": 40
+      },
+      "revId": "c8fbd7cd71f57547abfbd5290c2dba3459ecc99c",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1783dbf_61f80d02",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2024-06-11T20:20:11Z",
+      "side": 1,
+      "message": "This is the same change as before, so it should look the same, but nothing tested yet. AOSP moved the previous logic to this function, with new, separate logic in the `addTabsPrivateSpaceEnabled` function.",
+      "parentUuid": "f9c0d39d_6335e65d",
       "range": {
         "startLine": 217,
         "startChar": 8,
