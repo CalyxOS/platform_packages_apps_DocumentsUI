@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5e4828f3_4f4e93b5",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2024-06-11T20:17:11Z",
+      "side": 1,
+      "message": "Curious when this applies and if it\u0027s something we do/should support",
+      "range": {
+        "startLine": 186,
+        "startChar": 33,
+        "endLine": 186,
+        "endChar": 62
+      },
+      "revId": "c8fbd7cd71f57547abfbd5290c2dba3459ecc99c",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c01658e3_2670df2a",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2024-06-11T20:17:11Z",
+      "side": 1,
+      "message": "Do we also need to modify this case?",
+      "range": {
+        "startLine": 204,
+        "startChar": 17,
+        "endLine": 204,
+        "endChar": 43
+      },
+      "revId": "c8fbd7cd71f57547abfbd5290c2dba3459ecc99c",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9c0d39d_6335e65d",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2024-06-11T20:17:11Z",
+      "side": 1,
+      "message": "How does this look with multiple profiles?",
+      "range": {
+        "startLine": 217,
+        "startChar": 8,
+        "endLine": 217,
+        "endChar": 40
+      },
+      "revId": "c8fbd7cd71f57547abfbd5290c2dba3459ecc99c",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
