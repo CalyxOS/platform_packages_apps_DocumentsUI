@@ -71,6 +71,30 @@
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "88c2690d_2ea355e0",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2024-06-12T15:55:39Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "a421eadc_be5ada54",
+      "range": {
+        "startLine": 204,
+        "startChar": 17,
+        "endLine": 204,
+        "endChar": 43
+      },
+      "revId": "c8fbd7cd71f57547abfbd5290c2dba3459ecc99c",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f9c0d39d_6335e65d",
@@ -108,6 +132,30 @@
       "side": 1,
       "message": "This is the same change as before, so it should look the same, but nothing tested yet. AOSP moved the previous logic to this function, with new, separate logic in the `addTabsPrivateSpaceEnabled` function.",
       "parentUuid": "f9c0d39d_6335e65d",
+      "range": {
+        "startLine": 217,
+        "startChar": 8,
+        "endLine": 217,
+        "endChar": 40
+      },
+      "revId": "c8fbd7cd71f57547abfbd5290c2dba3459ecc99c",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6ba0dd4_72e03101",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2024-06-12T15:55:39Z",
+      "side": 1,
+      "message": "Meant more I\u0027m curious to see what it looks like visually with multiple profiles. Does it show multiple tabs? Does it work nicely? Not a blocker",
+      "parentUuid": "a1783dbf_61f80d02",
       "range": {
         "startLine": 217,
         "startChar": 8,
