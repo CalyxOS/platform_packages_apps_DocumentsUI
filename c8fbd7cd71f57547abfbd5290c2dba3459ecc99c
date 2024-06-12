@@ -24,6 +24,30 @@
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d9293b2_e5e84827",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2024-06-12T18:02:49Z",
+      "side": 1,
+      "message": "Acknowledged. Default disabled. ConfigStore.java has this (needs device config flag, default off too):\n\n```\n        public static final String KEY_PRIVATE_SPACE_FEATURE_ENABLED \u003d\n                \"private_space_feature_enabled\";\n\n        private static final boolean sCanReadDeviceConfig \u003d SdkLevel.isAtLeastS();\n\n        private Boolean mIsPrivateSpaceEnabled \u003d null;\n\n        @Override\n        public boolean isPrivateSpaceInDocsUIEnabled() {\n            if (mIsPrivateSpaceEnabled \u003d\u003d null) {\n                mIsPrivateSpaceEnabled \u003d getBooleanDeviceConfig(\n                        NAMESPACE_MEDIAPROVIDER,\n                        KEY_PRIVATE_SPACE_FEATURE_ENABLED,\n                        DEFAULT_PICKER_PRIVATE_SPACE_ENABLED);\n            }\n            return sCanReadDeviceConfig \u0026\u0026 mIsPrivateSpaceEnabled;\n        }\n```\n\nWe have this issue, which is iceboxed I guess: https://gitlab.com/CalyxOS/calyxos/-/issues/2163",
+      "parentUuid": "5e4828f3_4f4e93b5",
+      "range": {
+        "startLine": 186,
+        "startChar": 33,
+        "endLine": 186,
+        "endChar": 62
+      },
+      "revId": "c8fbd7cd71f57547abfbd5290c2dba3459ecc99c",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c01658e3_2670df2a",
@@ -156,6 +180,30 @@
       "side": 1,
       "message": "Meant more I\u0027m curious to see what it looks like visually with multiple profiles. Does it show multiple tabs? Does it work nicely? Not a blocker",
       "parentUuid": "a1783dbf_61f80d02",
+      "range": {
+        "startLine": 217,
+        "startChar": 8,
+        "endLine": 217,
+        "endChar": 40
+      },
+      "revId": "c8fbd7cd71f57547abfbd5290c2dba3459ecc99c",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f969284_f4c6a0a0",
+        "filename": "src/com/android/documentsui/ProfileTabs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1000062
+      },
+      "writtenOn": "2024-06-12T18:02:49Z",
+      "side": 1,
+      "message": "Yes, for multiple profiles, this private-space-disabled case appears to work as nicely as it did before.",
+      "parentUuid": "a6ba0dd4_72e03101",
       "range": {
         "startLine": 217,
         "startChar": 8,
