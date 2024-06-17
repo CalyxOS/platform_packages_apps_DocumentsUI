@@ -76,14 +76,14 @@ public class IconHelper {
      */
     public IconHelper(Context context, int mode, boolean maybeShowBadge, ConfigStore configStore) {
         this(context, mode, maybeShowBadge, DocumentsApplication.getThumbnailCache(context),
-                configStore.isPrivateSpaceInDocsUIEnabled()
-                        ? DocumentsApplication.getUserManagerState(context) : null,
-                configStore);
+                null, configStore.isPrivateSpaceInDocsUIEnabled()
+                        ? DocumentsApplication.getUserManagerState(context) : null, configStore);
     }
 
     @VisibleForTesting
     IconHelper(Context context, int mode, boolean maybeShowBadge, ThumbnailCache thumbnailCache,
-            @Nullable UserManagerState userManagerState, ConfigStore configStore) {
+            @Nullable UserId managedUser, @Nullable UserManagerState userManagerState,
+            ConfigStore configStore) {
         mContext = context;
         setViewMode(mode);
         mThumbnailCache = thumbnailCache;

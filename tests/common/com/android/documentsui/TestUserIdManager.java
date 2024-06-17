@@ -30,14 +30,4 @@ public class TestUserIdManager implements UserIdManager {
     public List<UserId> getUserIds() {
         return userIds;
     }
-
-    @Override
-    public UserId getSystemUser() {
-        return systemUser;
-    }
-
-    @Override
-    public UserId getManagedUser() {
-        return managedUser;
-    }
 }

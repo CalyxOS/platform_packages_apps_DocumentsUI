@@ -164,28 +164,28 @@ public class UserIdManagerTest {
     public void testGetManagedUser_contains() {
         UserId currentUser = UserId.of(systemUser);
         initializeUserIdManager(currentUser, Arrays.asList(systemUser, managedUser1));
-        assertThat(mUserIdManager.getManagedUser()).isEqualTo(UserId.of(managedUser1));
+        assertThat(mUserIdManager.getUserIds()).contains(UserId.of(managedUser1));
     }
 
     @Test
     public void testGetSystemUser_contains() {
         UserId currentUser = UserId.of(systemUser);
         initializeUserIdManager(currentUser, Arrays.asList(systemUser, managedUser1));
-        assertThat(mUserIdManager.getSystemUser()).isEqualTo(UserId.of(systemUser));
+        assertThat(mUserIdManager.getUserIds()).contains(UserId.of(systemUser));
     }
 
     @Test
     public void testGetSystemUser_singletonList_returnNull() {
         UserId currentUser = UserId.of(systemUser);
         initializeUserIdManager(currentUser, Arrays.asList(systemUser));
-        assertThat(mUserIdManager.getSystemUser()).isNull();
+        assertThat(mUserIdManager.getUserIds()).hasSize(1);
     }
 
     @Test
     public void testGetManagedUser_missing() {
         UserId currentUser = UserId.of(systemUser);
         initializeUserIdManager(currentUser, Arrays.asList(systemUser, nonManagedUser1));
-        assertThat(mUserIdManager.getManagedUser()).isNull();
+        assertThat(mUserIdManager.getUserIds()).doesNotContain(UserId.of(managedUser1));
     }
 
     private void initializeUserIdManager(UserId current, List<UserHandle> usersOnDevice) {
