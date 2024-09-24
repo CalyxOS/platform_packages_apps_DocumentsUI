@@ -58,6 +58,7 @@ import com.android.documentsui.base.DocumentInfo;
 import com.android.documentsui.base.Features;
 import com.android.documentsui.base.RootInfo;
 import com.android.documentsui.base.State;
+import com.android.documentsui.base.UserId;
 import com.android.documentsui.clipping.DocumentClipper;
 import com.android.documentsui.dirlist.AnimationView.AnimationType;
 import com.android.documentsui.dirlist.AppsRowManager;
@@ -66,6 +67,8 @@ import com.android.documentsui.services.FileOperationService;
 import com.android.documentsui.sidebar.RootsFragment;
 import com.android.documentsui.ui.DialogController;
 import com.android.documentsui.ui.MessageBuilder;
+import com.android.documentsui.util.CrossProfileUtils;
+import com.android.modules.utils.build.SdkLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,8 +193,22 @@ public class FilesActivity extends BaseActivity implements AbstractActionHandler
                         mDrawer,
                         mInjector.searchManager::onSearchBarClicked);
 
+        final Intent moreApps = new Intent(getIntent());
+        moreApps.setComponent(null);
+        moreApps.setPackage(null);
+        if (mState.supportsCrossProfile) {
+            if (mConfigStore.isPrivateSpaceInDocsUIEnabled() && SdkLevel.isAtLeastS()) {
+                mState.canForwardToProfileIdMap = mUserManagerState.getCanForwardToProfileIdMap(
+                        moreApps);
+            } else if (CrossProfileUtils.getCrossProfileResolveInfo(UserId.CURRENT_USER,
+                    getPackageManager(), moreApps, getApplicationContext(),
+                    mConfigStore.isPrivateSpaceInDocsUIEnabled()) != null) {
+                mState.canShareAcrossProfile = true;
+            }
+        }
+
         RootsFragment.show(getSupportFragmentManager(), /* includeApps= */ false,
-                /* intent= */ null);
+                /* intent= */ moreApps);
         if (isUseMaterial3FlagEnabled()) {
             View navRailRoots = findViewById(R.id.nav_rail_container_roots);
             if (navRailRoots != null) {
@@ -286,6 +303,7 @@ public class FilesActivity extends BaseActivity implements AbstractActionHandler
         state.initAcceptMimes(intent, "*/*");
         state.action = State.ACTION_BROWSE;
         state.allowMultiple = true;
+        state.supportsCrossProfile = true;
 
         // Options specific to the DocumentsActivity.
         assert (!intent.hasExtra(Intent.EXTRA_LOCAL_ONLY));
