@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d26efd2f_df212197",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2024-09-24T22:41:08Z",
+      "side": 1,
+      "message": "I\u0027ve noticed that the Get Info button doesn\u0027t work for files in all profiles. Not quite sure what causes it to work or fail at the moment",
+      "revId": "ae1c7f2e6715e20fd5c818103305e66bd5e98df1",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
