@@ -632,8 +632,7 @@ public interface UserManagerState {
                 return false;
             }
 
-            return userProperties.getCrossProfileContentSharingStrategy()
-                    == UserProperties.CROSS_PROFILE_CONTENT_SHARING_DELEGATE_FROM_PARENT;
+            return true;
         }
 
         private void getCanForwardToProfileIdMapPreV(Intent intent) {
