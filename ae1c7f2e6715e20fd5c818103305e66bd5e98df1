@@ -16,6 +16,24 @@
       "message": "I\u0027ve noticed that the Get Info button doesn\u0027t work for files in all profiles. Not quite sure what causes it to work or fail at the moment",
       "revId": "ae1c7f2e6715e20fd5c818103305e66bd5e98df1",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b6d3803_1fdfde31",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2024-09-26T20:49:58Z",
+      "side": 1,
+      "message": "https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:loader/loader/src/main/java/androidx/loader/content/Loader.java;l\u003d119;drc\u003d347182ae5ee6a6c951354dae818f3efa4db3bc4f\nEven though `createPackageContextAsUser` is called, `getApplicationContext` still has the original user stored (which makes sense since that\u0027s where it is stored)",
+      "parentUuid": "d26efd2f_df212197",
+      "revId": "ae1c7f2e6715e20fd5c818103305e66bd5e98df1",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }
   ]
 }
