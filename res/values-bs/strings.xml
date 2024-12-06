@@ -94,7 +94,7 @@
     <string name="query_error" msgid="6625421453613879336">"Trenutno nije moguće učitati sadržaj"</string>
     <string name="quiet_mode_error_title" msgid="554319751414657910">"Poslovne aplikacije su pauzirane"</string>
     <string name="quiet_mode_button" msgid="8051436551926677305">"Uključi poslovne aplikacije"</string>
-    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"Aplikacije profila \"<xliff:g id="PROFILE">%1$s</xliff:g>\" su pauzirane"</string>
+    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"Aplikacije profila <xliff:g id="PROFILE">%1$s</xliff:g> su pauzirane"</string>
     <string name="profile_quiet_mode_button" msgid="6791235010992920102">"Uključi aplikacije profila \"<xliff:g id="PROFILE">%1$s</xliff:g>\""</string>
     <string name="cant_select_work_files_error_title" msgid="6688716319549644354">"Nije moguće odabrati poslovne fajlove"</string>
     <string name="cant_select_work_files_error_message" msgid="683480676150690641">"IT administrator vam ne dozvoljava da pristupate poslovnim fajlovima iz lične aplikacije"</string>

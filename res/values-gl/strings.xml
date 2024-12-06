@@ -94,7 +94,7 @@
     <string name="query_error" msgid="6625421453613879336">"Non se pode cargar o contido neste momento"</string>
     <string name="quiet_mode_error_title" msgid="554319751414657910">"Puxéronse en pausa as aplicacións do traballo"</string>
     <string name="quiet_mode_button" msgid="8051436551926677305">"Activar aplicacións do traballo"</string>
-    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"As aplicacións deste perfil (<xliff:g id="PROFILE">%1$s</xliff:g>) están en pausa"</string>
+    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"As aplicacións do perfil <xliff:g id="PROFILE">%1$s</xliff:g> están en pausa"</string>
     <string name="profile_quiet_mode_button" msgid="6791235010992920102">"Activar aplicacións (<xliff:g id="PROFILE">%1$s</xliff:g>)"</string>
     <string name="cant_select_work_files_error_title" msgid="6688716319549644354">"Non se puideron seleccionar os ficheiros de traballo"</string>
     <string name="cant_select_work_files_error_message" msgid="683480676150690641">"O teu administrador de TI non permite acceder aos ficheiros do traballo desde unha aplicación persoal"</string>

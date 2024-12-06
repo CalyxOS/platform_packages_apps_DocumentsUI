@@ -29,7 +29,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ext.SdkExtensions;
 import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -90,6 +92,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Display list of known storage backend roots.
@@ -521,6 +524,25 @@ public class RootsFragment extends Fragment {
             final List<ResolveInfo> infos = pm.queryIntentActivities(
                     handlerAppIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
+            // In addition to hiding DocumentsUI from possible handler apps, the Android
+            // Photopicker should also be hidden. ACTION_PICK_IMAGES is used to identify
+            // the Photopicker package since that is the primary API.
+            List<ResolveInfo> photopickerActivities;
+            List<String> photopickerPackages;
+
+            if (SdkLevel.isAtLeastR()
+                    && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2) {
+                photopickerActivities = pm.queryIntentActivities(
+                        new Intent(MediaStore.ACTION_PICK_IMAGES),
+                        PackageManager.MATCH_DEFAULT_ONLY);
+                photopickerPackages = photopickerActivities.stream()
+                        .map(info -> info.activityInfo.packageName)
+                .collect(Collectors.toList());
+            } else {
+                photopickerActivities = Collections.emptyList();
+                photopickerPackages = Collections.emptyList();
+            }
+
             // Omit ourselves and maybe calling package from the list
             for (ResolveInfo info : infos) {
                 if (!info.activityInfo.exported) {
@@ -531,6 +553,13 @@ public class RootsFragment extends Fragment {
                 }
 
                 final String packageName = info.activityInfo.packageName;
+
+                // If the package name for the activity is in the list of Photopicker
+                // activities, exclude it.
+                if (photopickerPackages.contains(packageName)) {
+                    continue;
+                }
+
                 if (!myPackageName.equals(packageName)
                         && !TextUtils.equals(excludePackage, packageName)) {
                     UserPackage userPackage = new UserPackage(userId, packageName);

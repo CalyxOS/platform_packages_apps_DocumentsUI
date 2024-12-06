@@ -94,7 +94,7 @@
     <string name="query_error" msgid="6625421453613879336">"Não é possível carregar o conteúdo neste momento"</string>
     <string name="quiet_mode_error_title" msgid="554319751414657910">"As Apps de trabalho estão suspensas."</string>
     <string name="quiet_mode_button" msgid="8051436551926677305">"Ativar apps de trabalho"</string>
-    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"As apps de <xliff:g id="PROFILE">%1$s</xliff:g> estão pausadas"</string>
+    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"As apps do perfil <xliff:g id="PROFILE">%1$s</xliff:g> estão pausadas"</string>
     <string name="profile_quiet_mode_button" msgid="6791235010992920102">"Ativar apps de <xliff:g id="PROFILE">%1$s</xliff:g>"</string>
     <string name="cant_select_work_files_error_title" msgid="6688716319549644354">"Não é possível selecionar ficheiros de trabalho."</string>
     <string name="cant_select_work_files_error_message" msgid="683480676150690641">"O seu administrador de TI não lhe permite aceder a ficheiros de trabalho a partir de uma app pessoal."</string>

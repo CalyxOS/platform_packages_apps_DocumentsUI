@@ -268,11 +268,11 @@ public abstract class BaseActivity
 
             @Override
             public void onSearchViewFocusChanged(boolean hasFocus) {
-                final boolean isInitailSearch
+                final boolean isInitialSearch
                         = !TextUtils.isEmpty(mSearchManager.getCurrentSearch())
                         && TextUtils.isEmpty(mSearchManager.getSearchViewText());
                 if (hasFocus) {
-                    if (!isInitailSearch) {
+                    if (!isInitialSearch) {
                         SearchFragment.showFragment(getSupportFragmentManager(),
                                 mSearchManager.getSearchViewText());
                     }

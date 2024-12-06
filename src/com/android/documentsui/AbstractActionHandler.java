@@ -883,6 +883,12 @@ public abstract class AbstractActionHandler<T extends FragmentActivity & CommonA
         public Loader<DirectoryResult> onCreateLoader(int id, Bundle args) {
             Context context = mActivity;
 
+            // If document stack is not initialized, i.e. if the root is null, create "Recents" root
+            // with the selected user.
+            if (!mState.stack.isInitialized()) {
+                mState.stack.changeRoot(mActivity.getCurrentRoot());
+            }
+
             if (mState.stack.isRecents()) {
                 final LockingContentObserver observer = new LockingContentObserver(
                         mContentLock, AbstractActionHandler.this::loadDocumentsForCurrentStack);

@@ -25,9 +25,177 @@
 # To prevent class not found exception in org.brotli.dec.Dictionary
 -keep final class org.brotli.dec.DictionaryData
 
-# To prevent resource fields not found exception on running DocumentsUIGoogleTests module
--keepclassmembers class com.android.documentsui.R$* {
-    public static <fields>;
+# keep rule generated after running trace references on the test app against DocumentsUIGoogle.jar
+# TODO(b/339312616): Remove after a more permanent fix is available
+# On modifying or adding new test run the following command to generate new keep rules and replace
+# the once listed below with the newly generated keep rules:
+# java -cp prebuilts/r8/r8.jar com.android.tools.r8.tracereferences.TraceReferences \
+# --lib out/soong/.intermediates/frameworks/base/framework/android_common/<some_hash>/combined/framework.jar \
+# --source out/target/product/panther/testcases/DocumentsUIGoogleTests/arm64/DocumentsUIGoogleTests.apk \
+# --target  out/soong/.intermediates/vendor/unbundled_google/packages/DocumentsUIGoogle/DocumentsUIGoogle/android_common/<some_hash>/javac/DocumentsUIGoogle.jar \
+# --keep-rules \
+# --output /tmp/keep.txt
+
+-keep class androidx.appcompat.R$id {
+  int search_src_text;
+}
+-keep class com.android.documentsui.R$bool {
+  int feature_notification_channel;
+  int full_bar_search_view;
+  int is_launcher_enabled;
+  int show_search_bar;
+}
+-keep class com.android.documentsui.R$color {
+  int app_background_color;
+  int primary;
+}
+-keep class com.android.documentsui.R$dimen {
+  int grid_item_radius;
+}
+-keep class com.android.documentsui.R$drawable {
+  int ic_briefcase;
+  int ic_cab_cancel;
+  int ic_eject;
+  int ic_menu_copy;
+  int ic_root_download;
+  int ic_sd_storage;
+  int root_list_selector;
+  int work_off;
+}
+-keep class com.android.documentsui.R$id {
+  int action_menu_compress;
+  int action_menu_copy_to;
+  int action_menu_delete;
+  int action_menu_deselect_all;
+  int action_menu_extract_to;
+  int action_menu_inspect;
+  int action_menu_move_to;
+  int action_menu_open_with;
+  int action_menu_rename;
+  int action_menu_select;
+  int action_menu_select_all;
+  int action_menu_share;
+  int action_menu_sort;
+  int action_menu_view_in_owner;
+  int apps_group;
+  int apps_row;
+  int button;
+  int content;
+  int cross_profile;
+  int cross_profile_content;
+  int cross_profile_progress;
+  int dir_menu_copy_to_clipboard;
+  int dir_menu_create_dir;
+  int dir_menu_cut_to_clipboard;
+  int dir_menu_delete;
+  int dir_menu_deselect_all;
+  int dir_menu_inspect;
+  int dir_menu_open;
+  int dir_menu_open_in_new_window;
+  int dir_menu_open_with;
+  int dir_menu_paste_from_clipboard;
+  int dir_menu_paste_into_folder;
+  int dir_menu_rename;
+  int dir_menu_select_all;
+  int dir_menu_share;
+  int dir_menu_view_in_owner;
+  int drawer_layout;
+  int inspector_details_view;
+  int option_menu_create_dir;
+  int option_menu_debug;
+  int option_menu_inspect;
+  int option_menu_launcher;
+  int option_menu_new_window;
+  int option_menu_search;
+  int option_menu_select_all;
+  int option_menu_settings;
+  int option_menu_show_hidden_files;
+  int option_menu_sort;
+  int root_menu_eject_root;
+  int root_menu_open_in_new_window;
+  int root_menu_paste_into_folder;
+  int root_menu_settings;
+  int sub_menu_grid;
+  int sub_menu_list;
+  int table_header;
+  int tabs;
+  int tabs_container;
+  int toolbar;
+}
+-keep class com.android.documentsui.R$layout {
+  int apps_row;
+  int directory_header;
+  int files_activity;
+  int fixed_layout;
+  int item_doc_list;
+}
+-keep class com.android.documentsui.R$menu {
+  int dir_context_menu;
+  int file_context_menu;
+  int mixed_context_menu;
+}
+-keep class com.android.documentsui.R$plurals {
+  int copy_error_notification_title;
+  int elements_dragged;
+}
+-keep class com.android.documentsui.R$string {
+  int cant_select_work_files_error_message;
+  int cant_select_work_files_error_title;
+  int copy_notification_title;
+  int copy_preparing;
+  int copy_remaining;
+  int debug_content_uri;
+  int default_root_uri;
+  int directory_items;
+  int empty;
+  int menu_copy;
+  int menu_move;
+  int menu_rename;
+  int menu_select;
+  int menu_select_all;
+  int menu_sort;
+  int menu_view_in_owner;
+  int metadata_address;
+  int metadata_album;
+  int metadata_altitude;
+  int metadata_aperture;
+  int metadata_aperture_format;
+  int metadata_artist;
+  int metadata_camera;
+  int metadata_camera_format;
+  int metadata_composer;
+  int metadata_coordinates;
+  int metadata_coordinates_format;
+  int metadata_date_time;
+  int metadata_dimensions;
+  int metadata_dimensions_format;
+  int metadata_duration;
+  int metadata_focal_format;
+  int metadata_focal_length;
+  int metadata_iso_format;
+  int metadata_iso_speed_ratings;
+  int metadata_shutter_speed;
+  int name_conflict;
+  int no_results;
+  int personal_tab;
+  int preferred_root_package;
+  int quiet_mode_button;
+  int quiet_mode_error_title;
+  int rename_error;
+  int search_bar_hint;
+  int share_via;
+  int sort_dimension_date;
+  int sort_dimension_file_type;
+  int sort_dimension_name;
+  int sort_dimension_size;
+  int sort_direction_ascending;
+  int sort_direction_descending;
+  int trusted_quick_viewer_package;
+  int work_tab;
+}
+-keep class com.android.documentsui.R$style {
+  int DocumentsDefaultTheme;
+  int DocumentsTheme;
 }
 
 # Keep Apache Commons Compress classes

@@ -141,9 +141,9 @@
       <item quantity="one">Comprimiendo <xliff:g id="COUNT_0">%1$d</xliff:g> archivo.</item>
     </plurals>
     <plurals name="extract_begin" formatted="false" msgid="1006380679562903749">
-      <item quantity="many">Se están extrayendo <xliff:g id="COUNT_1">%1$d</xliff:g> archivos.</item>
-      <item quantity="other">Se están extrayendo <xliff:g id="COUNT_1">%1$d</xliff:g> archivos.</item>
-      <item quantity="one">Se está extrayendo <xliff:g id="COUNT_0">%1$d</xliff:g> archivo.</item>
+      <item quantity="many">Extrayendo <xliff:g id="COUNT_1">%1$d</xliff:g> archivos.</item>
+      <item quantity="other">Extrayendo <xliff:g id="COUNT_1">%1$d</xliff:g> archivos.</item>
+      <item quantity="one">Extrayendo <xliff:g id="COUNT_0">%1$d</xliff:g> archivo.</item>
     </plurals>
     <plurals name="move_begin" formatted="false" msgid="1464229874265756956">
       <item quantity="many">Moviendo <xliff:g id="COUNT_1">%1$d</xliff:g> elementos.</item>
@@ -195,14 +195,14 @@
       <item quantity="one">No se ha podido comprimir este archivo: <xliff:g id="LIST_0">%1$s</xliff:g></item>
     </plurals>
     <plurals name="extract_failure_alert_content" formatted="false" msgid="7572748127571720803">
-      <item quantity="many">No se han podido extraer estos archivos: <xliff:g id="LIST_1">%1$s</xliff:g></item>
-      <item quantity="other">No se han podido extraer estos archivos: <xliff:g id="LIST_1">%1$s</xliff:g></item>
-      <item quantity="one">No se ha podido extraer este archivo: <xliff:g id="LIST_0">%1$s</xliff:g></item>
+      <item quantity="many">Estos archivos no se han extraído: <xliff:g id="LIST_1">%1$s</xliff:g></item>
+      <item quantity="other">Estos archivos no se han extraído: <xliff:g id="LIST_1">%1$s</xliff:g></item>
+      <item quantity="one">Este archivo no se ha extraído: <xliff:g id="LIST_0">%1$s</xliff:g></item>
     </plurals>
     <plurals name="move_failure_alert_content" formatted="false" msgid="2747390342670799196">
-      <item quantity="many">No se han podido mover estos archivos: <xliff:g id="LIST_1">%1$s</xliff:g></item>
-      <item quantity="other">No se han podido mover estos archivos: <xliff:g id="LIST_1">%1$s</xliff:g></item>
-      <item quantity="one">No se ha podido mover este archivo: <xliff:g id="LIST_0">%1$s</xliff:g></item>
+      <item quantity="many">Estos archivos no se han movido: <xliff:g id="LIST_1">%1$s</xliff:g></item>
+      <item quantity="other">Estos archivos no se han movido: <xliff:g id="LIST_1">%1$s</xliff:g></item>
+      <item quantity="one">Este archivo no se ha movido: <xliff:g id="LIST_0">%1$s</xliff:g></item>
     </plurals>
     <plurals name="delete_failure_alert_content" formatted="false" msgid="6122372614839711711">
       <item quantity="many">No se han podido eliminar estos archivos: <xliff:g id="LIST_1">%1$s</xliff:g></item>

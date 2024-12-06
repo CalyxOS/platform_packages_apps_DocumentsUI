@@ -94,7 +94,7 @@
     <string name="query_error" msgid="6625421453613879336">"Une honetan ezin da kargatu edukia"</string>
     <string name="quiet_mode_error_title" msgid="554319751414657910">"Pausatuta daude laneko aplikazioak"</string>
     <string name="quiet_mode_button" msgid="8051436551926677305">"Aktibatu laneko aplikazioak"</string>
-    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"Profil honetako (<xliff:g id="PROFILE">%1$s</xliff:g>) aplikazioak pausatuta daude"</string>
+    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"\"<xliff:g id="PROFILE">%1$s</xliff:g>\" profileko aplikazioak pausatuta daude"</string>
     <string name="profile_quiet_mode_button" msgid="6791235010992920102">"Aktibatu profil honetako (<xliff:g id="PROFILE">%1$s</xliff:g>) aplikazioak"</string>
     <string name="cant_select_work_files_error_title" msgid="6688716319549644354">"Ezin dira hautatu laneko fitxategiak"</string>
     <string name="cant_select_work_files_error_message" msgid="683480676150690641">"IKT saileko administratzaileak ez dizu ematen baimenik laneko fitxategiak aplikazio pertsonal batetik atzitzeko"</string>
@@ -110,7 +110,7 @@
     <string name="cant_save_to_cross_profile_error_message" msgid="5845240315510422749">"IKT saileko administratzaileak ez dizu eman baimenik profil bateko (<xliff:g id="PROFILE_0">%1$s</xliff:g>) fitxategiak beste profil batean (<xliff:g id="PROFILE_1">%2$s</xliff:g>) gordetzeko"</string>
     <string name="cross_profile_action_not_allowed_title" msgid="6611281348716476478">"Ez da onartzen ekintza"</string>
     <string name="cross_profile_action_not_allowed_message" msgid="7331275433061690947">"Informazio gehiago lortzeko, jarri IKT saileko administratzailearekin harremanetan"</string>
-    <string name="root_recent" msgid="1080156975424341623">"Azkenak"</string>
+    <string name="root_recent" msgid="1080156975424341623">"Azkenaldikoak"</string>
     <string name="root_available_bytes" msgid="8269870862691408864">"<xliff:g id="SIZE">%1$s</xliff:g> erabilgarri"</string>
     <string name="root_type_service" msgid="6521366147466512289">"Biltegiratze-zerbitzuak"</string>
     <string name="root_type_shortcut" msgid="6059343175525442279">"Lasterbideak"</string>
@@ -248,14 +248,14 @@
       <item quantity="other"><xliff:g id="COUNT_1">%1$d</xliff:g> hautatuta</item>
       <item quantity="one"><xliff:g id="COUNT_0">%1$d</xliff:g> hautatuta</item>
     </plurals>
-    <string name="root_info_header_recent" msgid="5654901877295332262">"Azken fitxategiak"</string>
+    <string name="root_info_header_recent" msgid="5654901877295332262">"Azkenaldiko fitxategiak"</string>
     <string name="root_info_header_global_search" msgid="4904078222280496152">"Fitxategiak"</string>
     <string name="root_info_header_downloads" msgid="8848161246921154115">"Deskargak karpetako fitxategiak"</string>
     <string name="root_info_header_storage" msgid="2989014130584927442">"<xliff:g id="DEVICE">%1$s</xliff:g> gailuko fitxategiak"</string>
     <string name="root_info_header_folder" msgid="5851172222368049864">"<xliff:g id="FOLDER">%1$s</xliff:g> karpetako fitxategiak"</string>
     <string name="root_info_header_app" msgid="2125422047558420885">"<xliff:g id="LABEL">%1$s</xliff:g> zerbitzuko fitxategiak"</string>
     <string name="root_info_header_app_with_summary" msgid="3223302581236069702">"<xliff:g id="LABEL">%1$s</xliff:g> zerbitzuko fitxategiak / <xliff:g id="SUMMARY">%2$s</xliff:g>"</string>
-    <string name="root_info_header_image_recent" msgid="7494373563753926014">"Azken irudiak"</string>
+    <string name="root_info_header_image_recent" msgid="7494373563753926014">"Azkenaldiko irudiak"</string>
     <string name="root_info_header_image_global_search" msgid="7307009823489854697">"Irudiak"</string>
     <string name="root_info_header_image_downloads" msgid="7072252612657612307">"Deskargak ataleko irudiak"</string>
     <string name="root_info_header_image_storage" msgid="5086740886360075930">"<xliff:g id="DEVICE">%1$s</xliff:g> gailuko irudiak"</string>

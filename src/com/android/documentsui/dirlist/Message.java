@@ -32,6 +32,7 @@ import static com.android.documentsui.DevicePolicyResources.Strings.WORK_PROFILE
 import static com.android.documentsui.DevicePolicyResources.Strings.WORK_PROFILE_OFF_ERROR_TITLE;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.AuthenticationRequiredException;
 import android.app.admin.DevicePolicyManager;
 import android.content.pm.PackageManager;
@@ -242,6 +243,11 @@ abstract class Message {
 
         private boolean setCanModifyQuietMode() {
             if (SdkLevel.isAtLeastV() && mConfigStore.isPrivateSpaceInDocsUIEnabled()) {
+                // Quite mode cannot be modified when DocsUi is launched from a non-foreground user
+                if (UserId.CURRENT_USER.getIdentifier() != ActivityManager.getCurrentUser()) {
+                    return false;
+                }
+
                 if (mUserManager == null) {
                     Log.e(TAG, "can not obtain user manager class");
                     return false;

@@ -94,7 +94,7 @@
     <string name="query_error" msgid="6625421453613879336">"Понастоящем съдържанието не може да се зареди"</string>
     <string name="quiet_mode_error_title" msgid="554319751414657910">"Служебните приложения са поставени на пауза"</string>
     <string name="quiet_mode_button" msgid="8051436551926677305">"Включване на служебните приложения"</string>
-    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"<xliff:g id="PROFILE">%1$s</xliff:g> приложения са поставени на пауза"</string>
+    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"Приложенията от „<xliff:g id="PROFILE">%1$s</xliff:g>“ са поставени на пауза"</string>
     <string name="profile_quiet_mode_button" msgid="6791235010992920102">"Включване на <xliff:g id="PROFILE">%1$s</xliff:g> приложения"</string>
     <string name="cant_select_work_files_error_title" msgid="6688716319549644354">"Избирането на служебни файлове не е възможно"</string>
     <string name="cant_select_work_files_error_message" msgid="683480676150690641">"Системният ви администратор не разрешава достъпа до служебните ви файлове от лично приложение"</string>

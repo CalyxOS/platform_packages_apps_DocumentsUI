@@ -94,7 +94,7 @@
     <string name="query_error" msgid="6625421453613879336">"Det går inte att läsa in innehållet just nu"</string>
     <string name="quiet_mode_error_title" msgid="554319751414657910">"Jobbappar har pausats"</string>
     <string name="quiet_mode_button" msgid="8051436551926677305">"Aktivera jobbappar"</string>
-    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"<xliff:g id="PROFILE">%1$s</xliff:g>appar har pausats"</string>
+    <string name="profile_quiet_mode_error_title" msgid="7126962749634841843">"Appar för profilen <xliff:g id="PROFILE">%1$s</xliff:g> har pausats"</string>
     <string name="profile_quiet_mode_button" msgid="6791235010992920102">"Slå på <xliff:g id="PROFILE">%1$s</xliff:g>appar"</string>
     <string name="cant_select_work_files_error_title" msgid="6688716319549644354">"Det går inte att välja jobbfiler"</string>
     <string name="cant_select_work_files_error_message" msgid="683480676150690641">"IT-administratören tillåter inte att du öppnar jobbfiler i en privat app"</string>
