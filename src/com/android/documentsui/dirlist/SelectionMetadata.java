@@ -18,6 +18,7 @@ package com.android.documentsui.dirlist;
 
 import static com.android.documentsui.base.DocumentInfo.getCursorInt;
 import static com.android.documentsui.base.DocumentInfo.getCursorString;
+import static com.android.documentsui.util.FlagUtils.isZipNgFlagEnabled;
 
 import android.database.Cursor;
 import android.provider.DocumentsContract.Document;
@@ -56,7 +57,13 @@ public class SelectionMetadata extends SelectionObserver<String>
     private int mWritableDirectoryCount = 0;
     private int mNoDeleteCount = 0;
     private int mNoRenameCount = 0;
+
+    /** Number of files that are located in mounted archives. */
     private int mInArchiveCount = 0;
+
+    /** Number of archives. */
+    private int mArchiveCount = 0;
+
     private boolean mSupportsSettings = false;
 
     public SelectionMetadata(Function<String, Cursor> docFinder) {
@@ -79,6 +86,9 @@ public class SelectionMetadata extends SelectionObserver<String>
             mDirectoryCount += delta;
         } else {
             mFileCount += delta;
+            if (ArchivesProvider.isSupportedArchiveType(mimeType)) {
+                mArchiveCount += delta;
+            }
         }
 
         final int docFlags = getCursorInt(cursor, Document.COLUMN_FLAGS);
@@ -97,9 +107,8 @@ public class SelectionMetadata extends SelectionObserver<String>
         if ((docFlags & Document.FLAG_PARTIAL) != 0) {
             mPartialCount += delta;
         }
-        mSupportsSettings = (docFlags & Document.FLAG_SUPPORTS_SETTINGS) != 0 &&
-                (mFileCount + mDirectoryCount) == 1;
 
+        mSupportsSettings = (docFlags & Document.FLAG_SUPPORTS_SETTINGS) != 0 && size() == 1;
 
         final String authority = getCursorString(cursor, RootCursorWrapper.COLUMN_AUTHORITY);
         if (ArchivesProvider.AUTHORITY.equals(authority)) {
@@ -115,6 +124,8 @@ public class SelectionMetadata extends SelectionObserver<String>
         mWritableDirectoryCount = 0;
         mNoDeleteCount = 0;
         mNoRenameCount = 0;
+        mInArchiveCount = 0;
+        mArchiveCount = 0;
     }
 
     @Override
@@ -143,6 +154,11 @@ public class SelectionMetadata extends SelectionObserver<String>
     }
 
     @Override
+    public boolean isArchive() {
+        return mDirectoryCount == 0 && mFileCount == 1 && mArchiveCount == 1;
+    }
+
+    @Override
     public boolean canDelete() {
         return size() > 0 && mNoDeleteCount == 0;
     }
@@ -168,7 +184,8 @@ public class SelectionMetadata extends SelectionObserver<String>
     }
 
     @Override
-    public boolean canOpenWith() {
-        return size() == 1 && mDirectoryCount == 0 && mInArchiveCount == 0 && mPartialCount == 0;
+    public boolean canOpen() {
+        return mFileCount == 1 && mDirectoryCount == 0 && mPartialCount == 0 && (
+                isZipNgFlagEnabled() || mInArchiveCount == 0);
     }
 }

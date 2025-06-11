@@ -142,6 +142,45 @@ public class ArchiveHandleTest {
             new ArchiveEntryRecord("hello/inside_folder/hello_insside.txt", 14, false),
             new ArchiveEntryRecord("hello/hello2.txt", 48, false));
 
+    private static String getNormalizedPath(String in, boolean isDir) {
+        return Archive.getEntryPath(new ArchiveEntryRecord(in, -1, isDir));
+    }
+
+    @Test
+    public void normalizePath() {
+        assertThat(getNormalizedPath("", true)).isEqualTo("/");
+        assertThat(getNormalizedPath("", false)).isEqualTo("/?");
+        assertThat(getNormalizedPath("/", true)).isEqualTo("/");
+        assertThat(getNormalizedPath("/", false)).isEqualTo("/?");
+        assertThat(getNormalizedPath("///", true)).isEqualTo("/");
+        assertThat(getNormalizedPath("///", false)).isEqualTo("/?");
+        assertThat(getNormalizedPath(".", true)).isEqualTo("/");
+        assertThat(getNormalizedPath(".", false)).isEqualTo("/?");
+        assertThat(getNormalizedPath("./", true)).isEqualTo("/");
+        assertThat(getNormalizedPath("./", false)).isEqualTo("/?");
+        assertThat(getNormalizedPath("./foo", true)).isEqualTo("/foo/");
+        assertThat(getNormalizedPath("./foo", false)).isEqualTo("/foo");
+        assertThat(getNormalizedPath("./foo/", true)).isEqualTo("/foo/");
+        assertThat(getNormalizedPath("./foo/", false)).isEqualTo("/foo/?");
+        assertThat(getNormalizedPath("..", true)).isEqualTo("/");
+        assertThat(getNormalizedPath("..", false)).isEqualTo("/?");
+        assertThat(getNormalizedPath("../", true)).isEqualTo("/");
+        assertThat(getNormalizedPath("../", false)).isEqualTo("/?");
+        assertThat(getNormalizedPath("foo", true)).isEqualTo("/foo/");
+        assertThat(getNormalizedPath("foo", false)).isEqualTo("/foo");
+        assertThat(getNormalizedPath("foo/", true)).isEqualTo("/foo/");
+        assertThat(getNormalizedPath("foo/", false)).isEqualTo("/foo/?");
+        assertThat(getNormalizedPath("foo/.", true)).isEqualTo("/foo/");
+        assertThat(getNormalizedPath("foo/.", false)).isEqualTo("/foo/?");
+        assertThat(getNormalizedPath("foo/..", true)).isEqualTo("/");
+        assertThat(getNormalizedPath("foo/..", false)).isEqualTo("/?");
+        assertThat(getNormalizedPath("/foo", true)).isEqualTo("/foo/");
+        assertThat(getNormalizedPath("/foo", false)).isEqualTo("/foo");
+        assertThat(getNormalizedPath("//./../a//b///../c.ext", true)).isEqualTo("/a/c.ext/");
+        assertThat(getNormalizedPath("//./../a//b///../c.ext", false)).isEqualTo("/a/c.ext");
+        assertThat(getNormalizedPath("//./../a//b///../c.ext/", true)).isEqualTo("/a/c.ext/");
+        assertThat(getNormalizedPath("//./../a//b///../c.ext/", false)).isEqualTo("/a/c.ext/?");
+    }
 
     @Test
     public void buildArchiveHandle_withoutFileDescriptor_shouldBeIllegal() throws Exception {
@@ -241,7 +280,7 @@ public class ArchiveHandleTest {
     public void buildArchiveHandle_tarBrFile_shouldNotNull() throws Exception {
         ArchiveHandle archiveHandle =
                 prepareArchiveHandle("archives/brotli/hello.tar.br", ".tar.br",
-                "application/x-brotli-compressed-tar");
+                        "application/x-brotli-compressed-tar");
 
         assertThat(archiveHandle).isNotNull();
     }
@@ -346,7 +385,7 @@ public class ArchiveHandleTest {
 
     @Test
     public void close_zipFile_shouldNotOpen() throws Exception {
-        ParcelFileDescriptor parcelFileDescriptor =  mArchiveFileTestRule
+        ParcelFileDescriptor parcelFileDescriptor = mArchiveFileTestRule
                 .openAssetFile("archives/zip/hello.zip", ".zip");
 
         ArchiveHandle archiveHandle = ArchiveHandle.create(parcelFileDescriptor,
@@ -557,7 +596,7 @@ public class ArchiveHandleTest {
     public void getEntries_tarFile_shouldTheSameWithList() throws Exception {
         ArchiveHandle archiveHandle =
                 prepareArchiveHandle("archives/tar/hello.tar", ".tar",
-                "application/x-gtar");
+                        "application/x-gtar");
 
         assertThat(transformToIterable(archiveHandle.getEntries()))
                 .containsAtLeastElementsIn(sExpectEntries);

@@ -37,11 +37,17 @@ public class DeleteJobTest extends AbstractJobTest<DeleteJob> {
         Uri testFile2 = mDocs.createDocument(mSrcRoot, "text/plain", "test2.txt");
         mDocs.writeDocument(testFile2, FRUITY_BYTES);
 
-        createJob(newArrayList(testFile1, testFile2),
-                DocumentsContract.buildDocumentUri(AUTHORITY, mSrcRoot.documentId)).run();
+        DeleteJob job = createJob(newArrayList(testFile1, testFile2),
+                DocumentsContract.buildDocumentUri(AUTHORITY, mSrcRoot.documentId));
+        job.run();
         mJobListener.waitForFinished();
 
         mDocs.assertChildCount(mSrcRoot, 0);
+
+        var progress = job.getJobProgress();
+        assertEquals(Job.STATE_COMPLETED, progress.state);
+        assertFalse(progress.hasFailures);
+        assertEquals("Deleting 2 files", progress.msg);
     }
 
     public void testDeleteFiles_NoSrcParent() throws Exception {
@@ -51,10 +57,15 @@ public class DeleteJobTest extends AbstractJobTest<DeleteJob> {
         Uri testFile2 = mDocs.createDocument(mSrcRoot, "text/plain", "test2.txt");
         mDocs.writeDocument(testFile2, FRUITY_BYTES);
 
-        createJob(newArrayList(testFile1, testFile2), null).run();
+        DeleteJob job = createJob(newArrayList(testFile1, testFile2), null);
+        job.run();
         mJobListener.waitForFinished();
 
         mDocs.assertChildCount(mSrcRoot, 0);
+        var progress = job.getJobProgress();
+        assertEquals(Job.STATE_COMPLETED, progress.state);
+        assertFalse(progress.hasFailures);
+        assertEquals("Deleting 2 files", progress.msg);
     }
 
     /**

@@ -105,10 +105,10 @@ public class ReadableArchive extends Archive {
                 continue;
             }
             entryPath = getEntryPath(entry);
-            if (mEntries.containsKey(entryPath)) {
-                throw new IOException("Multiple entries with the same name are not supported.");
+            if (mEntries.putIfAbsent(entryPath, entry) != null) {
+                if (DEBUG) Log.d(TAG, "Ignored conflicting entry for '" + entryPath + "'");
+                continue;
             }
-            mEntries.put(entryPath, entry);
             if (entry.isDirectory()) {
                 mTree.put(entryPath, new ArrayList<ArchiveEntry>());
             }

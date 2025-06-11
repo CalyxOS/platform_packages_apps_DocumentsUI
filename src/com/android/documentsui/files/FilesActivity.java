@@ -17,12 +17,17 @@
 package com.android.documentsui.files;
 
 import static com.android.documentsui.OperationDialogFragment.DIALOG_TYPE_UNKNOWN;
+import static com.android.documentsui.base.SharedMinimal.DEBUG;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+import static com.android.documentsui.util.FlagUtils.isVisualSignalsFlagEnabled;
+import static com.android.documentsui.util.FlagUtils.isZipNgFlagEnabled;
 
 import android.app.ActivityManager.TaskDescription;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
 import android.view.Menu;
@@ -133,31 +138,37 @@ public class FilesActivity extends BaseActivity implements AbstractActionHandler
                         return clipper.hasItemsToPaste();
                     }
                 },
-                getApplicationContext(),
+                isVisualSignalsFlagEnabled() ? this : getApplicationContext(),
                 mInjector.selectionMgr,
                 mProviders::getApplicationName,
                 mInjector.getModel()::getItemUri,
                 mInjector.getModel()::getItemCount);
 
-        mInjector.actionModeController = new ActionModeController(
-                this,
-                mInjector.selectionMgr,
-                mNavigator,
-                mInjector.menuManager,
-                mInjector.messages);
+        if (!isUseMaterial3FlagEnabled()) {
+            mInjector.actionModeController =
+                    new ActionModeController(
+                            this,
+                            mInjector.selectionMgr,
+                            mNavigator,
+                            mInjector.menuManager,
+                            mInjector.messages);
+        }
 
-        mInjector.actions = new ActionHandler<>(
-                this,
-                mState,
-                mProviders,
-                mDocs,
-                mSearchManager,
-                ProviderExecutor::forAuthority,
-                mInjector.actionModeController,
-                clipper,
-                DocumentsApplication.getClipStore(this),
-                DocumentsApplication.getDragAndDropManager(this),
-                mInjector);
+        mInjector.actions =
+                new ActionHandler<>(
+                        this,
+                        mState,
+                        mProviders,
+                        mDocs,
+                        mSearchManager,
+                        ProviderExecutor::forAuthority,
+                        mInjector.actionModeController,
+                        getNavigator()::closeSelectionBar,
+                        clipper,
+                        DocumentsApplication.getClipStore(this),
+                        DocumentsApplication.getDragAndDropManager(this),
+                        mPeekViewManager,
+                        mInjector);
 
         mInjector.searchManager = mSearchManager;
 
@@ -198,6 +209,14 @@ public class FilesActivity extends BaseActivity implements AbstractActionHandler
 
         RootsFragment.show(getSupportFragmentManager(), /* includeApps= */ false,
                 /* intent= */ moreApps);
+        if (isUseMaterial3FlagEnabled()) {
+            View navRailRoots = findViewById(R.id.nav_rail_container_roots);
+            if (navRailRoots != null) {
+                // Medium layout, populate navigation rail layout.
+                RootsFragment.showNavRail(getSupportFragmentManager(), /* includeApps= */ false,
+                        /* intent= */ null);
+            }
+        }
 
         final Intent intent = getIntent();
 
@@ -210,9 +229,13 @@ public class FilesActivity extends BaseActivity implements AbstractActionHandler
             updateTaskDescription(intent);
         }
 
-        // Set save container background to transparent for edge to edge nav bar.
-        View saveContainer = findViewById(R.id.container_save);
-        saveContainer.setBackgroundColor(Color.TRANSPARENT);
+        // When the use_material3 flag is on, the file path bar is at the bottom of the layout and
+        // hence the edge to edge nav bar is no longer required.
+        if (!isUseMaterial3FlagEnabled()) {
+            // Set save container background to transparent for edge to edge nav bar.
+            View saveContainer = findViewById(R.id.container_save);
+            saveContainer.setBackgroundColor(Color.TRANSPARENT);
+        }
 
         presentFileErrors(icicle, intent);
     }
@@ -333,7 +356,9 @@ public class FilesActivity extends BaseActivity implements AbstractActionHandler
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        mInjector.menuManager.updateOptionMenu(menu);
+        if (!isUseMaterial3FlagEnabled()) {
+            mInjector.menuManager.updateOptionMenu(menu);
+        }
         return true;
     }
 
@@ -347,12 +372,22 @@ public class FilesActivity extends BaseActivity implements AbstractActionHandler
             mInjector.actions.openInNewWindow(mState.stack);
         } else if (id == R.id.option_menu_settings) {
             mInjector.actions.openSettings(getCurrentRoot());
+        } else if (id == R.id.option_menu_extract_all) {
+            if (!isZipNgFlagEnabled()) return false;
+            final DirectoryFragment dir = getDirectoryFragment();
+            if (dir == null) return false;
+            mInjector.actions.selectAllFiles();
+            return dir.onContextItemSelected(item);
         } else if (id == R.id.option_menu_select_all) {
             mInjector.actions.selectAllFiles();
         } else if (id == R.id.option_menu_inspect) {
-            mInjector.actions.showInspector(getCurrentDirectory());
+            mInjector.actions.showPreview(getCurrentDirectory());
         } else {
-            return super.onOptionsItemSelected(item);
+            final boolean ok = super.onOptionsItemSelected(item);
+            if (DEBUG && !ok) {
+                Log.d(TAG, "Unhandled option item " + id);
+            }
+            return ok;
         }
         return true;
     }

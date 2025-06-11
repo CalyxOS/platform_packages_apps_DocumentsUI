@@ -19,6 +19,8 @@ package com.android.documentsui.sidebar;
 import static com.android.documentsui.base.Shared.compareToIgnoreCaseNullable;
 import static com.android.documentsui.base.SharedMinimal.DEBUG;
 import static com.android.documentsui.base.SharedMinimal.VERBOSE;
+import static com.android.documentsui.util.FlagUtils.isHideRootsOnDesktopFlagEnabled;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
@@ -49,6 +51,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.VisibleForTesting;
@@ -96,12 +99,23 @@ import java.util.stream.Collectors;
 
 /**
  * Display list of known storage backend roots.
+ * This fragment will be used in:
+ * * fixed_layout: as navigation tree (sidebar)
+ * * drawer_layout: as navigation drawer
+ * * nav_rail_layout: as navigation drawer and navigation rail.
  */
 public class RootsFragment extends Fragment {
 
     private static final String TAG = "RootsFragment";
     private static final String EXTRA_INCLUDE_APPS = "includeApps";
     private static final String EXTRA_INCLUDE_APPS_INTENT = "includeAppsIntent";
+    /**
+     * A key used to store the container id in the RootFragment.
+     * RootFragment is used in both navigation drawer and navigation rail, there are 2 instances
+     * of the fragment rendered on the page, we need to know which one is which to render different
+     * nav items inside.
+     */
+    private static final String EXTRA_CONTAINER_ID = "containerId";
     private static final int CONTEXT_MENU_ITEM_TIMEOUT = 500;
 
     private final OnItemClickListener mItemListener = new OnItemClickListener() {
@@ -135,41 +149,88 @@ public class RootsFragment extends Fragment {
 
     private List<Item> mApplicationItemList;
 
+    // Weather the fragment is using nav_rail_container_roots as its container (in nav_rail_layout).
+    // This will always be false if isUseMaterial3FlagEnabled() flag is off.
+    private boolean mUseRailAsContainer = false;
+
+    /**
+     * Show the RootsFragment inside the navigation drawer container.
+     */
+    public static RootsFragment show(FragmentManager fm, boolean includeApps, Intent intent) {
+        return showWithLayout(R.id.container_roots, fm, includeApps, intent);
+    }
+
+    /**
+     * Show the RootsFragment inside the navigation rail container.
+     */
+    public static RootsFragment showNavRail(FragmentManager fm, boolean includeApps,
+            Intent intent) {
+        return showWithLayout(R.id.nav_rail_container_roots, fm, includeApps, intent);
+    }
+
     /**
      * Shows the {@link RootsFragment}.
      *
+     * @param containerId the container id where the {@link RootsFragment} will be rendered into
      * @param fm          the FragmentManager for interacting with fragments associated with this
      *                    fragment's activity
      * @param includeApps if {@code true}, query the intent from the system and include apps in
      *                    the {@RootsFragment}.
      * @param intent      the intent to query for package manager
      */
-    public static RootsFragment show(FragmentManager fm, boolean includeApps, Intent intent) {
+    private static RootsFragment showWithLayout(
+            @IdRes int containerId, FragmentManager fm, boolean includeApps, Intent intent) {
         final Bundle args = new Bundle();
         args.putBoolean(EXTRA_INCLUDE_APPS, includeApps);
         args.putParcelable(EXTRA_INCLUDE_APPS_INTENT, intent);
+        if (isUseMaterial3FlagEnabled()) {
+            args.putInt(EXTRA_CONTAINER_ID, containerId);
+        }
 
         final RootsFragment fragment = new RootsFragment();
         fragment.setArguments(args);
 
         final FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.container_roots, fragment);
+        ft.replace(containerId, fragment);
         ft.commitAllowingStateLoss();
 
         return fragment;
     }
 
+    /**
+     * Get the RootsFragment instance for the navigation drawer.
+     */
     public static RootsFragment get(FragmentManager fm) {
         return (RootsFragment) fm.findFragmentById(R.id.container_roots);
+    }
+
+    /**
+     * Get the RootsFragment instance for the navigation drawer.
+     */
+    public static RootsFragment getNavRail(FragmentManager fm) {
+        return (RootsFragment) fm.findFragmentById(R.id.nav_rail_container_roots);
     }
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        if (isUseMaterial3FlagEnabled()) {
+            mUseRailAsContainer =
+                    getArguments() != null
+                            && getArguments().getInt(EXTRA_CONTAINER_ID)
+                                    == R.id.nav_rail_container_roots;
+        }
+
         mInjector = getBaseActivity().getInjector();
 
-        final View view = inflater.inflate(R.layout.fragment_roots, container, false);
+        final View view =
+                inflater.inflate(
+                        mUseRailAsContainer
+                                ? R.layout.fragment_nav_rail_roots
+                                : R.layout.fragment_roots,
+                        container,
+                        false);
         mList = (ListView) view.findViewById(R.id.roots_list);
         mList.setOnItemClickListener(mItemListener);
         // ListView does not have right-click specific listeners, so we will have a
@@ -312,10 +373,17 @@ public class RootsFragment extends Fragment {
                 if (crossProfileResolveInfo != null && !Features.CROSS_PROFILE_TABS) {
                     // Add profile item if we don't support cross-profile tab.
                     sortedItems.add(new SpacerItem());
-                    sortedItems.add(new ProfileItem(crossProfileResolveInfo,
-                            crossProfileResolveInfo.loadLabel(
-                                    getContext().getPackageManager()).toString(),
-                            mActionHandler));
+                    if (mUseRailAsContainer) {
+                        sortedItems.add(new NavRailProfileItem(crossProfileResolveInfo,
+                                crossProfileResolveInfo.loadLabel(
+                                        getContext().getPackageManager()).toString(),
+                                mActionHandler));
+                    } else {
+                        sortedItems.add(new ProfileItem(crossProfileResolveInfo,
+                                crossProfileResolveInfo.loadLabel(
+                                        getContext().getPackageManager()).toString(),
+                                mActionHandler));
+                    }
                 }
 
                 // Disable drawer if only one root
@@ -413,16 +481,39 @@ public class RootsFragment extends Fragment {
 
             if (root.isExternalStorageHome()) {
                 continue;
+            } else if (isHideRootsOnDesktopFlagEnabled()
+                    && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC)
+                    && (root.isImages() || root.isVideos()
+                    || root.isDocuments()
+                    || root.isAudio())) {
+                // Hide Images/Videos/Documents/Audio roots on desktop.
+                Log.d(TAG, "Hiding " + root);
+                continue;
             } else if (root.isLibrary() || root.isDownloads()) {
-                item = new RootItem(root, mActionHandler, maybeShowBadge);
+                item =
+                        mUseRailAsContainer
+                                ? new NavRailRootItem(root, mActionHandler, maybeShowBadge)
+                                : new RootItem(root, mActionHandler, maybeShowBadge);
                 librariesBuilder.add(item);
             } else if (root.isStorage()) {
-                item = new RootItem(root, mActionHandler, maybeShowBadge);
+                item =
+                        mUseRailAsContainer
+                                ? new NavRailRootItem(root, mActionHandler, maybeShowBadge)
+                                : new RootItem(root, mActionHandler, maybeShowBadge);
                 storageProvidersBuilder.add(item);
             } else {
-                item = new RootItem(root, mActionHandler,
-                        providersAccess.getPackageName(root.userId, root.authority),
-                        maybeShowBadge);
+                item =
+                        mUseRailAsContainer
+                                ? new NavRailRootItem(
+                                        root,
+                                        mActionHandler,
+                                        providersAccess.getPackageName(root.userId, root.authority),
+                                        maybeShowBadge)
+                                : new RootItem(
+                                        root,
+                                        mActionHandler,
+                                        providersAccess.getPackageName(root.userId, root.authority),
+                                        maybeShowBadge);
                 otherProviders.add(item);
             }
         }
@@ -566,8 +657,18 @@ public class RootsFragment extends Fragment {
                     appsMapping.put(userPackage, info);
 
                     if (!CrossProfileUtils.isCrossProfileIntentForwarderActivity(info)) {
-                        final Item item = new AppItem(info, info.loadLabel(pm).toString(), userId,
-                                mActionHandler);
+                        final Item item =
+                                mUseRailAsContainer
+                                        ? new NavRailAppItem(
+                                                info,
+                                                info.loadLabel(pm).toString(),
+                                                userId,
+                                                mActionHandler)
+                                        : new AppItem(
+                                                info,
+                                                info.loadLabel(pm).toString(),
+                                                userId,
+                                                mActionHandler);
                         appItems.put(userPackage, item);
                         if (VERBOSE) Log.v(TAG, "Adding handler app: " + item);
                     }
@@ -583,8 +684,12 @@ public class RootsFragment extends Fragment {
 
             final Item item;
             if (resolveInfo != null) {
-                item = new RootAndAppItem(rootItem.root, resolveInfo, mActionHandler,
-                        maybeShowBadge);
+                item =
+                        mUseRailAsContainer
+                                ? new NavRailRootAndAppItem(
+                                        rootItem.root, resolveInfo, mActionHandler, maybeShowBadge)
+                                : new RootAndAppItem(
+                                        rootItem.root, resolveInfo, mActionHandler, maybeShowBadge);
                 appItems.remove(userPackage);
             } else {
                 item = rootItem;

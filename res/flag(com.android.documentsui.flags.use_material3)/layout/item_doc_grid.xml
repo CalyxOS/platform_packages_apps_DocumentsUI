@@ -13,197 +13,170 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<!-- FYI: This layout has an extra top level container view that was previously used
-     to allow for the insertion of debug info. The debug info is now gone, but the
-     container remains because there is a high likelihood of UI regression relating
-     to focus and selection states, some of which are specific to keyboard
-     when touch mode is not enable. So, if you, heroic engineer of the future,
-     decide to rip these out, please be sure to check out focus and keyboards. -->
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true"
-    app:cardElevation="0dp">
+    android:defaultFocusHighlightEnabled="false"
+    android:focusable="true">
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="0dp"
-        android:duplicateParentState="true"
-        app:cardElevation="0dp"
-        app:strokeWidth="1dp"
-        app:strokeColor="?android:strokeColor">
+    <RelativeLayout
+        android:layout_width="@dimen/grid_width"
+        android:layout_height="@dimen/grid_height"
+        android:layout_margin="@dimen/grid_item_margin"
+        android:layout_gravity="center_horizontal"
+        android:paddingEnd="@dimen/grid_item_padding_end"
+        android:paddingStart="@dimen/grid_item_padding_start"
+        android:paddingTop="@dimen/grid_item_padding_top"
+        android:duplicateParentState="true">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:duplicateParentState="true">
+    <!-- Main item thumbnail.  Comprised of two overlapping images, the
+             visibility of which is controlled by code in
+             DirectoryFragment.java. -->
 
-            <!-- Main item thumbnail.  Comprised of two overlapping images, the
-                 visibility of which is controlled by code in
-                 DirectoryFragment.java. -->
+        <FrameLayout
+            android:id="@+id/thumbnail"
+            android:layout_width="@dimen/grid_item_thumbnail_width"
+            android:layout_height="@dimen/grid_item_thumbnail_height"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/grid_thumbnail_background">
 
-            <FrameLayout
-                android:id="@+id/thumbnail"
-                android:background="?attr/gridItemTint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <!-- stroke width will be controlled dynamically in the code. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/icon_wrapper"
+                android:layout_width="@dimen/grid_item_icon_width"
+                android:layout_height="@dimen/grid_item_icon_height"
+                android:layout_gravity="center"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                app:cardElevation="0dp"
+                app:strokeColor="?attr/colorSecondaryContainer"
+                app:strokeWidth="0dp">
 
                 <com.android.documentsui.GridItemThumbnail
                     android:id="@+id/icon_thumb"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
+                    android:layout_height="match_parent"
                     android:contentDescription="@null"
+                    android:scaleType="centerCrop"
                     android:tint="?attr/gridItemTint"
-                    android:tintMode="src_over"/>
+                    android:tintMode="src_over" />
 
                 <com.android.documentsui.GridItemThumbnail
                     android:id="@+id/icon_mime_lg"
                     android:layout_width="@dimen/icon_size"
                     android:layout_height="@dimen/icon_size"
                     android:layout_gravity="center"
-                    android:scaleType="fitCenter"
-                    android:contentDescription="@null"/>
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter" />
 
-            </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <FrameLayout
-                android:id="@+id/preview_icon"
-                android:layout_width="@dimen/button_touch_size"
-                android:layout_height="@dimen/button_touch_size"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:pointerIcon="hand"
-                android:focusable="true"
-                android:clickable="true">
+        </FrameLayout>
 
-                <ImageView
-                    android:layout_width="@dimen/zoom_icon_size"
-                    android:layout_height="@dimen/zoom_icon_size"
-                    android:padding="2dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/circle_button_background"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_zoom_out"/>
+        <FrameLayout
+            android:id="@+id/preview_icon"
+            android:layout_width="@dimen/button_touch_size"
+            android:layout_height="@dimen/button_touch_size"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:pointerIcon="hand">
 
-            </FrameLayout>
+            <ImageView
+                android:layout_width="@dimen/zoom_icon_size"
+                android:layout_height="@dimen/zoom_icon_size"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_button_background"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_zoom_out" />
 
-            <!-- Item nameplate.  Has a mime-type icon and some text fields (title,
-                 size, mod-time, etc). -->
+        </FrameLayout>
 
+        <!-- Item nameplate. Has some text fields (title, size, mod-time, etc). -->
+
+        <LinearLayout
+            android:id="@+id/nameplate"
+            android:layout_width="@dimen/grid_item_nameplate_width"
+            android:layout_height="@dimen/grid_item_nameplate_height"
+            android:layout_below="@id/thumbnail"
+            android:layout_marginTop="@dimen/grid_item_nameplate_marginTop"
+            android:background="@drawable/grid_nameplate_background"
+            android:orientation="vertical"
+            android:duplicateParentState="true"
+            android:padding="@dimen/grid_item_nameplate_padding">
+
+            <!-- Top row. -->
             <LinearLayout
-                android:id="@+id/nameplate"
-                android:background="?android:attr/colorBackground"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/thumbnail">
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <FrameLayout
-                    android:id="@+id/icon"
+                <ImageView
+                    android:id="@+id/icon_profile_badge"
+                    android:layout_width="@dimen/briefcase_icon_size"
+                    android:layout_height="@dimen/briefcase_icon_size"
+                    android:layout_marginEnd="@dimen/briefcase_icon_margin"
+                    android:contentDescription="@string/a11y_work"
+                    android:gravity="center_vertical"
+                    android:src="@drawable/ic_briefcase"
+                    android:tint="?android:attr/colorAccent" />
+
+                <TextView
+                    android:id="@android:id/title"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:pointerIcon="hand"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="8dp">
-
-                    <ImageView
-                        android:id="@+id/icon_mime_sm"
-                        android:layout_width="@dimen/grid_item_icon_size"
-                        android:layout_height="@dimen/grid_item_icon_size"
-                        android:layout_gravity="center"
-                        android:scaleType="center"
-                        android:contentDescription="@null"/>
-
-                    <ImageView
-                        android:id="@+id/icon_check"
-                        android:src="@drawable/ic_check_circle"
-                        android:alpha="0"
-                        android:layout_width="@dimen/check_icon_size"
-                        android:layout_height="@dimen/check_icon_size"
-                        android:layout_gravity="center"
-                        android:scaleType="fitCenter"
-                        android:contentDescription="@null"/>
-
-                </FrameLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="12dp">
-
-                    <ImageView
-                        android:id="@+id/icon_profile_badge"
-                        android:layout_height="@dimen/briefcase_icon_size"
-                        android:layout_width="@dimen/briefcase_icon_size"
-                        android:layout_marginEnd="@dimen/briefcase_icon_margin"
-                        android:layout_alignTop="@android:id/title"
-                        android:layout_alignBottom="@android:id/title"
-                        android:gravity="center_vertical"
-                        android:src="@drawable/ic_briefcase"
-                        android:tint="?android:attr/colorAccent"
-                        android:contentDescription="@string/a11y_work"/>
-
-                    <TextView
-                        android:id="@android:id/title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_toEndOf="@+id/icon_profile_badge"
-                        android:singleLine="true"
-                        android:ellipsize="end"
-                        android:textAlignment="viewStart"
-                        android:textAppearance="@style/CardPrimaryText"/>
-
-                    <TextView
-                        android:id="@+id/details"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@android:id/title"
-                        android:layout_marginEnd="4dp"
-                        android:singleLine="true"
-                        android:ellipsize="end"
-                        android:textAlignment="viewStart"
-                        android:textAppearance="@style/ItemCaptionText" />
-
-                    <TextView
-                        android:id="@+id/date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@android:id/title"
-                        android:layout_toEndOf="@id/details"
-                        android:singleLine="true"
-                        android:ellipsize="end"
-                        android:textAlignment="viewStart"
-                        android:textAppearance="@style/ItemCaptionText" />
-
-                </RelativeLayout>
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/FileItemLabelText" />
 
             </LinearLayout>
 
-        </RelativeLayout>
+            <!-- Bottom row. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-    </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/ItemCaptionText" />
 
-    <!-- An overlay that draws the item border when it is focused. -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/item_doc_grid_border_rounded"
-        android:contentDescription="@null"
-        android:duplicateParentState="true"/>
+                <TextView
+                    android:id="@+id/bullet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:singleLine="true"
+                    android:text="@string/bullet"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/ItemCaptionText" />
 
-</com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/ItemCaptionText" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

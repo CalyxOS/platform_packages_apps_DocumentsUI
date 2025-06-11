@@ -21,13 +21,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/progress_bar_height"
+        android:layout_height="wrap_content"
         android:indeterminate="true"
-        style="@style/TrimmedHorizontalProgressBar"
-        android:visibility="gone"/>
+        app:trackColor="?attr/colorSecondaryContainer"
+        android:visibility="gone" />
 
     <com.android.documentsui.dirlist.DocumentsSwipeRefreshLayout
         android:id="@+id/refresh_layout"

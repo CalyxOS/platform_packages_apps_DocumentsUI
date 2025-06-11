@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"다음으로 이동:"</string>
     <string name="menu_compress" msgid="37539111904724188">"압축"</string>
     <string name="menu_extract" msgid="8171946945982532262">"다음 위치에 추출..."</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"모두 추출…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"여기에서 추출"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"둘러보기"</string>
     <string name="menu_rename" msgid="1883113442688817554">"이름 바꾸기"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"정보 확인"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"숨겨진 파일 표시"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"파일을 다른 앱에서 이동할 수 없습니다."</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"그리드 모드로 표시 중입니다."</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"목록 모드로 표시 중입니다."</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"파일 이름"</string>
 </resources>

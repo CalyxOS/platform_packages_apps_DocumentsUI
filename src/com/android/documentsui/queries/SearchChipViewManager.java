@@ -16,7 +16,7 @@
 
 package com.android.documentsui.queries;
 
-import static com.android.documentsui.flags.Flags.useMaterial3;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -377,6 +377,7 @@ public class SearchChipViewManager {
 
     /**
      * When the chip is focused, adding a focus ring indicator using Stroke.
+     * TODO(b/381957932): Remove this once Material Chip supports focus ring.
      */
     private void onChipFocusChange(View v, boolean hasFocus) {
         Chip chip = (Chip) v;
@@ -386,7 +387,10 @@ public class SearchChipViewManager {
                     .getDimensionPixelSize(R.dimen.focus_ring_width);
             chip.setChipStrokeWidth(focusRingWidth);
         } else {
-            chip.setChipStrokeWidth(1f);
+            final int strokeWidth = mChipGroup
+                    .getResources()
+                    .getDimensionPixelSize(R.dimen.search_chip_inactive_stroke_width);
+            chip.setChipStrokeWidth(strokeWidth);
         }
     }
 
@@ -394,27 +398,46 @@ public class SearchChipViewManager {
         final Context context = mChipGroup.getContext();
         chip.setTag(chipData);
         chip.setText(context.getString(chipData.getTitleRes()));
-        Drawable chipIcon;
-        if (chipData.getChipType() == TYPE_LARGE_FILES) {
-            chipIcon = context.getDrawable(R.drawable.ic_chip_large_files);
-        } else if (chipData.getChipType() == TYPE_FROM_THIS_WEEK) {
-            chipIcon = context.getDrawable(R.drawable.ic_chip_from_this_week);
-        } else if (chipData.getChipType() == TYPE_DOCUMENTS) {
-            chipIcon = IconUtils.loadMimeIcon(context, MimeTypes.GENERIC_TYPE);
-        } else {
-            // get the icon drawable with the first mimeType in chipData
-            chipIcon = IconUtils.loadMimeIcon(context, chipData.getMimeTypes()[0]);
-        }
+        Drawable chipIcon = getChipIcon(chipData);
         chip.setChipIcon(chipIcon);
         chip.setOnClickListener(this::onChipClick);
 
-        if (useMaterial3()) {
+        if (isUseMaterial3FlagEnabled()) {
             chip.setOnFocusChangeListener(this::onChipFocusChange);
         }
 
         if (mCheckedChipItems.contains(chipData)) {
             setChipChecked(chip, true);
         }
+    }
+
+    private Drawable getChipIcon(SearchChipData chipData) {
+        final Context context = mChipGroup.getContext();
+        int chipType = chipData.getChipType();
+        if (chipType == TYPE_LARGE_FILES) {
+            return context.getDrawable(R.drawable.ic_chip_large_files);
+        }
+        if (chipType == TYPE_FROM_THIS_WEEK) {
+            return context.getDrawable(R.drawable.ic_chip_from_this_week);
+        }
+
+        // When use_material3 flag is ON, we don't want to use MIME type icons for
+        // image/audio/video/document from the system.
+        if (isUseMaterial3FlagEnabled()) {
+            return switch (chipType) {
+                case TYPE_IMAGES -> context.getDrawable(R.drawable.ic_chip_image);
+                case TYPE_AUDIO -> context.getDrawable(R.drawable.ic_chip_audio);
+                case TYPE_VIDEOS -> context.getDrawable(R.drawable.ic_chip_video);
+                case TYPE_DOCUMENTS -> context.getDrawable(R.drawable.ic_chip_document);
+                default -> null;
+            };
+        }
+
+        if (chipType == TYPE_DOCUMENTS) {
+            return IconUtils.loadMimeIcon(context, MimeTypes.GENERIC_TYPE);
+        }
+        // get the icon drawable with the first mimeType in chipData
+        return IconUtils.loadMimeIcon(context, chipData.getMimeTypes()[0]);
     }
 
     /**
@@ -448,19 +471,19 @@ public class SearchChipViewManager {
         }
 
         final int chipSpacing =
-                useMaterial3()
+                isUseMaterial3FlagEnabled()
                         ? ((ChipGroup) mChipGroup).getChipSpacingHorizontal()
                         : mChipGroup
                                 .getResources()
                                 .getDimensionPixelSize(R.dimen.search_chip_spacing);
         final boolean isRtl = mChipGroup.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-        final float chipMarginStartEnd =
-                useMaterial3()
-                        ? 0
+        final float chipGroupPaddingStart =
+                isUseMaterial3FlagEnabled()
+                        ? mChipGroup.getPaddingStart()
                         : mChipGroup
                                 .getResources()
                                 .getDimensionPixelSize(R.dimen.search_chip_half_spacing);
-        float lastX = isRtl ? mChipGroup.getWidth() - chipMarginStartEnd : chipMarginStartEnd;
+        float lastX = isRtl ? mChipGroup.getWidth() - chipGroupPaddingStart : chipGroupPaddingStart;
 
         // remove all chips except current clicked chip to avoid losing
         // accessibility focus.
@@ -498,7 +521,7 @@ public class SearchChipViewManager {
             }
 
             // Let the first checked chip can be shown.
-            View parent = (View) mChipGroup.getParent();
+            View parent = (View) mChipGroup.getParent().getParent();
             if (parent instanceof HorizontalScrollView) {
                 final int scrollToX = isRtl ? parent.getWidth() : 0;
                 ((HorizontalScrollView) parent).smoothScrollTo(scrollToX, 0);

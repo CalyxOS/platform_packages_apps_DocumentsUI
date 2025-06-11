@@ -17,6 +17,7 @@
 package com.android.documentsui;
 
 import static com.android.documentsui.base.SharedMinimal.DEBUG;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
 import android.app.Activity;
 import android.util.Log;
@@ -59,6 +60,8 @@ public abstract class DrawerController implements DrawerListener {
         }
 
         View drawer = activity.findViewById(R.id.drawer_roots);
+        // This will be null when use_material3 flag is ON, we will check the flag when it's used in
+        // RuntimeDrawerController.
         Toolbar toolbar = (Toolbar) activity.findViewById(R.id.roots_toolbar);
         drawer.getLayoutParams().width = calculateDrawerWidth(activity);
 
@@ -124,7 +127,10 @@ public abstract class DrawerController implements DrawerListener {
 
             if (activityConfig.dragAndDropEnabled()) {
                 View edge = layout.findViewById(R.id.drawer_edge);
-                edge.setOnDragListener(new ItemDragListener<>(this, SPRING_TIMEOUT));
+                // nav_rail_layout also uses DrawerLayout, but it doesn't have drawer edge.
+                if (edge != null) {
+                    edge.setOnDragListener(new ItemDragListener<>(this, SPRING_TIMEOUT));
+                }
             }
         }
 
@@ -202,7 +208,9 @@ public abstract class DrawerController implements DrawerListener {
 
         @Override
         void setTitle(String title) {
-            mToolbar.setTitle(title);
+            if (!isUseMaterial3FlagEnabled()) {
+                mToolbar.setTitle(title);
+            }
         }
 
         @Override

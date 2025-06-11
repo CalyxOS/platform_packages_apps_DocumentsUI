@@ -24,12 +24,11 @@ import static org.apache.commons.compress.compressors.CompressorStreamFactory.XZ
 
 import androidx.annotation.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.compress.compressors.brotli.BrotliUtils;
 import org.apache.commons.compress.compressors.xz.XZUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * To query how to generate ArchiveHandle, how to create CompressInputStream and how to create
@@ -135,9 +134,5 @@ final class ArchiveRegistry {
     @Nullable
     static Integer getArchiveType(String mimeType) {
         return sHandleArchiveMap.get(mimeType);
-    }
-
-    static Set<String> getSupportList() {
-        return sHandleArchiveMap.keySet();
     }
 }

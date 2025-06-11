@@ -16,6 +16,8 @@
 
 package com.android.documentsui;
 
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+
 import android.content.ClipData;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -277,7 +279,9 @@ public interface DragAndDropManager {
             final Drawable icon;
 
             final int size = srcs.size();
-            if (size == 1) {
+            // If use_material3 flag is ON, we always show the icon/title for the first file even
+            // when we have multiple files.
+            if (size == 1 || isUseMaterial3FlagEnabled()) {
                 DocumentInfo doc = srcs.get(0);
                 title = doc.displayName;
                 icon = iconHelper.getDocumentIcon(mContext, doc);
@@ -285,6 +289,10 @@ public interface DragAndDropManager {
                 title = mContext.getResources()
                         .getQuantityString(R.plurals.elements_dragged, size, size);
                 icon = mDefaultShadowIcon;
+            }
+
+            if (isUseMaterial3FlagEnabled()) {
+                mShadowBuilder.updateDragFileCount(size);
             }
 
             mShadowBuilder.updateTitle(title);

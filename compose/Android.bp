@@ -46,7 +46,7 @@ android_library {
 
     sdk_version: "system_current",
     target_sdk_version: "33",
-    min_sdk_version: "29",
+    min_sdk_version: "30",
 }
 
 android_app {
@@ -58,5 +58,5 @@ android_app {
     certificate: "platform",
 
     sdk_version: "system_current",
-    min_sdk_version: "29",
+    min_sdk_version: "30",
 }

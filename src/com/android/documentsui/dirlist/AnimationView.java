@@ -16,19 +16,22 @@
 
 package com.android.documentsui.dirlist;
 
-import androidx.annotation.IntDef;
-import androidx.fragment.app.FragmentTransaction;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import androidx.annotation.IntDef;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.android.documentsui.R;
 import com.android.documentsui.base.Shared;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 
 /**
  * This class exists solely to support animated transition of our directory fragment.
@@ -51,6 +54,8 @@ public class AnimationView extends LinearLayout {
     public static final int ANIM_LEAVE = 3;
     public static final int ANIM_ENTER = 4;
 
+    private final ArrayList<OnSizeChangedListener> mOnSizeChangedListeners = new ArrayList<>();
+
     private float mPosition = 0f;
 
     // The distance the animation will cover...currently matches the height of the
@@ -65,11 +70,45 @@ public class AnimationView extends LinearLayout {
         super(context, attrs);
     }
 
+    /**
+     * A listener of the onSizeChanged method.
+     */
+    public interface OnSizeChangedListener {
+        /**
+         * Called on the View's onSizeChanged.
+         */
+        void onSizeChanged();
+    }
+
+    /**
+     * Adds a listener of the onSizeChanged method.
+     */
+    public void addOnSizeChangedListener(OnSizeChangedListener listener) {
+        if (isUseMaterial3FlagEnabled()) {
+            mOnSizeChangedListeners.add(listener);
+        }
+    }
+
+    /**
+     * Removes a listener of the onSizeChanged method.
+     */
+    public void removeOnSizeChangedListener(OnSizeChangedListener listener) {
+        if (isUseMaterial3FlagEnabled()) {
+            mOnSizeChangedListeners.remove(listener);
+        }
+    }
+
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mSpan = h;
         setPosition(mPosition);
+        if (isUseMaterial3FlagEnabled()) {
+            for (int i = mOnSizeChangedListeners.size() - 1; i >= 0; --i) {
+                mOnSizeChangedListeners.get(i).onSizeChanged();
+            }
+        }
     }
 
     public float getPosition() {

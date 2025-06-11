@@ -15,7 +15,7 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="true"
-        android:color="?android:colorAccent" />
-    <item android:color="?android:attr/colorControlNormal" />
+    <item android:state_enabled="false"
+        android:color="?attr/colorOnSurface" />
+    <item android:color="?attr/colorOnSurfaceVariant" />
 </selector>

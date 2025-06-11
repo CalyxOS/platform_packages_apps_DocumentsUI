@@ -17,6 +17,7 @@
 package com.android.documentsui.testing;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.content.Context;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
@@ -25,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsProvider;
 
@@ -91,13 +93,59 @@ public class TestDocumentsProvider extends DocumentsProvider {
         return mNextRecentDocuments;
     }
 
+    private String getStringColumn(Cursor cursor, String name) {
+        return cursor.getString(cursor.getColumnIndexOrThrow(name));
+    }
+
+    private long getLongColumn(Cursor cursor, String name) {
+        return cursor.getLong(cursor.getColumnIndexOrThrow(name));
+    }
+
+    @Override
+    public Cursor querySearchDocuments(@NonNull String rootId, @Nullable String[] projection,
+            @NonNull Bundle queryArgs) {
+        TestCursor cursor = new TestCursor(DOCUMENTS_PROJECTION);
+        if (mNextChildDocuments == null) {
+            return cursor;
+        }
+        for (boolean hasNext = mNextChildDocuments.moveToFirst(); hasNext;
+                hasNext = mNextChildDocuments.moveToNext()) {
+            String displayName = getStringColumn(mNextChildDocuments, Document.COLUMN_DISPLAY_NAME);
+            String mimeType = getStringColumn(mNextChildDocuments, Document.COLUMN_MIME_TYPE);
+            long lastModified = getLongColumn(mNextChildDocuments, Document.COLUMN_LAST_MODIFIED);
+            long size = getLongColumn(mNextChildDocuments, Document.COLUMN_SIZE);
+
+            if (DocumentsContract.matchSearchQueryArguments(queryArgs, displayName, mimeType,
+                    lastModified, size)) {
+                cursor.newRow()
+                        .add(Document.COLUMN_DOCUMENT_ID,
+                                getStringColumn(mNextChildDocuments, Document.COLUMN_DOCUMENT_ID))
+                        .add(Document.COLUMN_MIME_TYPE,
+                                getStringColumn(mNextChildDocuments, Document.COLUMN_MIME_TYPE))
+                        .add(Document.COLUMN_DISPLAY_NAME,
+                                getStringColumn(mNextChildDocuments, Document.COLUMN_DISPLAY_NAME))
+                        .add(Document.COLUMN_LAST_MODIFIED,
+                                getLongColumn(mNextChildDocuments, Document.COLUMN_LAST_MODIFIED))
+                        .add(Document.COLUMN_FLAGS,
+                                getLongColumn(mNextChildDocuments, Document.COLUMN_FLAGS))
+                        .add(Document.COLUMN_SUMMARY,
+                                getStringColumn(mNextChildDocuments, Document.COLUMN_SUMMARY))
+                        .add(Document.COLUMN_SIZE,
+                                getLongColumn(mNextChildDocuments, Document.COLUMN_SIZE))
+                        .add(Document.COLUMN_ICON,
+                                getLongColumn(mNextChildDocuments, Document.COLUMN_ICON));
+            }
+        }
+        return cursor;
+    }
+
     @Override
     public Cursor querySearchDocuments(String rootId, String query, String[] projection) {
-        if (mNextChildDocuments != null) {
-            return filterCursorByString(mNextChildDocuments, query);
+        if (mNextChildDocuments == null) {
+            return null;
         }
 
-        return mNextChildDocuments;
+        return filterCursorByString(mNextChildDocuments, query);
     }
 
     @Override

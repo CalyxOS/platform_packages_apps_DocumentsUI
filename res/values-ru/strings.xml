@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"Переместить в..."</string>
     <string name="menu_compress" msgid="37539111904724188">"Сжать"</string>
     <string name="menu_extract" msgid="8171946945982532262">"Извлечь"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"Извлечь все…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"Извлечь в текущую папку"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"Просмотреть"</string>
     <string name="menu_rename" msgid="1883113442688817554">"Переименовать"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"Сведения о файле"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"Показывать скрытые файлы"</string>
@@ -328,9 +331,11 @@
     <string name="search_bar_hint" msgid="146031513183888721">"Поиск на устройстве"</string>
     <string name="delete_search_history" msgid="2202015025607694515">"Очистить историю поиска: <xliff:g id="TEXT">%1$s</xliff:g>"</string>
     <string name="personal_tab" msgid="3878576287868528503">"Личный"</string>
-    <string name="work_tab" msgid="7265359366883747413">"Рабочее"</string>
+    <string name="work_tab" msgid="7265359366883747413">"Рабочий"</string>
     <string name="a11y_work" msgid="7504431382825242153">"Работа"</string>
     <string name="drag_from_another_app" msgid="8310249276199969905">"Перемещать файлы из другого приложения нельзя."</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"Показано в виде таблицы."</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"Показано в виде списка."</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"Имя файла"</string>
 </resources>

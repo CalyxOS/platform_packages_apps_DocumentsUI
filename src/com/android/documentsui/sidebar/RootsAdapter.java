@@ -16,12 +16,15 @@
 
 package com.android.documentsui.sidebar;
 
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+
 import android.app.Activity;
 import android.os.Looper;
 import android.view.View;
 import android.view.View.OnDragListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.android.documentsui.R;
 
@@ -82,6 +85,16 @@ class RootsAdapter extends ArrayAdapter<Item> {
     public View getView(int position, View convertView, ViewGroup parent) {
         final Item item = getItem(position);
         final View view = item.getView(convertView, parent);
+
+        if (isUseMaterial3FlagEnabled()) {
+            // In order to have hover showing on the list item, we need to have
+            // "android:clickable=true" on the list item level, which will break the click handler
+            // because it's set at the list level, so here we "bubble up" the item level click
+            // event to the list level by explicitly calling the "performItemClick" on the list
+            // level.
+            view.setOnClickListener(
+                    v -> ((ListView) parent).performItemClick(v, position, getItemId(position)));
+        }
 
         if (item.isRoot()) {
             view.setTag(R.id.item_position_tag, position);

@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"Μετακίνηση σε…"</string>
     <string name="menu_compress" msgid="37539111904724188">"Συμπίεση"</string>
     <string name="menu_extract" msgid="8171946945982532262">"Εξαγωγή σε…"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"Εξαγωγή όλων…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"Εξαγωγή εδώ"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"Περιήγηση"</string>
     <string name="menu_rename" msgid="1883113442688817554">"Μετονομασία"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"Λήψη πληροφοριών"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"Εμφάνιση κρυφών αρχείων"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"Δεν είναι δυνατή η μεταφορά αρχείων από άλλη εφαρμογή."</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"Εμφάνιση σε λειτουργία πλέγματος."</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"Εμφάνιση σε λειτουργία λίστας."</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"Όνομα αρχείου"</string>
 </resources>

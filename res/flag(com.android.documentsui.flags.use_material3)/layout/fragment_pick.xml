@@ -13,48 +13,58 @@
      limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:baselineAligned="false"
-    android:gravity="center_vertical|end"
-    android:paddingStart="@dimen/bottom_bar_padding"
-    android:paddingEnd="@dimen/bottom_bar_padding">
+    android:paddingTop="@dimen/picker_saver_container_padding_top"
+    android:paddingBottom="@dimen/picker_saver_container_padding_bottom">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@android:id/button2"
-        style="?attr/materialButtonOutlinedStyle"
-        app:cornerRadius="@dimen/button_corner_radius"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        android:text="@android:string/cancel" />
-
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:background="?attr/colorSurfaceContainer"
+        android:gravity="center_vertical|end"
+        android:paddingStart="@dimen/bottom_bar_padding"
+        android:paddingEnd="@dimen/bottom_bar_padding"
+        android:paddingTop="@dimen/picker_saver_padding_top"
+        android:paddingBottom="@dimen/picker_saver_padding_bottom">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@android:id/button1"
-            style="?attr/materialButtonStyle"
+            android:id="@android:id/button2"
+            style="@style/MaterialTonalButton"
             app:cornerRadius="@dimen/button_corner_radius"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:backgroundTint="@color/fragment_pick_button_background_color"
-            android:textColor="@color/fragment_pick_button_text_color"
-            android:layout_marginEnd="4dp" />
+            android:layout_marginStart="@dimen/picker_saver_button_gap"
+            android:layout_marginEnd="@dimen/picker_saver_button_gap"
+            android:text="@android:string/cancel" />
 
-        <!-- Handles touch events when button1 is disabled. -->
-        <FrameLayout
-            android:id="@+id/pick_button_overlay"
-            android:importantForAccessibility="no"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@android:id/button1"
+            style="@style/MaterialButton"
+            app:cornerRadius="@dimen/button_corner_radius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/picker_saver_button_gap"
+            android:layout_marginEnd="@dimen/picker_saver_button_gap" />
 
-    </FrameLayout>
+    </LinearLayout>
 
-</LinearLayout>
+    <!-- Handles touch events when button1 is disabled. -->
+    <View
+        android:id="@+id/pick_button_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        android:importantForAccessibility="no"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

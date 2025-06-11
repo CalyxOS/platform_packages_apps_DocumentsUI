@@ -50,7 +50,7 @@ import java.util.Map;
 @RunWith(Parameterized.class)
 public class ProfileTabsTest {
 
-    private final UserId mSystemUser = UserId.of(UserHandle.SYSTEM);
+    private final UserId mPrimaryUser = UserId.of(UserHandle.myUserId());
     private final UserId mManagedUser = UserId.of(100);
     private final UserId mPrivateUser = UserId.of(101);
 
@@ -111,7 +111,7 @@ public class ProfileTabsTest {
 
     @Test
     public void testUpdateView_singleUser_shouldHide() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser);
 
         assertThat(mTabLayoutContainer.getVisibility()).isEqualTo(View.GONE);
         assertThat(mTabLayout.getTabCount()).isEqualTo(0);
@@ -119,13 +119,13 @@ public class ProfileTabsTest {
 
     @Test
     public void testUpdateView_twoUsers_shouldShow() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
 
         assertThat(mTabLayoutContainer.getVisibility()).isEqualTo(View.VISIBLE);
         assertThat(mTabLayout.getTabCount()).isEqualTo(2);
 
         TabLayout.Tab tab1 = mTabLayout.getTabAt(0);
-        assertThat(tab1.getTag()).isEqualTo(mSystemUser);
+        assertThat(tab1.getTag()).isEqualTo(mPrimaryUser);
         assertThat(tab1.getText()).isEqualTo(mContext.getString(R.string.personal_tab));
 
         TabLayout.Tab tab2 = mTabLayout.getTabAt(1);
@@ -136,7 +136,7 @@ public class ProfileTabsTest {
     @Test
     public void testUpdateView_multiUsers_shouldShow() {
         if (!SdkLevel.isAtLeastV() || !isPrivateSpaceEnabled) return;
-        initializeWithUsers(true, mSystemUser, mManagedUser, mPrivateUser);
+        initializeWithUsers(true, mPrimaryUser, mManagedUser, mPrivateUser);
 
         assertThat(mTabLayoutContainer.getVisibility()).isEqualTo(View.VISIBLE);
         assertThat(mTabLayout.getTabCount()).isEqualTo(3);
@@ -152,7 +152,7 @@ public class ProfileTabsTest {
 
     @Test
     public void testUpdateView_twoUsers_doesNotSupportCrossProfile_shouldHide() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
 
         mState.supportsCrossProfile = false;
         mProfileTabs.updateView();
@@ -162,7 +162,7 @@ public class ProfileTabsTest {
 
     @Test
     public void testUpdateView_twoUsers_subFolder_shouldHide() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
 
         // Push 1 more folder. Now the stack has size of 2.
         mState.stack.push(TestEnv.FOLDER_1);
@@ -174,7 +174,7 @@ public class ProfileTabsTest {
 
     @Test
     public void testUpdateView_twoUsers_recents_subFolder_shouldHide() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
 
         mState.stack.changeRoot(TestProvidersAccess.RECENTS);
         // This(stack of size 2 in Recents) may not happen in real world.
@@ -187,7 +187,7 @@ public class ProfileTabsTest {
 
     @Test
     public void testUpdateView_twoUsers_thirdParty_shouldHide() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
 
         mState.stack.changeRoot(TestProvidersAccess.PICKLES);
         mState.stack.push((TestEnv.FOLDER_0));
@@ -200,7 +200,7 @@ public class ProfileTabsTest {
     @Test
     public void testUpdateView_twoUsers_isSearching_shouldHide() {
         mTestEnv.isSearchExpanded = true;
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
 
         assertThat(mTabLayoutContainer.getVisibility()).isEqualTo(View.GONE);
         assertThat(mTabLayout.getTabCount()).isEqualTo(2);
@@ -208,28 +208,28 @@ public class ProfileTabsTest {
 
     @Test
     public void testUpdateView_getSelectedUser_afterUsersChanged() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
         mProfileTabs.updateView();
         mTabLayout.selectTab(mTabLayout.getTabAt(1));
         assertThat(mTabLayoutContainer.getVisibility()).isEqualTo(View.VISIBLE);
         assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mManagedUser);
 
         if (SdkLevel.isAtLeastS() && isPrivateSpaceEnabled) {
-            mTestUserManagerState.userIds = Lists.newArrayList(mSystemUser);
+            mTestUserManagerState.userIds = Lists.newArrayList(mPrimaryUser);
         } else {
-            mTestUserIdManager.userIds = Lists.newArrayList(mSystemUser);
+            mTestUserIdManager.userIds = Lists.newArrayList(mPrimaryUser);
         }
         mProfileTabs.updateView();
         assertThat(mTabLayoutContainer.getVisibility()).isEqualTo(View.GONE);
-        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mSystemUser);
+        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mPrimaryUser);
     }
 
     @Test
     public void testUpdateView_afterCurrentRootChanged_shouldChangeSelectedUser() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
         mProfileTabs.updateView();
 
-        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mSystemUser);
+        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mPrimaryUser);
 
         RootInfo newRoot = RootInfo.copyRootInfo(mTestCommonAddons.mCurrentRoot);
         newRoot.userId = mManagedUser;
@@ -244,10 +244,10 @@ public class ProfileTabsTest {
     @Test
     public void testUpdateView_afterCurrentRootChangedMultiUser_shouldChangeSelectedUser() {
         if (!SdkLevel.isAtLeastV() || !isPrivateSpaceEnabled) return;
-        initializeWithUsers(true, mSystemUser, mManagedUser, mPrivateUser);
+        initializeWithUsers(true, mPrimaryUser, mManagedUser, mPrivateUser);
         mProfileTabs.updateView();
 
-        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mSystemUser);
+        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mPrimaryUser);
 
         for (UserId userId : Lists.newArrayList(mManagedUser, mPrivateUser)) {
             RootInfo newRoot = RootInfo.copyRootInfo(mTestCommonAddons.mCurrentRoot);
@@ -263,9 +263,9 @@ public class ProfileTabsTest {
 
     @Test
     public void testUpdateView_afterSelectedUserBecomesUnavailable_shouldSwitchToCurrentUser() {
-        // here current user refers to UserId.CURRENT_USER, which in this case will be mSystemUser
+        // here current user refers to UserId.CURRENT_USER, which in this case will be mPrimaryUser
         if (!SdkLevel.isAtLeastS() || !isPrivateSpaceEnabled) return;
-        initializeWithUsers(true, mSystemUser, mManagedUser, mPrivateUser);
+        initializeWithUsers(true, mPrimaryUser, mManagedUser, mPrivateUser);
 
         mTabLayout.selectTab(mTabLayout.getTabAt(2));
         assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mPrivateUser);
@@ -274,15 +274,15 @@ public class ProfileTabsTest {
         mTestUserManagerState.userIdToLabelMap.remove(mPrivateUser);
         mProfileTabs.updateView();
 
-        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mSystemUser);
+        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mPrimaryUser);
     }
 
     @Test
     public void testGetSelectedUser_twoUsers() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
 
         mTabLayout.selectTab(mTabLayout.getTabAt(0));
-        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mSystemUser);
+        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mPrimaryUser);
 
         mTabLayout.selectTab(mTabLayout.getTabAt(1));
         assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mManagedUser);
@@ -292,9 +292,10 @@ public class ProfileTabsTest {
     @Test
     public void testGetSelectedUser_multiUsers() {
         if (!SdkLevel.isAtLeastV() || !isPrivateSpaceEnabled) return;
-        initializeWithUsers(true, mSystemUser, mManagedUser, mPrivateUser);
+        initializeWithUsers(true, mPrimaryUser, mManagedUser, mPrivateUser);
 
-        List<UserId> expectedProfiles = Lists.newArrayList(mSystemUser, mManagedUser, mPrivateUser);
+        List<UserId> expectedProfiles = Lists.newArrayList(mPrimaryUser, mManagedUser,
+            mPrivateUser);
 
         for (int i = 0; i < 3; ++i) {
             mTabLayout.selectTab(mTabLayout.getTabAt(i));
@@ -306,21 +307,21 @@ public class ProfileTabsTest {
 
     @Test
     public void testReselectedUser_doesNotInvokeListener() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser, mManagedUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser, mManagedUser);
 
         assertThat(mTabLayout.getSelectedTabPosition()).isAtLeast(0);
-        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mSystemUser);
+        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mPrimaryUser);
 
         mTabLayout.selectTab(mTabLayout.getTabAt(0));
-        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mSystemUser);
+        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mPrimaryUser);
         assertThat(mIsListenerInvoked).isFalse();
     }
 
     @Test
     public void testGetSelectedUser_singleUsers() {
-        initializeWithUsers(isPrivateSpaceEnabled, mSystemUser);
+        initializeWithUsers(isPrivateSpaceEnabled, mPrimaryUser);
 
-        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mSystemUser);
+        assertThat(mProfileTabs.getSelectedUser()).isEqualTo(mPrimaryUser);
     }
 
     private void initializeWithUsers(boolean isPrivateSpaceEnabled, UserId... userIds) {
@@ -328,7 +329,7 @@ public class ProfileTabsTest {
             mTestConfigStore.enablePrivateSpaceInPhotoPicker();
             mTestUserManagerState.userIds = Lists.newArrayList(userIds);
             for (UserId userId : userIds) {
-                if (userId.isSystem()) {
+                if (userId.equals(UserId.of(UserHandle.myUserId()))) {
                     mTestUserManagerState.userIdToLabelMap.put(userId, "Personal");
                 } else if (userId.getIdentifier() == 100) {
                     mTestUserManagerState.userIdToLabelMap.put(userId, "Work");
@@ -342,7 +343,7 @@ public class ProfileTabsTest {
             mTestConfigStore.disablePrivateSpaceInPhotoPicker();
             mTestUserIdManager.userIds = Lists.newArrayList(userIds);
             for (UserId userId : userIds) {
-                if (userId.isSystem()) {
+                if (userId.equals(UserId.of(UserHandle.myUserId()))) {
                     mTestUserIdManager.systemUser = userId;
                 } else {
                     mTestUserIdManager.managedUser = userId;

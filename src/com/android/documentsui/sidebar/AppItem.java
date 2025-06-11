@@ -16,21 +16,22 @@
 
 package com.android.documentsui.sidebar;
 
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.os.UserManager;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
 
 import com.android.documentsui.ActionHandler;
 import com.android.documentsui.IconUtils;
 import com.android.documentsui.R;
 import com.android.documentsui.base.UserId;
-import com.android.documentsui.dirlist.AppsRowItemData;
 
 /**
  * An {@link Item} for apps that supports some picking actions like
@@ -44,7 +45,16 @@ public class AppItem extends Item {
     private final ActionHandler mActionHandler;
 
     public AppItem(ResolveInfo info, String title, UserId userId, ActionHandler actionHandler) {
-        super(R.layout.item_root, title, getStringId(info), userId);
+        this(R.layout.item_root, info, title, userId, actionHandler);
+    }
+
+    public AppItem(
+            @LayoutRes int layoutId,
+            ResolveInfo info,
+            String title,
+            UserId userId,
+            ActionHandler actionHandler) {
+        super(layoutId, title, getStringId(info), userId);
         this.info = info;
         mActionHandler = actionHandler;
     }
@@ -84,14 +94,19 @@ public class AppItem extends Item {
         final ImageView icon = (ImageView) convertView.findViewById(android.R.id.icon);
         final TextView titleView = (TextView) convertView.findViewById(android.R.id.title);
         final TextView summary = (TextView) convertView.findViewById(android.R.id.summary);
-        final View actionIconArea = convertView.findViewById(R.id.action_icon_area);
-        final ImageView actionIcon = (ImageView) convertView.findViewById(R.id.action_icon);
 
         titleView.setText(title);
         titleView.setContentDescription(userId.getUserBadgedLabel(convertView.getContext(), title));
 
         bindIcon(icon);
-        bindActionIcon(actionIconArea, actionIcon);
+
+        // When use_material3 flag is ON, we don't show action icon for the app items, do nothing
+        // here because the icons are hidden by default.
+        if (!isUseMaterial3FlagEnabled()) {
+            final View actionIconArea = convertView.findViewById(R.id.action_icon_area);
+            final ImageView actionIcon = (ImageView) convertView.findViewById(R.id.action_icon);
+            bindActionIcon(actionIconArea, actionIcon);
+        }
 
         // TODO: match existing summary behavior from disambig dialog
         summary.setVisibility(View.GONE);

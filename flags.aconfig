@@ -10,10 +10,57 @@ flag {
 }
 
 flag {
-    name: "use_search_v2"
+    name: "use_search_v2_read_only"
     namespace: "documentsui"
     description: "Enables the next generation search functionality."
-    bug: "378590312"
+    bug: "383412640"
     is_fixed_read_only: true
 }
 
+flag {
+    name: "zip_ng_ro"
+    namespace: "documentsui"
+    description: "Enables the next generation ZIP functionality."
+    bug: "382550591"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "desktop_file_handling_ro"
+    namespace: "documentsui"
+    description: "Enables desktop file handling."
+    bug: "381778967"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "visual_signals_ro"
+    namespace: "documentsui"
+    description: "Enables in-app progress display of file operations"
+    bug: "378011512"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "hide_roots_on_desktop_ro"
+    namespace: "documentsui"
+    description: "Enables the hiding of the Images/Videos/Audio/Documents roots on desktop."
+    bug: "381959330"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "redirect_get_content_ro"
+    namespace: "documentsui"
+    description: "Redirects GET_CONTENT requests to Photopicker when appropriate"
+    bug: "377771195"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "use_peek_preview_ro"
+    namespace: "documentsui"
+    description: "Enables the Peek previewing capability as a substitute for the Inspector."
+    bug: "373242058"
+    is_fixed_read_only: true
+}

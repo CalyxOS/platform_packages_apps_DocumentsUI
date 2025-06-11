@@ -24,6 +24,7 @@ import com.android.documentsui.MenuManager.DirectoryDetails;
 public class TestDirectoryDetails extends DirectoryDetails {
 
     public boolean isInRecents;
+    public boolean isInArchive;
     public boolean hasRootSettings;
     public boolean hasItemsToPaste;
     public boolean canCreateDoc;
@@ -47,6 +48,11 @@ public class TestDirectoryDetails extends DirectoryDetails {
     @Override
     public boolean isInRecents() {
         return isInRecents;
+    }
+
+    @Override
+    public boolean isInArchive() {
+        return isInArchive;
     }
 
     @Override

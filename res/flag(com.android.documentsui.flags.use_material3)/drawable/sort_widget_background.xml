@@ -15,6 +15,7 @@
     limitations under the License.
   -->
 
+<!-- TODO(b/379776735): remove this file after use_material3 flag is launched. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:top="-1dp"

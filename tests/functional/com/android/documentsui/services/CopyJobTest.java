@@ -52,11 +52,19 @@ public class CopyJobTest extends AbstractCopyJobTest<CopyJob> {
                 Document.FLAG_VIRTUAL_DOCUMENT | Document.FLAG_SUPPORTS_COPY
                         | Document.FLAG_SUPPORTS_MOVE, "application/pdf");
 
-        createJob(newArrayList(testFile)).run();
+        CopyJob job = createJob(newArrayList(testFile));
+        job.run();
 
         waitForJobFinished();
         mDocs.assertChildCount(mDestRoot, 1);
         mDocs.assertHasFile(mDestRoot, "tokyo.sth.pdf");  // Copy should convert file to PDF.
+
+        JobProgress progress = job.getJobProgress();
+        assertEquals(Job.STATE_COMPLETED, progress.state);
+        assertFalse(progress.hasFailures);
+        assertEquals("Copying tokyo.sth to " + mDestRoot.title, progress.msg);
+        assertEquals(-1, progress.currentBytes);
+        assertEquals(-1, progress.requiredBytes);
     }
 
     public void testCopyEmptyDir() throws Exception {

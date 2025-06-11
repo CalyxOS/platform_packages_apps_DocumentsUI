@@ -37,13 +37,13 @@ public class RecentsLoader extends MultiRootDocumentsLoader {
 
     private static final String TAG = "RecentsLoader";
     /** Ignore documents older than this age. */
-    private static final long REJECT_OLDER_THAN = 45 * DateUtils.DAY_IN_MILLIS;
+    public static final long REJECT_OLDER_THAN = 45 * DateUtils.DAY_IN_MILLIS;
 
-    /** MIME types that should always be excluded from recents. */
+    /** MIME types that should always be excluded from the Recents view. */
     private static final String[] REJECT_MIMES = new String[]{Document.MIME_TYPE_DIR};
 
     /** Maximum documents from a single root. */
-    private static final int MAX_DOCS_FROM_ROOT = 64;
+    public static final int MAX_DOCS_FROM_ROOT = 64;
 
     private final UserId mUserId;
 

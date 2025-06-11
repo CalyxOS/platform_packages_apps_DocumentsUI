@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"Chuyển tới..."</string>
     <string name="menu_compress" msgid="37539111904724188">"Nén"</string>
     <string name="menu_extract" msgid="8171946945982532262">"Trích xuất sang…"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"Trích xuất tất cả…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"Trích xuất ở đây"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"Duyệt xem"</string>
     <string name="menu_rename" msgid="1883113442688817554">"Đổi tên"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"Xem thông tin"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"Hiện các tệp bị ẩn"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"Bạn không thể di chuyển các tệp từ một ứng dụng khác."</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"Đang hiển thị ở chế độ lưới."</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"Đang hiển thị ở chế độ danh sách."</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"Tên tệp"</string>
 </resources>

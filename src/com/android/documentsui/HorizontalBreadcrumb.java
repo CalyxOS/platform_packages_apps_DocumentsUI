@@ -16,6 +16,8 @@
 
 package com.android.documentsui;
 
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -25,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +48,9 @@ public final class HorizontalBreadcrumb extends RecyclerView implements Breadcru
     private LinearLayoutManager mLayoutManager;
     private BreadcrumbAdapter mAdapter;
     private IntConsumer mClickListener;
+    // Represents the top divider (border) of the breadcrumb on the compact size screen.
+    // It will be null on other screen sizes, or when the use_material3 flag is OFF.
+    private @Nullable View mTopDividerView;
 
     public HorizontalBreadcrumb(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -61,12 +67,14 @@ public final class HorizontalBreadcrumb extends RecyclerView implements Breadcru
     @Override
     public void setup(Environment env,
             com.android.documentsui.base.State state,
-            IntConsumer listener) {
+            IntConsumer listener,
+            @Nullable View topDivider) {
 
         mClickListener = listener;
         mLayoutManager = new HorizontalBreadcrumbLinearLayoutManager(
                 getContext(), LinearLayoutManager.HORIZONTAL, false);
         mAdapter = new BreadcrumbAdapter(state, env, this::onKey);
+        mTopDividerView = topDivider;
         // Since we are using GestureDetector to detect click events, a11y services don't know which
         // views are clickable because we aren't using View.OnClickListener. Thus, we need to use a
         // custom accessibility delegate to route click events correctly.
@@ -108,6 +116,9 @@ public final class HorizontalBreadcrumb extends RecyclerView implements Breadcru
         } else {
             setVisibility(GONE);
             setAdapter(null);
+        }
+        if (mTopDividerView != null) {
+            mTopDividerView.setVisibility(visibility ? VISIBLE : GONE);
         }
         mAdapter.updateLastItemSize();
     }
@@ -174,8 +185,6 @@ public final class HorizontalBreadcrumb extends RecyclerView implements Breadcru
 
         @Override
         public void onBindViewHolder(BreadcrumbHolder holder, int position) {
-            final int padding = (int) holder.itemView.getResources()
-                    .getDimension(R.dimen.breadcrumb_item_padding);
             final boolean isFirst = position == 0;
             // Note that when isFirst is true, there might not be a DocumentInfo on the stack as it
             // could be an error state screen accessible from the root info.
@@ -183,9 +192,45 @@ public final class HorizontalBreadcrumb extends RecyclerView implements Breadcru
 
             holder.mTitle.setText(
                     isFirst ? mEnv.getCurrentRoot().title : mState.stack.get(position).displayName);
-            holder.mTitle.setEnabled(isLast);
-            holder.mTitle.setPadding(isFirst ? padding * 3 : padding,
-                    padding, isLast ? padding * 2 : padding, padding);
+            if (isUseMaterial3FlagEnabled()) {
+                // The last path part in the breadcrumb is not clickable.
+                holder.mTitle.setEnabled(!isLast);
+            } else {
+                holder.mTitle.setEnabled(isLast);
+            }
+            if (isUseMaterial3FlagEnabled()) {
+                final int paddingHorizontal =
+                        (int)
+                                holder.itemView
+                                        .getResources()
+                                        .getDimension(R.dimen.breadcrumb_item_padding_horizontal);
+                final int paddingVertical =
+                        (int)
+                                holder.itemView
+                                        .getResources()
+                                        .getDimension(R.dimen.breadcrumb_item_padding_vertical);
+                final int arrowPadding =
+                        (int)
+                                holder.itemView
+                                        .getResources()
+                                        .getDimension(R.dimen.breadcrumb_item_arrow_padding);
+                holder.mTitle.setPadding(
+                        paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
+
+                ViewGroup.MarginLayoutParams params =
+                        (ViewGroup.MarginLayoutParams) holder.mArrow.getLayoutParams();
+                params.setMarginStart(arrowPadding);
+                params.setMarginEnd(arrowPadding);
+                holder.mArrow.setLayoutParams(params);
+            } else {
+                final int padding = (int) holder.itemView.getResources()
+                        .getDimension(R.dimen.breadcrumb_item_padding);
+                holder.mTitle.setPadding(
+                        isFirst ? padding * 3 : padding,
+                        padding,
+                        isLast ? padding * 2 : padding,
+                        padding);
+            }
             holder.mArrow.setVisibility(isLast ? View.GONE : View.VISIBLE);
 
             holder.itemView.setOnKeyListener(mClickListener);

@@ -21,6 +21,7 @@ import static com.android.documentsui.base.State.ACTION_GET_CONTENT;
 import static com.android.documentsui.base.State.ACTION_OPEN;
 import static com.android.documentsui.base.State.ACTION_OPEN_TREE;
 import static com.android.documentsui.base.State.ACTION_PICK_COPY_DESTINATION;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -127,12 +128,15 @@ public class PickActivity extends BaseActivity implements ActionHandler.Addons {
                 new DirectoryDetails(this),
                 mInjector.getModel()::getItemCount);
 
-        mInjector.actionModeController = new ActionModeController(
-                this,
-                mInjector.selectionMgr,
-                mNavigator,
-                mInjector.menuManager,
-                mInjector.messages);
+        if (!isUseMaterial3FlagEnabled()) {
+            mInjector.actionModeController =
+                    new ActionModeController(
+                            this,
+                            mInjector.selectionMgr,
+                            mNavigator,
+                            mInjector.menuManager,
+                            mInjector.messages);
+        }
 
         mInjector.profileTabsController = new ProfileTabsController(
                 mInjector.selectionMgr,
@@ -220,9 +224,11 @@ public class PickActivity extends BaseActivity implements ActionHandler.Addons {
         } else if (mState.action == ACTION_OPEN_TREE ||
                 mState.action == ACTION_PICK_COPY_DESTINATION) {
             PickFragment.show(getSupportFragmentManager());
-        } else {
+        } else if (!isUseMaterial3FlagEnabled()) {
             // If PickFragment or SaveFragment does not show,
             // Set save container background to transparent for edge to edge nav bar.
+            // However when the use_material3 flag is on, the file path bar is at the bottom of the
+            // layout and hence the edge to edge nav bar is no longer required.
             View saveContainer = findViewById(R.id.container_save);
             saveContainer.setBackgroundColor(Color.TRANSPARENT);
         }
@@ -249,6 +255,15 @@ public class PickActivity extends BaseActivity implements ActionHandler.Addons {
             RootsFragment.show(getSupportFragmentManager(),
                     /* includeApps= */ mState.action == ACTION_GET_CONTENT,
                     /* intent= */ moreApps);
+            if (isUseMaterial3FlagEnabled()) {
+                View navRailRoots = findViewById(R.id.nav_rail_container_roots);
+                if (navRailRoots != null) {
+                    // Medium layout, populate navigation rail layout.
+                    RootsFragment.showNavRail(getSupportFragmentManager(),
+                            /* includeApps= */ mState.action == ACTION_GET_CONTENT,
+                            /* intent= */ moreApps);
+                }
+            }
         }
     }
 

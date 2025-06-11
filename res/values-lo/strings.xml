@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"ຍ້າຍໄປໃສ່..."</string>
     <string name="menu_compress" msgid="37539111904724188">"ບີບອັດ"</string>
     <string name="menu_extract" msgid="8171946945982532262">"ແຕກໄຟລ໌ໄປ…"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"ດຶງຂໍ້ມູນຈາກເອກະສານທັງໝົດ…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"ແຍກໄຟລ໌ອອກບ່ອນນີ້"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"ເລືອກເບິ່ງ"</string>
     <string name="menu_rename" msgid="1883113442688817554">"ປ່ຽນຊື່"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"ຂໍຂໍ້ມູນ"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"ສະ​ແດງ​ໄຟ​ລ໌​ທີ່​ເຊື່ອງ​ໄວ້"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"ບໍ່ສາມາດຍ້າຍໄຟລ໌ຈາກແອັບອື່ນໄດ້."</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"ກຳລັງສະແດງໃນໂໝດຕາຕະລາງ."</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"ກຳລັງສະແດງໃນໂໝດລາຍຊື່."</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"ຊື່ໄຟລ໌"</string>
 </resources>

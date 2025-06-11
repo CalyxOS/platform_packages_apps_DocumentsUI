@@ -52,6 +52,7 @@ import com.android.documentsui.base.UserId;
 import com.android.modules.utils.build.SdkLevel;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * A class to assist with loading and managing the Images (i.e. thumbnails and icons) associated
@@ -151,14 +152,18 @@ public class IconHelper {
      * @param iconThumb   The itemview's thumbnail icon.
      * @param iconMime    The itemview's mime icon. Hidden when iconThumb is shown.
      * @param subIconMime The second itemview's mime icon. Always visible.
+     * @param thumbnailLoadedCallback The callback function which will be invoked after the
+     *                                thumbnail is loaded, with a boolean parameter to indicate
+     *                                if it's loaded or not.
      */
     public void load(
             DocumentInfo doc,
             ImageView iconThumb,
             ImageView iconMime,
-            @Nullable ImageView subIconMime) {
+            @Nullable ImageView subIconMime,
+            @Nullable Consumer<Boolean> thumbnailLoadedCallback) {
         load(doc.derivedUri, doc.userId, doc.mimeType, doc.flags, doc.icon, doc.lastModified,
-                iconThumb, iconMime, subIconMime);
+                iconThumb, iconMime, subIconMime, thumbnailLoadedCallback);
     }
 
     /**
@@ -172,10 +177,13 @@ public class IconHelper {
      * @param iconThumb       The itemview's thumbnail icon.
      * @param iconMime        The itemview's mime icon. Hidden when iconThumb is shown.
      * @param subIconMime     The second itemview's mime icon. Always visible.
+     * @param thumbnailLoadedCallback The callback function which will be invoked after the
+     *                                thumbnail is loaded, with a boolean parameter to indicate
+     *                                if it's loaded or not.
      */
     public void load(Uri uri, UserId userId, String mimeType, int docFlags, int docIcon,
             long docLastModified, ImageView iconThumb, ImageView iconMime,
-            @Nullable ImageView subIconMime) {
+            @Nullable ImageView subIconMime, @Nullable Consumer<Boolean> thumbnailLoadedCallback) {
         boolean loadedThumbnail = false;
 
         final String docAuthority = uri.getAuthority();
@@ -186,7 +194,14 @@ public class IconHelper {
         final boolean showThumbnail = supportsThumbnail && allowThumbnail && mThumbnailsEnabled;
         if (showThumbnail) {
             loadedThumbnail =
-                    loadThumbnail(uri, userId, docAuthority, docLastModified, iconThumb, iconMime);
+                    loadThumbnail(
+                            uri,
+                            userId,
+                            docAuthority,
+                            docLastModified,
+                            iconThumb,
+                            iconMime,
+                            thumbnailLoadedCallback);
         }
 
         final Drawable mimeIcon = getDocumentIcon(mContext, userId, docAuthority,
@@ -202,15 +217,22 @@ public class IconHelper {
             setMimeIcon(iconMime, mimeIcon);
             hideImageView(iconThumb);
         }
+        if (thumbnailLoadedCallback != null) {
+            thumbnailLoadedCallback.accept(loadedThumbnail);
+        }
     }
 
     private boolean loadThumbnail(Uri uri, UserId userId, String docAuthority, long docLastModified,
-            ImageView iconThumb, ImageView iconMime) {
+            ImageView iconThumb, ImageView iconMime,
+            @Nullable Consumer<Boolean> thumbnailLoadedCallback) {
         final Result result = mThumbnailCache.getThumbnail(uri, userId, mCurrentSize);
 
         try {
             final Bitmap cachedThumbnail = result.getThumbnail();
             iconThumb.setImageBitmap(cachedThumbnail);
+            if (thumbnailLoadedCallback != null) {
+                thumbnailLoadedCallback.accept(cachedThumbnail != null);
+            }
 
             boolean stale = (docLastModified > result.getLastModified());
             if (VERBOSE) {
@@ -229,6 +251,9 @@ public class IconHelper {
                             if (bitmap != null) {
                                 iconThumb.setImageBitmap(bitmap);
                                 animator.accept(iconMime, iconThumb);
+                            }
+                            if (thumbnailLoadedCallback != null) {
+                                thumbnailLoadedCallback.accept(bitmap != null);
                             }
                         }, true /* addToCache */);
 

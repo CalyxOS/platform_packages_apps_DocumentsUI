@@ -46,6 +46,7 @@ import com.android.modules.utils.build.SdkLevel;
 
 import java.util.Map;
 
+// TODO(b/379776735): remove this file after use_material3 flag is launched.
 final class GridDirectoryHolder extends DocumentHolder {
     final TextView mTitle;
 

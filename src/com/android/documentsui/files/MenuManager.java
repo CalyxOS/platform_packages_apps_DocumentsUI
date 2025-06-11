@@ -16,6 +16,9 @@
 
 package com.android.documentsui.files;
 
+import static com.android.documentsui.util.FlagUtils.isDesktopFileHandlingFlagEnabled;
+import static com.android.documentsui.util.FlagUtils.isVisualSignalsFlagEnabled;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -27,9 +30,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.selection.SelectionTracker;
 
+import com.android.documentsui.JobPanelController;
 import com.android.documentsui.R;
 import com.android.documentsui.base.DocumentInfo;
 import com.android.documentsui.base.Features;
@@ -53,6 +59,7 @@ public final class MenuManager extends com.android.documentsui.MenuManager {
     private final SelectionTracker<String> mSelectionManager;
     private final Lookup<String, Uri> mUriLookup;
     private final LookupApplicationName mAppNameLookup;
+    @Nullable private final JobPanelController mJobPanelController;
 
     public MenuManager(
             Features features,
@@ -72,6 +79,12 @@ public final class MenuManager extends com.android.documentsui.MenuManager {
         mSelectionManager = selectionManager;
         mAppNameLookup = appNameLookup;
         mUriLookup = uriLookup;
+
+        if (isVisualSignalsFlagEnabled()) {
+            mJobPanelController = new JobPanelController(context);
+        } else {
+            mJobPanelController = null;
+        }
     }
 
     @Override
@@ -139,6 +152,14 @@ public final class MenuManager extends com.android.documentsui.MenuManager {
     }
 
     @Override
+    public void instantiateJobProgress(Menu menu) {
+        if (mJobPanelController == null) {
+            return;
+        }
+        mJobPanelController.setMenuItem(menu.findItem(R.id.option_menu_job_progress));
+    }
+
+    @Override
     protected void updateSettings(MenuItem settings, RootInfo root) {
         Menus.setEnabledAndVisible(settings, root.hasSettings());
     }
@@ -161,7 +182,13 @@ public final class MenuManager extends com.android.documentsui.MenuManager {
 
     @Override
     protected void updateOpenWith(MenuItem openWith, SelectionDetails selectionDetails) {
-        Menus.setEnabledAndVisible(openWith, selectionDetails.canOpenWith());
+        Menus.setEnabledAndVisible(openWith, selectionDetails.canOpen());
+    }
+
+    @Override
+    protected void updateOpenInContextMenu(MenuItem open, SelectionDetails selectionDetails) {
+        Menus.setEnabledAndVisible(
+                open, isDesktopFileHandlingFlagEnabled() && selectionDetails.canOpen());
     }
 
     @Override
@@ -204,6 +231,16 @@ public final class MenuManager extends com.android.documentsui.MenuManager {
     }
 
     @Override
+    protected void updateExtractHere(@NonNull MenuItem it, @NonNull SelectionDetails selection) {
+        Menus.setEnabledAndVisible(it, selection.isArchive());
+    }
+
+    @Override
+    protected void updateBrowse(@NonNull MenuItem it, @NonNull SelectionDetails selection) {
+        Menus.setEnabledAndVisible(it, selection.isArchive());
+    }
+
+    @Override
     protected void updatePasteInto(MenuItem pasteInto, SelectionDetails selectionDetails) {
         Menus.setEnabledAndVisible(pasteInto,
                 selectionDetails.canPasteInto() && mDirDetails.hasItemsToPaste());
@@ -215,6 +252,11 @@ public final class MenuManager extends com.android.documentsui.MenuManager {
                 && docInfo != null
                 && docInfo.isCreateSupported()
                 && mDirDetails.hasItemsToPaste());
+    }
+
+    @Override
+    protected void updateExtractAll(MenuItem it) {
+        Menus.setEnabledAndVisible(it, mDirDetails.isInArchive());
     }
 
     @Override

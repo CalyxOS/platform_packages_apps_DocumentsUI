@@ -23,11 +23,11 @@ import android.app.Notification;
 import android.app.Notification.Builder;
 import android.content.Context;
 
-import com.android.documentsui.base.Features;
-import com.android.documentsui.clipping.UrisSupplier;
 import com.android.documentsui.R;
 import com.android.documentsui.base.DocumentInfo;
 import com.android.documentsui.base.DocumentStack;
+import com.android.documentsui.base.Features;
+import com.android.documentsui.clipping.UrisSupplier;
 import com.android.documentsui.services.FileOperationService.OpType;
 
 import java.text.NumberFormat;
@@ -95,6 +95,10 @@ public class TestJob extends Job {
     @Override
     Notification getWarningNotification() {
         throw new UnsupportedOperationException();
+    }
+
+    JobProgress getJobProgress() {
+        return new JobProgress(id, getState(), "test job", false);
     }
 
     @Override

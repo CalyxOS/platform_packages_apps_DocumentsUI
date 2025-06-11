@@ -16,6 +16,8 @@
 
 package com.android.documentsui.dirlist;
 
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -26,6 +28,7 @@ import androidx.annotation.ColorRes;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.documentsui.R;
+import com.android.documentsui.util.ColorUtils;
 
 /**
  * A {@link SwipeRefreshLayout} that does not intercept any touch events. This relies on its nested
@@ -42,16 +45,25 @@ public class DocumentsSwipeRefreshLayout extends SwipeRefreshLayout {
     public DocumentsSwipeRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        final int[] styledAttrs = {android.R.attr.colorAccent};
+        if (isUseMaterial3FlagEnabled()) {
+            setColorSchemeColors(
+                    ColorUtils.resolveMaterialColorAttribute(
+                            context, com.google.android.material.R.attr.colorOnPrimaryContainer));
+            setProgressBackgroundColorSchemeColor(
+                    ColorUtils.resolveMaterialColorAttribute(
+                            context, com.google.android.material.R.attr.colorPrimaryContainer));
+        } else {
+            final int[] styledAttrs = {android.R.attr.colorAccent};
 
-        TypedArray a = context.obtainStyledAttributes(styledAttrs);
-        @ColorRes int colorId = a.getResourceId(0, -1);
-        if (colorId == -1) {
-            Log.w(TAG, "Retrieve colorAccent colorId from theme fail, assign R.color.primary");
-            colorId = R.color.primary;
+            TypedArray a = context.obtainStyledAttributes(styledAttrs);
+            @ColorRes int colorId = a.getResourceId(0, -1);
+            if (colorId == -1) {
+                Log.w(TAG, "Retrieve colorAccent colorId from theme fail, assign R.color.primary");
+                colorId = R.color.primary;
+            }
+            a.recycle();
+            setColorSchemeResources(colorId);
         }
-        a.recycle();
-        setColorSchemeResources(colorId);
     }
 
     @Override

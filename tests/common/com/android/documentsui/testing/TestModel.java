@@ -40,7 +40,8 @@ public class TestModel extends Model {
         Document.COLUMN_FLAGS,
         Document.COLUMN_DISPLAY_NAME,
         Document.COLUMN_SIZE,
-        Document.COLUMN_MIME_TYPE
+        Document.COLUMN_MIME_TYPE,
+        Document.COLUMN_LAST_MODIFIED
     };
 
     public final UserId mUserId;
@@ -104,7 +105,7 @@ public class TestModel extends Model {
     }
 
     public DocumentInfo createDocumentForUser(String name, String mimeType, int flags,
-            UserId userId) {
+            long lastModified, UserId userId) {
         DocumentInfo doc = new DocumentInfo();
         doc.userId = userId;
         doc.authority = mAuthority;
@@ -114,6 +115,7 @@ public class TestModel extends Model {
         doc.mimeType = mimeType;
         doc.flags = flags;
         doc.size = mRand.nextInt();
+        doc.lastModified = lastModified;
 
         addToCursor(doc);
 
@@ -121,7 +123,7 @@ public class TestModel extends Model {
     }
 
     public DocumentInfo createDocument(String name, String mimeType, int flags) {
-        return createDocumentForUser(name, mimeType, flags, mUserId);
+        return createDocumentForUser(name, mimeType, flags, System.currentTimeMillis(), mUserId);
     }
 
     private void addToCursor(DocumentInfo doc) {
@@ -133,9 +135,17 @@ public class TestModel extends Model {
         row.add(Document.COLUMN_MIME_TYPE, doc.mimeType);
         row.add(Document.COLUMN_FLAGS, doc.flags);
         row.add(Document.COLUMN_SIZE, doc.size);
+        row.add(Document.COLUMN_LAST_MODIFIED, doc.lastModified);
     }
 
-    private static String guessMimeType(String name) {
+    /**
+     * Attempts to guess the MIME type of the file based on its name. If unable to guess, returns
+     * "text/plain".
+     *
+     * @param name The name of the file whose MIME type is guessed.
+     * @return A guessed MIME type of "text/plain".
+     */
+    public static String guessMimeType(String name) {
         int i = name.indexOf('.');
 
         while(i != -1) {

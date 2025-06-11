@@ -19,7 +19,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.documentsui">
 
-    <uses-sdk android:minSdkVersion="29"/>
+    <uses-sdk android:minSdkVersion="30"/>
 
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.REMOVE_TASKS" />
@@ -52,6 +52,7 @@
         android:allowBackup="true"
         android:backupAgent=".prefs.BackupAgent"
         android:fullBackupOnly="false"
+        android:enableOnBackInvokedCallback="false"
         android:crossProfile="true">
 
         <meta-data
@@ -59,29 +60,67 @@
             android:value="AEdPqrEAAAAInBA8ued0O_ZyYUsVhwinUF-x50NIe9K0GzBW4A" />
 
         <activity
-            android:name=".picker.PickActivity"
+            android:name=".picker.TrampolineActivity"
             android:exported="true"
-            android:theme="@style/LauncherTheme"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:featureFlag="com.android.documentsui.flags.redirect_get_content_ro"
             android:visibleToInstantApps="true">
-            <intent-filter android:priority="100">
+            <intent-filter android:priority="120">
                 <action android:name="android.intent.action.OPEN_DOCUMENT" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.OPENABLE" />
                 <data android:mimeType="*/*" />
             </intent-filter>
-            <intent-filter android:priority="100">
+            <intent-filter android:priority="120">
                 <action android:name="android.intent.action.CREATE_DOCUMENT" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.OPENABLE" />
                 <data android:mimeType="*/*" />
             </intent-filter>
-            <intent-filter android:priority="100">
+            <intent-filter android:priority="120">
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.OPENABLE" />
                 <data android:mimeType="*/*" />
             </intent-filter>
-            <intent-filter android:priority="100">
+            <intent-filter android:priority="120">
+                <action android:name="android.intent.action.OPEN_DOCUMENT_TREE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".picker.PickActivity"
+            android:exported="true"
+            android:theme="@style/LauncherTheme"
+            android:visibleToInstantApps="true">
+            <intent-filter
+                android:featureFlag="!com.android.documentsui.flags.redirect_get_content_ro"
+                android:priority="100">
+                <action android:name="android.intent.action.OPEN_DOCUMENT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <intent-filter
+                android:featureFlag="!com.android.documentsui.flags.redirect_get_content_ro"
+                android:priority="100">
+                <action android:name="android.intent.action.CREATE_DOCUMENT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <intent-filter
+                android:featureFlag="!com.android.documentsui.flags.redirect_get_content_ro"
+                android:priority="100">
+                <action android:name="android.intent.action.GET_CONTENT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <intent-filter
+                android:featureFlag="!com.android.documentsui.flags.redirect_get_content_ro"
+                android:priority="100">
                 <action android:name="android.intent.action.OPEN_DOCUMENT_TREE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

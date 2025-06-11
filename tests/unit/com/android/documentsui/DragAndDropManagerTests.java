@@ -26,17 +26,22 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.graphics.drawable.Drawable;
 import android.os.PersistableBundle;
+import android.platform.test.annotations.RequiresFlagsDisabled;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.documentsui.DragAndDropManager.RuntimeDragAndDropManager;
 import com.android.documentsui.DragAndDropManager.State;
 import com.android.documentsui.base.DocumentStack;
 import com.android.documentsui.base.RootInfo;
+import com.android.documentsui.flags.Flags;
 import com.android.documentsui.services.FileOperationService;
 import com.android.documentsui.services.FileOperations;
 import com.android.documentsui.testing.ClipDatas;
@@ -52,6 +57,7 @@ import com.android.documentsui.testing.TestSelectionDetails;
 import com.android.documentsui.testing.Views;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -92,6 +98,9 @@ public class DragAndDropManagerTests {
     };
 
     private DragAndDropManager mManager;
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Before
     public void setUp() {
@@ -191,7 +200,8 @@ public class DragAndDropManagerTests {
     }
 
     @Test
-    public void testStartDrag_BuildsCorrectShadow_MultipleDocs() {
+    @RequiresFlagsDisabled({Flags.FLAG_USE_MATERIAL3})
+    public void testStartDrag_BuildsCorrectShadow_MultipleDocs_M3Disabled() {
         mManager.startDrag(
                 mStartDragView,
                 Arrays.asList(TestEnv.FILE_APK, TestEnv.FILE_JPG),
@@ -205,6 +215,24 @@ public class DragAndDropManagerTests {
         mShadowBuilder.title.assertLastArgument(mActivity.getResources().getQuantityString(
                 R.plurals.elements_dragged, 2, 2));
         mShadowBuilder.icon.assertLastArgument(mDefaultIcon);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({Flags.FLAG_USE_MATERIAL3})
+    public void testStartDrag_BuildsCorrectShadow_MultipleDocs() {
+        mManager.startDrag(
+                mStartDragView,
+                Arrays.asList(TestEnv.FILE_APK, TestEnv.FILE_JPG),
+                TestProvidersAccess.HOME,
+                Arrays.asList(TestEnv.FOLDER_0.derivedUri, TestEnv.FILE_APK.derivedUri,
+                        TestEnv.FILE_JPG.derivedUri),
+                mDetails,
+                mIconHelper,
+                TestEnv.FOLDER_0);
+
+        mShadowBuilder.title.assertLastArgument(TestEnv.FILE_APK.displayName);
+        mShadowBuilder.icon.assertLastArgument(mIconHelper.nextDocumentIcon);
+        mShadowBuilder.count.assertLastArgument(2);
     }
 
     @Test
@@ -860,6 +888,7 @@ public class DragAndDropManagerTests {
         public TestEventListener<String> title;
         public TestEventListener<Drawable> icon;
         public TestEventListener<Integer> state;
+        public TestEventListener<Integer> count;
 
         private TestDragShadowBuilder() {
             super(null);
@@ -880,6 +909,11 @@ public class DragAndDropManagerTests {
             this.state.accept(state);
         }
 
+        @Override
+        void updateDragFileCount(int count) {
+            this.count.accept(count);
+        }
+
         public static TestDragShadowBuilder create() {
             TestDragShadowBuilder builder =
                     Mockito.mock(TestDragShadowBuilder.class, Mockito.CALLS_REAL_METHODS);
@@ -887,6 +921,7 @@ public class DragAndDropManagerTests {
             builder.title = new TestEventListener<>();
             builder.icon = new TestEventListener<>();
             builder.state = new TestEventListener<>();
+            builder.count = new TestEventListener<>();
 
             return builder;
         }

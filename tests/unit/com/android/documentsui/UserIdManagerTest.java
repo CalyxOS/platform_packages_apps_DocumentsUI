@@ -131,10 +131,12 @@ public class UserIdManagerTest {
     @Test
     public void testGetUserIds_deviceNotSupported() {
         // we should return the current user when device is not supported.
-        UserId currentUser = UserId.of(systemUser);
-        when(mockUserManager.getUserProfiles()).thenReturn(Arrays.asList(systemUser, managedUser1));
-        mUserIdManager = new UserIdManager.RuntimeUserIdManager(mockContext, currentUser, false);
-        assertThat(mUserIdManager.getUserIds()).containsExactly(UserId.of(systemUser));
+        UserHandle currentUser = UserHandle.of(UserHandle.myUserId());
+        when(mockUserManager.getUserProfiles()).thenReturn(
+                Arrays.asList(currentUser, managedUser1));
+        mUserIdManager = new UserIdManager.RuntimeUserIdManager(mockContext, UserId.of(currentUser),
+                false);
+        assertThat(mUserIdManager.getUserIds()).containsExactly(UserId.of(currentUser));
     }
 
     @Test
@@ -142,13 +144,14 @@ public class UserIdManagerTest {
         // This test only tests for Android R or later. This test case always passes before R.
         if (VersionUtils.isAtLeastR()) {
             // When permission is denied, only returns the current user.
-            when(mockContext.checkSelfPermission(Manifest.permission.INTERACT_ACROSS_USERS))
-                    .thenReturn(PackageManager.PERMISSION_DENIED);
-            UserId currentUser = UserId.of(systemUser);
+            when(mockContext.checkSelfPermission(
+                    Manifest.permission.INTERACT_ACROSS_USERS)).thenReturn(
+                    PackageManager.PERMISSION_DENIED);
+            UserHandle currentUser = UserHandle.of(UserHandle.myUserId());
             when(mockUserManager.getUserProfiles()).thenReturn(
-                    Arrays.asList(systemUser, managedUser1));
+                    Arrays.asList(currentUser, managedUser1));
             mUserIdManager = UserIdManager.create(mockContext);
-            assertThat(mUserIdManager.getUserIds()).containsExactly(UserId.of(systemUser));
+            assertThat(mUserIdManager.getUserIds()).containsExactly(UserId.of(currentUser));
         }
     }
 

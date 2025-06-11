@@ -17,6 +17,7 @@
 package com.android.documentsui;
 
 import static com.android.documentsui.base.SharedMinimal.DEBUG;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
 import android.app.Activity;
 import android.util.Log;
@@ -38,6 +39,8 @@ import com.android.documentsui.ui.MessageBuilder;
 
 /**
  * A controller that listens to selection changes and manages life cycles of action modes.
+ * TODO(b/379776735): This class (and action mode in general) is no longer in use when the
+ * use_material3 flag is enabled. Remove the class once the flag is rolled out.
  */
 public class ActionModeController extends SelectionObserver<String>
         implements ActionMode.Callback, ActionModeAddons {
@@ -134,8 +137,12 @@ public class ActionModeController extends SelectionObserver<String>
         mActivity.getWindow().setTitle(mActivity.getTitle());
 
         // Re-enable TalkBack for the toolbars, as they are no longer covered by action mode.
+        int[] toolbarIds =
+                isUseMaterial3FlagEnabled()
+                        ? new int[] {R.id.toolbar}
+                        : new int[] {R.id.toolbar, R.id.roots_toolbar};
         mScope.accessibilityImportanceSetter.setAccessibilityImportance(
-                View.IMPORTANT_FOR_ACCESSIBILITY_AUTO, R.id.toolbar, R.id.roots_toolbar);
+                View.IMPORTANT_FOR_ACCESSIBILITY_AUTO, toolbarIds);
 
         mNavigator.setActionModeActivated(false);
     }
@@ -151,10 +158,13 @@ public class ActionModeController extends SelectionObserver<String>
 
             // Hide the toolbars if action mode is enabled, so TalkBack doesn't navigate to
             // these controls when using linear navigation.
+            int[] toolbarIds =
+                    isUseMaterial3FlagEnabled()
+                            ? new int[] {R.id.toolbar}
+                            : new int[] {R.id.toolbar, R.id.roots_toolbar};
             mScope.accessibilityImportanceSetter.setAccessibilityImportance(
                     View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS,
-                    R.id.toolbar,
-                    R.id.roots_toolbar);
+                    toolbarIds);
             return true;
         }
 

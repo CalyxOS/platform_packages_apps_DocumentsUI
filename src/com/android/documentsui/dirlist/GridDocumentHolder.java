@@ -21,6 +21,7 @@ import static com.android.documentsui.DevicePolicyResources.Drawables.WORK_PROFI
 import static com.android.documentsui.base.DocumentInfo.getCursorInt;
 import static com.android.documentsui.base.DocumentInfo.getCursorLong;
 import static com.android.documentsui.base.DocumentInfo.getCursorString;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
@@ -35,17 +36,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.documentsui.ConfigStore;
 import com.android.documentsui.DocumentsApplication;
+import com.android.documentsui.IconUtils;
 import com.android.documentsui.R;
 import com.android.documentsui.base.DocumentInfo;
 import com.android.documentsui.base.Shared;
+import com.android.documentsui.base.State;
 import com.android.documentsui.base.UserId;
 import com.android.documentsui.roots.RootCursorWrapper;
 import com.android.documentsui.ui.Views;
 import com.android.modules.utils.build.SdkLevel;
+
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -55,32 +61,64 @@ final class GridDocumentHolder extends DocumentHolder {
     final TextView mTitle;
     final TextView mDate;
     final TextView mDetails;
+    // Non-null only when useMaterial3 flag is ON.
+    final @Nullable TextView mBullet;
     final ImageView mIconMimeLg;
-    final ImageView mIconMimeSm;
+    // Null when useMaterial3 flag is ON.
+    final @Nullable ImageView mIconMimeSm;
     final ImageView mIconThumb;
-    final ImageView mIconCheck;
+    // Null when useMaterial3 flag is ON.
+    final @Nullable ImageView mIconCheck;
     final ImageView mIconBadge;
     final IconHelper mIconHelper;
-    final View mIconLayout;
+    // Null when useMaterial3 flag is ON.
+    final @Nullable View mIconLayout;
     final View mPreviewIcon;
 
     // This is used in as a convenience in our bind method.
     private final DocumentInfo mDoc = new DocumentInfo();
 
+    // Non-null only when useMaterial3 flag is ON.
+    private final @Nullable MaterialCardView mIconWrapper;
+    // It will be 0 when use_material flag is OFF.
+    private final int mThumbnailStrokeWidth;
+
     GridDocumentHolder(Context context, ViewGroup parent, IconHelper iconHelper,
             ConfigStore configStore) {
         super(context, parent, R.layout.item_doc_grid, configStore);
 
-        mIconLayout = itemView.findViewById(R.id.icon);
+        if (isUseMaterial3FlagEnabled()) {
+            mBullet = itemView.findViewById(R.id.bullet);
+            mIconWrapper = itemView.findViewById(R.id.icon_wrapper);
+            mIconLayout = null;
+            mIconMimeSm = null;
+            mIconCheck = null;
+            mThumbnailStrokeWidth =
+                    context.getResources()
+                            .getDimensionPixelSize(R.dimen.thumbnail_border_width);
+        } else {
+            mBullet = null;
+            mIconWrapper = null;
+            mIconLayout = itemView.findViewById(R.id.icon);
+            mIconMimeSm = (ImageView) itemView.findViewById(R.id.icon_mime_sm);
+            mIconCheck = (ImageView) itemView.findViewById(R.id.icon_check);
+            mThumbnailStrokeWidth = 0;
+        }
+
         mTitle = (TextView) itemView.findViewById(android.R.id.title);
         mDate = (TextView) itemView.findViewById(R.id.date);
         mDetails = (TextView) itemView.findViewById(R.id.details);
         mIconMimeLg = (ImageView) itemView.findViewById(R.id.icon_mime_lg);
-        mIconMimeSm = (ImageView) itemView.findViewById(R.id.icon_mime_sm);
         mIconThumb = (ImageView) itemView.findViewById(R.id.icon_thumb);
-        mIconCheck = (ImageView) itemView.findViewById(R.id.icon_check);
         mIconBadge = (ImageView) itemView.findViewById(R.id.icon_profile_badge);
         mPreviewIcon = itemView.findViewById(R.id.preview_icon);
+
+        if (isUseMaterial3FlagEnabled()) {
+            int clipCornerRadius = context.getResources()
+                    .getDimensionPixelSize(R.dimen.thumbnail_clip_corner_radius);
+            IconUtils.applyThumbnailClipOutline(
+                    mIconThumb, mThumbnailStrokeWidth, clipCornerRadius);
+        }
 
         mIconHelper = iconHelper;
 
@@ -99,16 +137,19 @@ final class GridDocumentHolder extends DocumentHolder {
 
     @Override
     public void setSelected(boolean selected, boolean animate) {
-        // We always want to make sure our check box disappears if we're not selected,
-        // even if the item is disabled. This is because this object can be reused
-        // and this method will be called to setup initial state.
         float checkAlpha = selected ? 1f : 0f;
-        if (animate) {
-            fade(mIconMimeSm, checkAlpha).start();
-            fade(mIconCheck, checkAlpha).start();
-        } else {
-            mIconCheck.setAlpha(checkAlpha);
+        if (!isUseMaterial3FlagEnabled()) {
+            // We always want to make sure our check box disappears if we're not selected,
+            // even if the item is disabled. This is because this object can be reused
+            // and this method will be called to setup initial state.
+            if (animate) {
+                fade(mIconMimeSm, checkAlpha).start();
+                fade(mIconCheck, checkAlpha).start();
+            } else {
+                mIconCheck.setAlpha(checkAlpha);
+            }
         }
+
 
         // But it should be an error to be set to selected && be disabled.
         if (!itemView.isEnabled()) {
@@ -117,10 +158,21 @@ final class GridDocumentHolder extends DocumentHolder {
 
         super.setSelected(selected, animate);
 
-        if (animate) {
-            fade(mIconMimeSm, 1f - checkAlpha).start();
-        } else {
-            mIconMimeSm.setAlpha(1f - checkAlpha);
+        if (!isUseMaterial3FlagEnabled()) {
+            if (animate) {
+                fade(mIconMimeSm, 1f - checkAlpha).start();
+            } else {
+                mIconMimeSm.setAlpha(1f - checkAlpha);
+            }
+        }
+
+        // Do not show stroke when selected, only show stroke when not selected if it has thumbnail.
+        if (mIconWrapper != null) {
+            if (selected) {
+                mIconWrapper.setStrokeWidth(0);
+            } else if (mIconThumb.getDrawable() != null) {
+                mIconWrapper.setStrokeWidth(mThumbnailStrokeWidth);
+            }
         }
     }
 
@@ -131,19 +183,26 @@ final class GridDocumentHolder extends DocumentHolder {
         float imgAlpha = enabled ? 1f : DISABLED_ALPHA;
 
         mIconMimeLg.setAlpha(imgAlpha);
-        mIconMimeSm.setAlpha(imgAlpha);
+        if (!isUseMaterial3FlagEnabled()) {
+            mIconMimeSm.setAlpha(imgAlpha);
+        }
         mIconThumb.setAlpha(imgAlpha);
     }
 
     @Override
     public void bindPreviewIcon(boolean show, Function<View, Boolean> clickCallback) {
+        if (isUseMaterial3FlagEnabled() && mDoc.isDirectory()) {
+            mPreviewIcon.setVisibility(View.GONE);
+            return;
+        }
         mPreviewIcon.setVisibility(show ? View.VISIBLE : View.GONE);
         if (show) {
             mPreviewIcon.setContentDescription(
                     getPreviewIconContentDescription(
                             mIconHelper.shouldShowBadge(mDoc.userId.getIdentifier()),
                             mDoc.displayName, mDoc.userId));
-            mPreviewIcon.setAccessibilityDelegate(new PreviewAccessibilityDelegate(clickCallback));
+            mPreviewIcon.setAccessibilityDelegate(
+                    new PreviewAccessibilityDelegate(clickCallback));
         }
     }
 
@@ -171,6 +230,10 @@ final class GridDocumentHolder extends DocumentHolder {
 
     @Override
     public boolean inSelectRegion(MotionEvent event) {
+        if (isUseMaterial3FlagEnabled()) {
+            return (mDoc.isDirectory() && !(mAction == State.ACTION_BROWSE)) ? false
+                    : Views.isEventOver(event, itemView.getParent(), mIconWrapper);
+        }
         return Views.isEventOver(event, itemView.getParent(), mIconLayout);
     }
 
@@ -202,7 +265,21 @@ final class GridDocumentHolder extends DocumentHolder {
         mIconThumb.animate().cancel();
         mIconThumb.setAlpha(0f);
 
-        mIconHelper.load(mDoc, mIconThumb, mIconMimeLg, mIconMimeSm);
+        if (isUseMaterial3FlagEnabled()) {
+            mIconHelper.load(
+                    mDoc, mIconThumb, mIconMimeLg, /* subIconMime= */ null,
+                    thumbnailLoaded -> {
+                        // Show stroke when thumbnail is loaded.
+                        if (mIconWrapper != null) {
+                            mIconWrapper.setStrokeWidth(
+                                    thumbnailLoaded ? mThumbnailStrokeWidth : 0);
+                        }
+                    });
+        } else {
+            mIconHelper.load(
+                    mDoc, mIconThumb, mIconMimeLg, mIconMimeSm, /* thumbnailLoadedCallback= */
+                    null);
+        }
 
         mTitle.setText(mDoc.displayName, TextView.BufferType.SPANNABLE);
         mTitle.setVisibility(View.VISIBLE);
@@ -228,6 +305,12 @@ final class GridDocumentHolder extends DocumentHolder {
                 mDetails.setVisibility(View.VISIBLE);
                 mDetails.setText(Formatter.formatFileSize(mContext, docSize));
             }
+        }
+
+        if (mBullet != null && (mDetails.getText() == null || mDetails.getText().length() == 0
+                || mDate.getText() == null || mDate.getText().length() == 0)) {
+            // There is no need for the bullet separating the details and date.
+            mBullet.setVisibility(View.GONE);
         }
     }
 }

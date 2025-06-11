@@ -49,10 +49,11 @@ import com.android.documentsui.sorting.SortModel;
 import org.hamcrest.Matcher;
 
 /**
- * A test helper class that provides support for controlling the UI Breadcrumb
- * programmatically, and making assertions against the state of the UI.
- * <p>
- * Support for working directly with Roots and Directory view can be found in the respective bots.
+ * A test helper class that provides support for controlling the UI Breadcrumb programmatically, and
+ * making assertions against the state of the UI.
+ *
+ * <p>Support for working directly with Roots and Directory view can be found in the respective
+ * bots.
  */
 public class SortBot extends Bots.BaseBot {
 
@@ -67,7 +68,7 @@ public class SortBot extends Bots.BaseBot {
     }
 
     public void sortBy(int id, @SortDirection int direction) {
-        assert(direction != SortDimension.SORT_DIRECTION_NONE);
+        assert (direction != SortDimension.SORT_DIRECTION_NONE);
 
         final @StringRes int labelId = mSortModel.getDimensionById(id).getLabelId();
         final String label = mContext.getString(labelId);
@@ -78,16 +79,15 @@ public class SortBot extends Bots.BaseBot {
             result = sortByMenu(id, direction);
         }
 
-        assertTrue("Sorting by id: " + id + " in direction: " + direction + " failed.",
-                result);
+        assertTrue("Sorting by id: " + id + " in direction: " + direction + " failed.", result);
     }
 
     public boolean isHeaderShow() {
-        return Matchers.present(mColumnBot.MATCHER);
+        return Matchers.present(ColumnSortBot.MATCHER);
     }
 
     public void assertHeaderHide() {
-        assertFalse(Matchers.present(mColumnBot.MATCHER));
+        assertFalse(Matchers.present(ColumnSortBot.MATCHER));
     }
 
     public void assertHeaderShow() {
@@ -98,11 +98,21 @@ public class SortBot extends Bots.BaseBot {
         // or with espresso. It's sad that I'm leaving you
         // with this little gremlin, but we all have to
         // move on and get stuff done :)
-        assertTrue(Matchers.present(mColumnBot.MATCHER));
+        assertTrue(Matchers.present(ColumnSortBot.MATCHER));
+    }
+
+    /**
+     * Identify if the sort arrow in list mode is focused.
+     *
+     * @return True if the sort arrow in the file list is found.
+     */
+    public boolean isSortIconFocused() {
+        UiObject2 sortArrow = mDevice.findObject(By.res(mTargetPackage + ":id/sort_arrow"));
+        return sortArrow.isFocused();
     }
 
     private boolean sortByMenu(int id, @SortDirection int direction) {
-        assert(direction != SortDimension.SORT_DIRECTION_NONE);
+        assert (direction != SortDimension.SORT_DIRECTION_NONE);
 
         clickMenuSort();
         mDevice.waitForIdle();
@@ -131,9 +141,8 @@ public class SortBot extends Bots.BaseBot {
         private static final Matcher<View> MATCHER = withId(R.id.table_header);
 
         private boolean sortBy(String label, @SortDirection int direction) {
-            final Matcher<View> cellMatcher = allOf(
-                    withChild(withText(label)),
-                    isDescendantOfA(MATCHER));
+            final Matcher<View> cellMatcher =
+                    allOf(withChild(withText(label)), isDescendantOfA(MATCHER));
             onView(cellMatcher).perform(click());
 
             final @SortDirection int viewDirection = getDirection(cellMatcher);

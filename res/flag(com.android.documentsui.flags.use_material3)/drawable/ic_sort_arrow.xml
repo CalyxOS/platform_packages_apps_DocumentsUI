@@ -16,7 +16,7 @@
   -->
 
 <rotate xmlns:android="http://schemas.android.com/apk/res/android"
-        android:drawable="@drawable/ic_arrow_upward"
+        android:drawable="@drawable/ic_sort_icon"
         android:fromDegrees="0"
         android:toDegrees="180"
         android:pivotX="50%"

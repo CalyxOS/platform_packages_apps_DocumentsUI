@@ -142,7 +142,7 @@ public class QuickViewIntentBuilderTest {
     public void testBuild_twoProfiles_containsOnlyPreviewDocument() {
         mEnv.model.reset();
         mEnv.model.createDocumentForUser("a.txt", "text/plain", 0,
-                TestProvidersAccess.OtherUser.USER_ID);
+                System.currentTimeMillis(), TestProvidersAccess.OtherUser.USER_ID);
         DocumentInfo previewDoc = mEnv.model.createFile("b.png", 0);
         mEnv.model.createFile("c.png", 0);
         mEnv.model.update();

@@ -18,50 +18,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/list_item_padding"
-    android:paddingEnd="@dimen/bottom_bar_padding"
-    android:orientation="horizontal"
-    android:baselineAligned="false"
-    android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall">
+    android:paddingTop="@dimen/picker_saver_container_padding_top"
+    android:paddingBottom="@dimen/picker_saver_container_padding_bottom">
 
-    <FrameLayout
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
-        android:layout_marginEnd="16dp">
-
-        <ImageView
-            android:id="@android:id/icon"
-            android:layout_width="@dimen/root_icon_size"
-            android:layout_height="match_parent"
-            android:scaleType="centerInside"
-            android:contentDescription="@null" />
-
-    </FrameLayout>
-
-    <EditText
-        android:id="@android:id/title"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:singleLine="true"
-        android:selectAllOnFocus="true" />
+        android:paddingTop="@dimen/picker_saver_padding_top"
+        android:paddingBottom="@dimen/picker_saver_padding_bottom"
+        android:paddingEnd="@dimen/bottom_bar_padding"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:gravity="center_vertical|end"
+        android:paddingStart="@dimen/list_item_padding">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/title_wrapper"
+            style="?attr/textInputFilledStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/picker_saver_button_gap"
+            android:hint="@string/file_name_hint">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@android:id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <include layout="@layout/fragment_save_cancel_button" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@android:id/button1"
-            style="@style/Widget.Material3.Button.UnelevatedButton"
+            style="@style/MaterialButton"
             app:cornerRadius="@dimen/button_corner_radius"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginStart="@dimen/picker_saver_button_gap"
+            android:layout_marginEnd="@dimen/picker_saver_button_gap"
             android:text="@string/menu_save"/>
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@android:id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,8 +68,8 @@
             android:visibility="gone"
             android:indeterminate="true"
             android:padding="8dp"
-            style="?android:attr/progressBarStyle" />
+            app:trackColor="?attr/colorSecondaryContainer" />
 
-    </FrameLayout>
+    </LinearLayout>
 
 </LinearLayout>

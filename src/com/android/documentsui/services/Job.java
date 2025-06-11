@@ -76,11 +76,11 @@ abstract public class Job implements Runnable {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({STATE_CREATED, STATE_STARTED, STATE_SET_UP, STATE_COMPLETED, STATE_CANCELED})
-    @interface State {}
-    static final int STATE_CREATED = 0;
-    static final int STATE_STARTED = 1;
-    static final int STATE_SET_UP = 2;
-    static final int STATE_COMPLETED = 3;
+    public @interface State {}
+    public static final int STATE_CREATED = 0;
+    public static final int STATE_STARTED = 1;
+    public static final int STATE_SET_UP = 2;
+    public static final int STATE_COMPLETED = 3;
     /**
      * A job is in canceled state as long as {@link #cancel()} is called on it, even after it is
      * completed.
@@ -189,6 +189,8 @@ abstract public class Job implements Runnable {
     abstract Notification getFailureNotification();
 
     abstract Notification getWarningNotification();
+
+    abstract JobProgress getJobProgress();
 
     Uri getDataUriForIntent(String tag) {
         return Uri.parse(String.format("data,%s-%s", tag, id));

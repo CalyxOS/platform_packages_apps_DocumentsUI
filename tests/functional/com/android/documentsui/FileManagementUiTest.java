@@ -124,6 +124,21 @@ public class FileManagementUiTest extends ActivityTest<FilesActivity> {
         bots.directory.waitForDocument("file1.png");
     }
 
+    @HugeLongTest
+    public void testKeyboard_PasteDocumentWhileSelectionActive() throws Exception {
+        bots.directory.selectDocument("file1.png", 1);
+        bots.keyboard.pressKey(KeyEvent.KEYCODE_C, KeyEvent.META_CTRL_ON);
+
+        device.waitForIdle();
+        bots.directory.openDocument("Dir1");
+        bots.directory.selectDocument("ChildDir1", 1);
+
+        bots.keyboard.pressKey(KeyEvent.KEYCODE_V, KeyEvent.META_CTRL_ON);
+        device.waitForIdle();
+
+        bots.directory.assertDocumentsPresent("file1.png");
+    }
+
     public void testDeleteDocument_Cancel() throws Exception {
         bots.directory.selectDocument("file1.png", 1);
         device.waitForIdle();

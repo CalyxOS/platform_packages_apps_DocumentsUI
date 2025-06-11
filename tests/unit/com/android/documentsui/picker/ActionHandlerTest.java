@@ -223,6 +223,7 @@ public class ActionHandlerTest {
 
     @Test
     public void testInitLocation_RestoresLastAccessedStack() throws Exception {
+        if (!SdkLevel.isAtLeastS()) return;
         final DocumentStack stack =
                 new DocumentStack(TestProvidersAccess.HAMMY, TestEnv.FOLDER_0, TestEnv.FOLDER_1);
         mLastAccessed.setLastAccessed(mActivity, stack);
@@ -644,7 +645,8 @@ public class ActionHandlerTest {
             mActivity.currentRoot = TestProvidersAccess.OtherUser.DOWNLOADS;
             mEnv.model.reset();
             DocumentInfo otherUserDoc = mEnv.model.createDocumentForUser("a.png",
-                    "image/png", /* flags= */ 0, TestProvidersAccess.OtherUser.USER_ID);
+                    "image/png", /* flags= */ 0, System.currentTimeMillis(),
+                    TestProvidersAccess.OtherUser.USER_ID);
             mEnv.model.update();
 
             mHandler.onDocumentOpened(otherUserDoc, ActionHandler.VIEW_TYPE_PREVIEW,

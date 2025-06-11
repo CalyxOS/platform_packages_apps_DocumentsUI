@@ -70,11 +70,6 @@
         <item name="fontFamily">@string/config_fontFamilyMedium</item>
     </style>
 
-    <style name="DrawerMenuTitle" parent="@style/TextAppearance.Material3.TitleLarge">
-        <item name="android:textSize">24sp</item>
-        <item name="fontFamily">@string/config_fontFamilyMedium</item>
-    </style>
-
     <style name="DrawerMenuHeader" parent="@style/TextAppearance.Material3.BodyLarge">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textAllCaps">true</item>
@@ -82,14 +77,12 @@
         <item name="fontFamily">@string/config_fontFamilyMedium</item>
     </style>
 
-    <style name="DrawerMenuPrimary" parent="@style/TextAppearance.Material3.BodyMedium">
-        <item name="android:textSize">14sp</item>
+    <style name="DrawerMenuPrimary" parent="@style/TextAppearance.Material3.LabelLarge">
         <item name="android:textColor">@color/item_root_primary_text</item>
         <item name="fontFamily">@string/config_fontFamilyMedium</item>
     </style>
 
-    <style name="DrawerMenuSecondary" parent="@style/TextAppearance.Material3.BodyMedium">
-        <item name="android:textSize">12sp</item>
+    <style name="DrawerMenuSecondary" parent="@style/TextAppearance.Material3.BodySmall">
         <item name="android:textColor">@color/item_root_secondary_text</item>
         <item name="fontFamily">@string/config_fontFamily</item>
     </style>
@@ -103,9 +96,8 @@
         <item name="fontFamily">@string/config_fontFamilyMedium</item>
     </style>
 
-    <style name="BreadcrumbText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+    <style name="BreadcrumbText" parent="@style/TextAppearance.Material3.TitleSmall">
         <item name="android:textColor">@color/horizontal_breadcrumb_color</item>
-        <item name="android:textSize">14sp</item>
         <item name="fontFamily">@string/config_fontFamilyMedium</item>
     </style>
 
@@ -126,18 +118,22 @@
         <item name="fontFamily">@string/config_fontFamilyMedium</item>
     </style>
 
-    <style name="TabTextAppearance" parent="@style/TextAppearance.Material3.TitleMedium">
-        <item name="android:textSize">14sp</item>
+    <style name="TabTextAppearance" parent="@style/TextAppearance.Material3.TitleSmall">
         <item name="fontFamily">@string/config_fontFamilyMedium</item>
     </style>
 
-    <style name="ItemCaptionText" parent="@style/TextAppearance.Material3.BodySmall">
+    <style name="FileItemLabelText" parent="@style/TextAppearance.Material3.TitleSmall">
+        <item name="android:textColor">@color/doc_list_item_label_color</item>
+        <item name="fontFamily">@string/config_fontFamily</item>
+    </style>
+
+    <style name="ItemCaptionText" parent="@style/TextAppearance.Material3.LabelSmall">
         <item name="android:textColor">@color/doc_list_item_subtitle_color</item>
         <item name="fontFamily">@string/config_fontFamily</item>
     </style>
 
-    <style name="MenuItemTextAppearance" parent="@style/TextAppearance.Material3.BodyMedium">
-        <item name="android:textSize">14sp</item>
+    <style name="MenuItemTextAppearance" parent="@style/TextAppearance.Material3.LabelLarge">
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="fontFamily">@string/config_fontFamily</item>
     </style>
 
@@ -145,8 +141,26 @@
         <item name="fontFamily">@string/config_fontFamily</item>
     </style>
 
-    <style name="Body1" parent="@style/TextAppearance.Material3.BodyMedium">
+    <style name="NavRailItemTextAppearance" parent="@style/TextAppearance.Material3.LabelMedium">
         <item name="fontFamily">@string/config_fontFamily</item>
+    </style>
+
+    <style name="ListTableHeaderText" parent="@style/TextAppearance.Material3.TitleSmall.Emphasized">
+        <item name="fontFamily">@string/config_fontFamily</item>
+    </style>
+
+    <style name="DragBadgeText" parent="@style/TextAppearance.Material3.TitleSmall">
+        <item name="android:textColor">@color/drag_content_text_color</item>
+        <item name="fontFamily">@string/config_fontFamily</item>
+    </style>
+
+    <style name="DragCounterText" parent="@style/TextAppearance.Material3.LabelMedium">
+        <item name="android:textColor">@color/drag_file_counter_text_color</item>
+        <item name="fontFamily">@string/config_fontFamily</item>
+    </style>
+
+    <style name="JobProgressPanelHeaderText" parent="@style/TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@string/config_fontFamilyMedium</item>
     </style>
 
 </resources>

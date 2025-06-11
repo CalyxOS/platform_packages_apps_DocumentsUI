@@ -18,10 +18,10 @@ package com.android.documentsui.sidebar;
 
 import android.content.Context;
 import android.content.pm.ResolveInfo;
-import android.os.UserManager;
 import android.provider.DocumentsProvider;
-import android.text.TextUtils;
 import android.view.View;
+
+import androidx.annotation.LayoutRes;
 
 import com.android.documentsui.ActionHandler;
 import com.android.documentsui.R;
@@ -36,9 +36,18 @@ class RootAndAppItem extends RootItem {
 
     public final ResolveInfo resolveInfo;
 
-    public RootAndAppItem(RootInfo root, ResolveInfo info, ActionHandler actionHandler,
+    RootAndAppItem(
+            RootInfo root, ResolveInfo info, ActionHandler actionHandler, boolean maybeShowBadge) {
+        this(R.layout.item_root, root, info, actionHandler, maybeShowBadge);
+    }
+
+    RootAndAppItem(
+            @LayoutRes int layoutId,
+            RootInfo root,
+            ResolveInfo info,
+            ActionHandler actionHandler,
             boolean maybeShowBadge) {
-        super(root, actionHandler, info.activityInfo.packageName, maybeShowBadge);
+        super(layoutId, root, actionHandler, info.activityInfo.packageName, maybeShowBadge);
         this.resolveInfo = info;
     }
 

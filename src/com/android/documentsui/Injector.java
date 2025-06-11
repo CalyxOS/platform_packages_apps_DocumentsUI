@@ -15,6 +15,8 @@
  */
 package com.android.documentsui;
 
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -127,6 +129,9 @@ public class Injector<T extends ActionHandler> {
 
     public final ActionModeController getActionModeController(
             SelectionDetails selectionDetails, EventHandler<MenuItem> menuItemClicker) {
+        if (isUseMaterial3FlagEnabled()) {
+            return null;
+        }
         return actionModeController.reset(selectionDetails, menuItemClicker);
     }
 

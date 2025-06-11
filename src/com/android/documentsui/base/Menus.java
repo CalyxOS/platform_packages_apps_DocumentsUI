@@ -19,6 +19,8 @@ package com.android.documentsui.base;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+
 public final class Menus {
 
     private Menus() {}
@@ -41,7 +43,7 @@ public final class Menus {
     }
 
     /** Set enabled/disabled state of a menuItem, and updates its visibility. */
-    public static void setEnabledAndVisible(MenuItem item, boolean enabled) {
+    public static void setEnabledAndVisible(@NonNull MenuItem item, boolean enabled) {
         item.setEnabled(enabled);
         item.setVisible(enabled);
     }

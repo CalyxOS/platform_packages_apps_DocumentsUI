@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"ย้ายไปที่…"</string>
     <string name="menu_compress" msgid="37539111904724188">"บีบอัด"</string>
     <string name="menu_extract" msgid="8171946945982532262">"แตกข้อมูลไปยัง…"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"แตกเอกสารทั้งหมด…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"แตกไฟล์ที่นี่"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"เรียกดู"</string>
     <string name="menu_rename" msgid="1883113442688817554">"เปลี่ยนชื่อ"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"รับข้อมูล"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"แสดงไฟล์ที่ซ่อนไว้"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"คุณย้ายไฟล์จากแอปอื่นไม่ได้"</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"กำลังแสดงในโหมดตารางกริด"</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"กำลังแสดงในโหมดรายการ"</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"ชื่อไฟล์"</string>
 </resources>

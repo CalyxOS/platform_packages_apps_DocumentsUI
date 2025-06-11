@@ -27,14 +27,12 @@ import androidx.annotation.StringRes;
 import org.mockito.Mockito;
 
 /**
-*
-* Test copy of {@link android.view.MenuItem}.
-*
-* We use abstract so we don't have to implement all the necessary methods from the interface,
-* and we use Mockito to just mock out the methods we need.
-* To get an instance, use {@link #create(int)}.
-*/
-
+ * Test copy of {@link android.view.MenuItem}.
+ *
+ * We use abstract so we don't have to implement all the necessary methods from the interface,
+ * and we use Mockito to just mock out the methods we need.
+ * To get an instance, use {@link #create(int)}.
+ */
 public abstract class TestMenuItem implements MenuItem {
 
     boolean enabled;

@@ -16,6 +16,10 @@
 
 package com.android.documentsui.services;
 
+import static android.os.SystemClock.uptimeMillis;
+
+import static com.android.documentsui.base.SharedMinimal.DEBUG;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
@@ -43,6 +47,9 @@ import java.util.List;
  */
 public abstract class ResolvedResourcesJob extends Job {
     private static final String TAG = "ResolvedResourcesJob";
+
+    // Used in logs.
+    protected final long mStartTime = uptimeMillis();
 
     final List<DocumentInfo> mResolvedDocs;
     final List<Uri> mAcquiredArchivedUris = new ArrayList<>();
@@ -72,22 +79,22 @@ public abstract class ResolvedResourcesJob extends Job {
                         mAcquiredArchivedUris.add(uri);
                     }
                 } catch (RemoteException e) {
-                    Log.e(TAG, "Failed to acquire an archive.");
+                    Log.e(TAG, "Cannot acquire an archive", e);
                     return false;
                 }
             }
         } catch (IOException e) {
-            Log.e(TAG, "Failed to read list of target resource Uris. Cannot continue.", e);
+            Log.e(TAG, "Cannot read list of target resource URIs", e);
             return false;
         }
 
         int docsResolved = buildDocumentList();
         if (!isCanceled() && docsResolved < mResourceUris.getItemCount()) {
             if (docsResolved == 0) {
-                Log.e(TAG, "Failed to load any documents. Aborting.");
+                Log.e(TAG, "Cannot load any documents. Aborting.");
                 return false;
             } else {
-                Log.e(TAG, "Failed to load some documents. Processing loaded documents only.");
+                Log.e(TAG, "Cannot load some documents");
             }
         }
 
@@ -101,8 +108,13 @@ public abstract class ResolvedResourcesJob extends Job {
             try {
                 ArchivesProvider.releaseArchive(getClient(uri), uri);
             } catch (RemoteException e) {
-                Log.e(TAG, "Failed to release an archived document.");
+                Log.e(TAG, "Cannot release an archived document", e);
             }
+        }
+
+        if (DEBUG) {
+            Log.d(TAG, String.format("%s %s finished after %d ms", getClass().getSimpleName(), id,
+                    uptimeMillis() - mStartTime));
         }
     }
 
@@ -123,7 +135,7 @@ public abstract class ResolvedResourcesJob extends Job {
         try {
             uris = mResourceUris.getUris(appContext);
         } catch (IOException e) {
-            Log.e(TAG, "Failed to read list of target resource Uris. Cannot continue.", e);
+            Log.e(TAG, "Cannot read list of target resource URIs", e);
             failureCount = this.mResourceUris.getItemCount();
             return 0;
         }
@@ -135,8 +147,7 @@ public abstract class ResolvedResourcesJob extends Job {
             try {
                 doc = DocumentInfo.fromUri(resolver, uri, UserId.DEFAULT_USER);
             } catch (FileNotFoundException e) {
-                Log.e(TAG, "Failed to resolve content from Uri: " + uri
-                        + ". Skipping to next resource.", e);
+                Log.e(TAG, "Cannot resolve content from URI " + uri, e);
                 onResolveFailed(uri);
                 continue;
             }

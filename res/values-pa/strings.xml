@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"ਇਸ ਵਿੱਚ ਲਿਜਾਓ…"</string>
     <string name="menu_compress" msgid="37539111904724188">"ਨਪੀੜੋ"</string>
     <string name="menu_extract" msgid="8171946945982532262">"ਇਸ ਵਿੱਚ ਐਕਸਟ੍ਰੈਕਟ ਕਰੋ…"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"ਸਭ ਐਕਸਟਰੈਕਟ ਕਰੋ…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"ਇੱਥੇ ਐਕਸਟਰੈਕਟ ਕਰੋ"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"ਬ੍ਰਾਊਜ਼ ਕਰੋ"</string>
     <string name="menu_rename" msgid="1883113442688817554">"ਨਾਮ ਬਦਲੋ"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"ਜਾਣਕਾਰੀ ਪ੍ਰਾਪਤ ਕਰੋ"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"ਲੁਕਾਈਆਂ ਗਈਆਂ ਫ਼ਾਈਲਾਂ ਦਿਖਾਓ"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"ਤੁਸੀਂ ਕਿਸੇ ਹੋਰ ਐਪ ਤੋਂ ਫ਼ਾਈਲਾਂ ਨਹੀਂ ਲਿਜਾ ਸਕਦੇ।"</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"ਗ੍ਰਿਡ ਮੋਡ ਵਿੱਚ ਦਿਖਾਈਆਂ ਜਾ ਰਹੀਆਂ ਹਨ"</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"ਸੂਚੀ ਮੋਡ ਵਿੱਚ ਦਿਖਾਈਆਂ ਜਾ ਰਹੀਆਂ ਹਨ।"</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"ਫ਼ਾਈਲ ਦਾ ਨਾਮ"</string>
 </resources>

@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"ইয়ালৈ স্থানান্তৰ কৰক…"</string>
     <string name="menu_compress" msgid="37539111904724188">"সংকুচিত কৰক"</string>
     <string name="menu_extract" msgid="8171946945982532262">"ইয়ালৈ আহৰণ কৰক…"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"আটাইবোৰ আহৰণ কৰক…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"ইয়াত আহৰণ কৰক"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"ব্ৰাউজ কৰক"</string>
     <string name="menu_rename" msgid="1883113442688817554">"নতুন নাম দিয়ক"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"তথ্য পাওক"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"লুকুৱাই থোৱা ফাইল দেখুৱাওক"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"আপুনি অন্য এটা এপৰ পৰা ফাইল স্থানান্তৰ কৰিব নোৱাৰে।"</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"গ্ৰিড ম’ডত দেখুৱাই থকা হৈছে।"</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"সূচীযুক্ত ম’ডত দেখুৱাই থকা হৈছে।"</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"ফাইলৰ নাম"</string>
 </resources>

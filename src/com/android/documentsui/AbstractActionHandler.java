@@ -19,6 +19,9 @@ package com.android.documentsui;
 import static com.android.documentsui.base.DocumentInfo.getCursorInt;
 import static com.android.documentsui.base.DocumentInfo.getCursorString;
 import static com.android.documentsui.base.SharedMinimal.DEBUG;
+import static com.android.documentsui.util.FlagUtils.isDesktopFileHandlingFlagEnabled;
+import static com.android.documentsui.util.FlagUtils.isUseSearchV2FlagEnabled;
+import static com.android.documentsui.util.FlagUtils.isZipNgFlagEnabled;
 
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
@@ -37,6 +40,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.DragEvent;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
 import androidx.loader.app.LoaderManager.LoaderCallbacks;
@@ -62,6 +66,9 @@ import com.android.documentsui.dirlist.AnimationView.AnimationType;
 import com.android.documentsui.dirlist.FocusHandler;
 import com.android.documentsui.files.LauncherActivity;
 import com.android.documentsui.files.QuickViewIntentBuilder;
+import com.android.documentsui.loaders.FolderLoader;
+import com.android.documentsui.loaders.QueryOptions;
+import com.android.documentsui.loaders.SearchLoader;
 import com.android.documentsui.queries.SearchViewManager;
 import com.android.documentsui.roots.GetRootDocumentTask;
 import com.android.documentsui.roots.LoadFirstRootTask;
@@ -72,10 +79,14 @@ import com.android.documentsui.sorting.SortListFragment;
 import com.android.documentsui.ui.DialogController;
 import com.android.documentsui.ui.Snackbars;
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 
@@ -251,7 +262,12 @@ public abstract class AbstractActionHandler<T extends FragmentActivity & CommonA
     }
 
     @Override
-    public void showInspector(DocumentInfo doc) {
+    public void openDocumentViewOnly(DocumentInfo doc) {
+        throw new UnsupportedOperationException("Open doc not supported!");
+    }
+
+    @Override
+    public void showPreview(DocumentInfo doc) {
         throw new UnsupportedOperationException("Can't open properties.");
     }
 
@@ -443,17 +459,17 @@ public abstract class AbstractActionHandler<T extends FragmentActivity & CommonA
 
     private boolean viewDocument(DocumentInfo doc) {
         if (doc.isPartial()) {
-            Log.w(TAG, "Can't view partial file.");
+            Log.w(TAG, "Cannot view partial file");
             return false;
         }
 
-        if (doc.isInArchive()) {
-            Log.w(TAG, "Can't view files in archives.");
+        if (!isZipNgFlagEnabled() && doc.isInArchive()) {
+            Log.w(TAG, "Cannot view file in archive");
             return false;
         }
 
         if (doc.isDirectory()) {
-            Log.w(TAG, "Can't view directories.");
+            Log.w(TAG, "Cannot view directory");
             return true;
         }
 
@@ -559,6 +575,15 @@ public abstract class AbstractActionHandler<T extends FragmentActivity & CommonA
         int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_SINGLE_TOP;
         if (doc.isWriteSupported()) {
             flags |= Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+        }
+        // On desktop users expect files to open in a new window.
+        if (isDesktopFileHandlingFlagEnabled()) {
+            // The combination of NEW_DOCUMENT and MULTIPLE_TASK allows multiple instances of the
+            // same activity to open in separate windows.
+            flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
+            // If the activity has documentLaunchMode="never", NEW_TASK forces the activity to still
+            // open in a new window.
+            flags |= Intent.FLAG_ACTIVITY_NEW_TASK;
         }
         intent.setFlags(flags);
 
@@ -879,15 +904,27 @@ public abstract class AbstractActionHandler<T extends FragmentActivity & CommonA
 
     private final class LoaderBindings implements LoaderCallbacks<DirectoryResult> {
 
+        private ExecutorService mExecutorService = null;
+        private static final long MAX_SEARCH_TIME_MS = 3000;
+        private static final int MAX_RESULTS = 500;
+
+        @NonNull
         @Override
         public Loader<DirectoryResult> onCreateLoader(int id, Bundle args) {
-            Context context = mActivity;
-
             // If document stack is not initialized, i.e. if the root is null, create "Recents" root
             // with the selected user.
             if (!mState.stack.isInitialized()) {
                 mState.stack.changeRoot(mActivity.getCurrentRoot());
             }
+
+            if (isUseSearchV2FlagEnabled()) {
+                return onCreateLoaderV2(id, args);
+            }
+            return onCreateLoaderV1(id, args);
+        }
+
+        private Loader<DirectoryResult> onCreateLoaderV1(int id, Bundle args) {
+            Context context = mActivity;
 
             if (mState.stack.isRecents()) {
                 final LockingContentObserver observer = new LockingContentObserver(
@@ -963,6 +1000,69 @@ public abstract class AbstractActionHandler<T extends FragmentActivity & CommonA
                         mContentLock,
                         queryArgs);
             }
+        }
+
+        private Loader<DirectoryResult> onCreateLoaderV2(int id, Bundle args) {
+            if (mExecutorService == null) {
+                // TODO(b:388130971): Fine tune the size of the thread pool.
+                mExecutorService = Executors.newFixedThreadPool(
+                        GlobalSearchLoader.MAX_OUTSTANDING_TASK);
+            }
+            DocumentStack stack = mState.stack;
+            RootInfo root = stack.getRoot();
+            List<UserId> userIdList = DocumentsApplication.getUserIdManager(mActivity).getUserIds();
+
+            Duration lastModifiedDelta = stack.isRecents()
+                    ? Duration.ofMillis(RecentsLoader.REJECT_OLDER_THAN)
+                    : null;
+            int maxResults = (root == null || root.isRecents())
+                    ? RecentsLoader.MAX_DOCS_FROM_ROOT : MAX_RESULTS;
+            QueryOptions options = new QueryOptions(
+                    maxResults, lastModifiedDelta, Duration.ofMillis(MAX_SEARCH_TIME_MS),
+                    mState.showHiddenFiles, mState.acceptMimes, mSearchMgr.buildQueryArgs());
+
+            if (stack.isRecents() || mSearchMgr.isSearching()) {
+                Log.d(TAG, "Creating search loader V2");
+                // For search and recent we create an observer that restart the loader every time
+                // one of the searched content providers reports a change.
+                final LockingContentObserver observer = new LockingContentObserver(
+                        mContentLock, AbstractActionHandler.this::loadDocumentsForCurrentStack);
+                Collection<RootInfo> rootList = new ArrayList<>();
+                if (stack.isRecents()) {
+                    // TODO(b:381346575): Pass roots based on user selection.
+                    rootList.addAll(mProviders.getMatchingRootsBlocking(mState).stream().filter(
+                            r -> r.supportsSearch() && r.authority != null
+                                    && r.rootId != null).toList());
+                } else {
+                    rootList.add(root);
+                }
+                return new SearchLoader(
+                        mActivity,
+                        userIdList,
+                        mInjector.fileTypeLookup,
+                        observer,
+                        rootList,
+                        mSearchMgr.getCurrentSearch(),
+                        options,
+                        mState.sortModel,
+                        mExecutorService
+                );
+            }
+            Log.d(TAG, "Creating folder loader V2");
+            // For folder scan we pass the content lock to the loader so that it can register
+            // an a callback to its internal method that forces a reload of the folder, every
+            // time the content provider reports a change.
+            return new FolderLoader(
+                    mActivity,
+                    userIdList,
+                    mInjector.fileTypeLookup,
+                    mContentLock,
+                    root,
+                    stack.peek(),
+                    options,
+                    mState.sortModel
+            );
+
         }
 
         @Override

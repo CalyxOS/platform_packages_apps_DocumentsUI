@@ -16,6 +16,8 @@
 
 package com.android.documentsui.sidebar;
 
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.provider.DocumentsProvider;
@@ -28,6 +30,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 
 import com.android.documentsui.ActionHandler;
@@ -37,6 +40,8 @@ import com.android.documentsui.R;
 import com.android.documentsui.base.DocumentInfo;
 import com.android.documentsui.base.RootInfo;
 import com.android.documentsui.base.UserId;
+
+import com.google.android.material.button.MaterialButton;
 
 import java.util.Objects;
 
@@ -60,7 +65,16 @@ public class RootItem extends Item {
 
     public RootItem(RootInfo root, ActionHandler actionHandler, String packageName,
             boolean maybeShowBadge) {
-        super(R.layout.item_root, root.title, getStringId(root), root.userId);
+        this(R.layout.item_root, root, actionHandler, packageName, maybeShowBadge);
+    }
+
+    public RootItem(
+            @LayoutRes int layoutId,
+            RootInfo root,
+            ActionHandler actionHandler,
+            String packageName,
+            boolean maybeShowBadge) {
+        super(layoutId, root.title, getStringId(root), root.userId);
         this.root = root;
         mActionHandler = actionHandler;
         mPackageName = packageName;
@@ -96,24 +110,56 @@ public class RootItem extends Item {
     }
 
     protected final void bindAction(View view, int visibility, int iconId, String description) {
-        final ImageView actionIcon = (ImageView) view.findViewById(R.id.action_icon);
-        final View verticalDivider = view.findViewById(R.id.vertical_divider);
-        final View actionIconArea = view.findViewById(R.id.action_icon_area);
+        if (isUseMaterial3FlagEnabled()) {
+            final MaterialButton actionIcon = view.findViewById(R.id.action_icon);
 
-        verticalDivider.setVisibility(visibility);
-        actionIconArea.setVisibility(visibility);
-        actionIconArea.setOnClickListener(visibility == View.VISIBLE ? this::onActionClick : null);
-        if (description != null) {
-            actionIconArea.setContentDescription(description);
-        }
-        if (iconId > 0) {
-            actionIcon.setImageDrawable(IconUtils.applyTintColor(view.getContext(), iconId,
-                    R.color.item_action_icon));
+            actionIcon.setVisibility(visibility);
+            actionIcon.setOnClickListener(visibility == View.VISIBLE ? this::onActionClick : null);
+            actionIcon.setOnFocusChangeListener(
+                    visibility == View.VISIBLE ? this::onActionIconFocusChange : null);
+            if (description != null) {
+                actionIcon.setContentDescription(description);
+            }
+            if (iconId > 0) {
+                actionIcon.setIconResource(iconId);
+            }
+        } else {
+            final ImageView actionIcon = (ImageView) view.findViewById(R.id.action_icon);
+            final View verticalDivider = view.findViewById(R.id.vertical_divider);
+            final View actionIconArea = view.findViewById(R.id.action_icon_area);
+
+            verticalDivider.setVisibility(visibility);
+            actionIconArea.setVisibility(visibility);
+            actionIconArea.setOnClickListener(
+                    visibility == View.VISIBLE ? this::onActionClick : null);
+            if (description != null) {
+                actionIconArea.setContentDescription(description);
+            }
+            if (iconId > 0) {
+                actionIcon.setImageDrawable(
+                        IconUtils.applyTintColor(
+                                view.getContext(), iconId, R.color.item_action_icon));
+            }
         }
     }
 
     protected void onActionClick(View view) {
         RootsFragment.ejectClicked(view, root, mActionHandler);
+    }
+
+    /**
+     * When the action icon is focused, adding a focus ring indicator using Stroke.
+     * TODO(b/381957932): Remove this once Material Button supports focus ring.
+     */
+    protected void onActionIconFocusChange(View view, boolean hasFocus) {
+        MaterialButton actionIcon = (MaterialButton) view;
+        if (hasFocus) {
+            final int focusRingWidth =
+                    actionIcon.getResources().getDimensionPixelSize(R.dimen.focus_ring_width);
+            actionIcon.setStrokeWidth(focusRingWidth);
+        } else {
+            actionIcon.setStrokeWidth(0);
+        }
     }
 
     protected final void bindIconAndTitle(View view) {

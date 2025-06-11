@@ -15,6 +15,39 @@
     limitations under the License.
 -->
 
-<!-- A placeholder of table header on small screens. This won't inflate any view when it's included
-     into other layouts. -->
-<merge />
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/table_header"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/doc_header_height"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:paddingStart="@dimen/table_header_padding_start"
+    android:paddingEnd="@dimen/table_header_padding_end"
+    android:background="?attr/colorSurfaceBright"
+    android:visibility="gone">
+
+    <!-- Placeholder for MIME/thumbnail icon -->
+    <View
+        android:layout_width="@dimen/list_item_icon_size"
+        android:layout_height="@dimen/list_item_icon_size"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/list_item_icon_margin_end"
+        android:layout_marginStart="0dp"/>
+
+    <!-- Column headers: Name only for compact/medium size screen -->
+    <com.android.documentsui.sorting.HeaderCell
+        android:id="@android:id/title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:animateLayoutChanges="true">
+
+        <include layout="@layout/shared_cell_content" />
+    </com.android.documentsui.sorting.HeaderCell>
+</LinearLayout>

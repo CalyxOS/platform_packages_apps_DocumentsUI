@@ -16,11 +16,18 @@
 
 package com.android.documentsui.files;
 
+import static com.android.documentsui.util.FlagUtils.isZipNgFlagEnabled;
+
 import static junit.framework.Assert.assertEquals;
 
 import static org.junit.Assert.assertTrue;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.platform.test.annotations.RequiresFlagsDisabled;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 
@@ -35,6 +42,7 @@ import com.android.documentsui.base.RootInfo;
 import com.android.documentsui.base.State;
 import com.android.documentsui.base.UserId;
 import com.android.documentsui.dirlist.TestData;
+import com.android.documentsui.flags.Flags;
 import com.android.documentsui.testing.TestDirectoryDetails;
 import com.android.documentsui.testing.TestEnv;
 import com.android.documentsui.testing.TestFeatures;
@@ -45,6 +53,7 @@ import com.android.documentsui.testing.TestSearchViewManager;
 import com.android.documentsui.testing.TestSelectionDetails;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -71,6 +80,8 @@ public final class MenuManagerTest {
     private TestMenuItem dirPasteIntoFolder;
     private TestMenuItem dirInspect;
     private TestMenuItem dirOpenInNewWindow;
+    private TestMenuItem mDirExtractHere;
+    private TestMenuItem mDirBrowse;
 
     /* Root List Context Menu items */
     private TestMenuItem rootEjectRoot;
@@ -105,6 +116,7 @@ public final class MenuManagerTest {
     private TestMenuItem optionSort;
     private TestMenuItem mOptionLauncher;
     private TestMenuItem mOptionShowHiddenFiles;
+    private TestMenuItem mOptionExtractAll;
 
     /* Sub Option Menu items */
     private TestMenuItem subOptionGrid;
@@ -122,6 +134,9 @@ public final class MenuManagerTest {
     private SelectionTracker<String> selectionManager;
 
     private int mFilesCount;
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Before
     public void setUp() {
@@ -144,6 +159,8 @@ public final class MenuManagerTest {
         dirPasteIntoFolder = testMenu.findItem(R.id.dir_menu_paste_into_folder);
         dirInspect = testMenu.findItem(R.id.dir_menu_inspect);
         dirOpenInNewWindow = testMenu.findItem(R.id.dir_menu_open_in_new_window);
+        mDirExtractHere = testMenu.findItem(R.id.dir_menu_extract_here);
+        mDirBrowse = testMenu.findItem(R.id.dir_menu_browse);
 
         rootEjectRoot = testMenu.findItem(R.id.root_menu_eject_root);
         rootOpenInNewWindow = testMenu.findItem(R.id.root_menu_open_in_new_window);
@@ -176,6 +193,7 @@ public final class MenuManagerTest {
         optionSort = testMenu.findItem(R.id.option_menu_sort);
         mOptionLauncher = testMenu.findItem(R.id.option_menu_launcher);
         mOptionShowHiddenFiles = testMenu.findItem(R.id.option_menu_show_hidden_files);
+        mOptionExtractAll = testMenu.findItem(R.id.option_menu_extract_all);
 
         // Menu actions on root title row.
         subOptionGrid = testMenu.findItem(R.id.sub_menu_grid);
@@ -244,6 +262,7 @@ public final class MenuManagerTest {
         actionModeSort.assertEnabledAndVisible();
         actionModeSelectAll.assertEnabledAndVisible();
         mActionModeDeselectAll.assertDisabledAndInvisible();
+        mOptionExtractAll.assertDisabledAndInvisible();
     }
 
     @Test
@@ -259,6 +278,7 @@ public final class MenuManagerTest {
         actionModeExtractTo.assertDisabledAndInvisible();
         actionModeMoveTo.assertDisabledAndInvisible();
         actionModeViewInOwner.assertDisabledAndInvisible();
+        mOptionExtractAll.assertDisabledAndInvisible();
     }
 
     @Test
@@ -388,7 +408,7 @@ public final class MenuManagerTest {
 
     @Test
     public void testActionMenu_CanOpenWith() {
-        selectionDetails.canOpenWith = true;
+        selectionDetails.canOpen = true;
         mgr.updateActionMenu(testMenu, selectionDetails);
 
         actionModeOpenWith.assertEnabledAndVisible();
@@ -396,7 +416,7 @@ public final class MenuManagerTest {
 
     @Test
     public void testActionMenu_NoOpenWith() {
-        selectionDetails.canOpenWith = false;
+        selectionDetails.canOpen = false;
         mgr.updateActionMenu(testMenu, selectionDetails);
 
         actionModeOpenWith.assertDisabledAndInvisible();
@@ -476,6 +496,20 @@ public final class MenuManagerTest {
     }
 
     @Test
+    public void testOptionMenu_ExtractAll() {
+        dirDetails.isInArchive = true;
+        mgr.updateOptionMenu(testMenu);
+        if (isZipNgFlagEnabled()) {
+            mOptionExtractAll.assertEnabledAndVisible();
+        } else {
+            mOptionExtractAll.assertDisabledAndInvisible();
+        }
+        dirDetails.isInArchive = false;
+        mgr.updateOptionMenu(testMenu);
+        mOptionExtractAll.assertDisabledAndInvisible();
+    }
+
+    @Test
     public void testInflateContextMenu_Files() {
         TestMenuInflater inflater = new TestMenuInflater();
 
@@ -508,6 +542,7 @@ public final class MenuManagerTest {
         assertEquals(R.menu.mixed_context_menu, inflater.lastInflatedMenuId);
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_EmptyArea() {
         mgr.updateContextMenuForContainer(testMenu, selectionDetails);
@@ -516,8 +551,11 @@ public final class MenuManagerTest {
         mDirDeselectAll.assertDisabledAndInvisible();
         dirPasteFromClipboard.assertDisabledAndInvisible();
         dirCreateDir.assertDisabledAndInvisible();
+        mDirExtractHere.assertDisabledAndInvisible();
+        mDirBrowse.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_EmptyArea_CanDeselectAll() {
         selectionDetails.size = 1;
@@ -529,6 +567,7 @@ public final class MenuManagerTest {
         mDirDeselectAll.assertEnabledAndVisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_EmptyArea_NoItemToPaste() {
         dirDetails.hasItemsToPaste = false;
@@ -541,6 +580,7 @@ public final class MenuManagerTest {
         dirCreateDir.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_EmptyArea_CantCreateDoc() {
         dirDetails.hasItemsToPaste = true;
@@ -553,6 +593,7 @@ public final class MenuManagerTest {
         dirCreateDir.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_EmptyArea_CanPaste() {
         dirDetails.hasItemsToPaste = true;
@@ -565,6 +606,7 @@ public final class MenuManagerTest {
         dirCreateDir.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_EmptyArea_CanCreateDirectory() {
         dirDetails.canCreateDirectory = true;
@@ -576,6 +618,7 @@ public final class MenuManagerTest {
         dirCreateDir.assertEnabledAndVisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_OnFile() {
         selectionDetails.size = 1;
@@ -587,22 +630,40 @@ public final class MenuManagerTest {
         dirRename.assertDisabledAndInvisible();
         dirCreateDir.assertEnabledAndVisible();
         dirDelete.assertDisabledAndInvisible();
+        mDirExtractHere.assertDisabledAndInvisible();
+        mDirBrowse.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
-    public void testContextMenu_OnFile_CanOpenWith() {
-        selectionDetails.canOpenWith = true;
+    @RequiresFlagsDisabled({Flags.FLAG_DESKTOP_FILE_HANDLING_RO})
+    public void testContextMenu_OnFile_CanOpen() {
+        selectionDetails.canOpen = true;
         mgr.updateContextMenuForFiles(testMenu, selectionDetails);
+        dirOpen.assertDisabledAndInvisible();
         dirOpenWith.assertEnabledAndVisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
-    public void testContextMenu_OnFile_NoOpenWith() {
-        selectionDetails.canOpenWith = false;
+    @RequiresFlagsEnabled({Flags.FLAG_DESKTOP_FILE_HANDLING_RO})
+    public void testContextMenu_OnFile_CanOpenDesktop() {
+        selectionDetails.canOpen = true;
         mgr.updateContextMenuForFiles(testMenu, selectionDetails);
+        dirOpen.assertEnabledAndVisible();
+        dirOpenWith.assertEnabledAndVisible();
+    }
+
+    @SuppressLint("VisibleForTests")
+    @Test
+    public void testContextMenu_OnFile_NoOpen() {
+        selectionDetails.canOpen = false;
+        mgr.updateContextMenuForFiles(testMenu, selectionDetails);
+        dirOpen.assertDisabledAndInvisible();
         dirOpenWith.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_OnMultipleFiles() {
         selectionDetails.size = 3;
@@ -611,6 +672,7 @@ public final class MenuManagerTest {
         mDirCompress.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_OnWritableDirectory() {
         selectionDetails.size = 1;
@@ -624,8 +686,11 @@ public final class MenuManagerTest {
         dirPasteIntoFolder.assertEnabledAndVisible();
         dirRename.assertDisabledAndInvisible();
         dirDelete.assertDisabledAndInvisible();
+        mDirExtractHere.assertDisabledAndInvisible();
+        mDirBrowse.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_OnNonWritableDirectory() {
         selectionDetails.size = 1;
@@ -638,8 +703,11 @@ public final class MenuManagerTest {
         dirPasteIntoFolder.assertDisabledAndInvisible();
         dirRename.assertDisabledAndInvisible();
         dirDelete.assertDisabledAndInvisible();
+        mDirExtractHere.assertDisabledAndInvisible();
+        mDirBrowse.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_CanInspectContainer() {
         features.inspector = true;
@@ -648,6 +716,7 @@ public final class MenuManagerTest {
         dirInspect.assertEnabledAndVisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_OnWritableDirectory_NothingToPaste() {
         selectionDetails.canPasteInto = true;
@@ -657,6 +726,7 @@ public final class MenuManagerTest {
         dirPasteIntoFolder.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_OnMultipleDirectories() {
         selectionDetails.size = 3;
@@ -665,6 +735,7 @@ public final class MenuManagerTest {
         mDirCompress.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_OnMixedDocs() {
         selectionDetails.containDirectories = true;
@@ -676,8 +747,11 @@ public final class MenuManagerTest {
         dirCopyToClipboard.assertEnabledAndVisible();
         mDirCompress.assertDisabledAndInvisible();
         dirDelete.assertEnabledAndVisible();
+        mDirExtractHere.assertDisabledAndInvisible();
+        mDirBrowse.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_OnMixedDocs_hasPartialFile() {
         selectionDetails.containDirectories = true;
@@ -692,6 +766,7 @@ public final class MenuManagerTest {
         dirDelete.assertEnabledAndVisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_OnMixedDocs_hasUndeletableFile() {
         selectionDetails.containDirectories = true;
@@ -705,11 +780,28 @@ public final class MenuManagerTest {
         dirDelete.assertDisabledAndInvisible();
     }
 
+    @SuppressLint("VisibleForTests")
     @Test
     public void testContextMenu_CanInspectSingleSelection() {
         selectionDetails.size = 1;
         mgr.updateContextMenuForFiles(testMenu, selectionDetails);
         dirInspect.assertEnabledAndVisible();
+    }
+
+    @SuppressLint("VisibleForTests")
+    @Test
+    public void testContextMenu_OnArchive() {
+        selectionDetails.size = 1;
+        selectionDetails.containFiles = true;
+        selectionDetails.isArchive = true;
+        mgr.updateContextMenuForFiles(testMenu, selectionDetails);
+        if (isZipNgFlagEnabled()) {
+            mDirExtractHere.assertEnabledAndVisible();
+            mDirBrowse.assertEnabledAndVisible();
+        } else {
+            mDirExtractHere.assertDisabledAndInvisible();
+            mDirBrowse.assertDisabledAndInvisible();
+        }
     }
 
     @Test

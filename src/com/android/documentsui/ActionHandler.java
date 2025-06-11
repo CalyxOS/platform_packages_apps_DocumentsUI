@@ -118,7 +118,7 @@ public interface ActionHandler {
 
     void showCreateDirectoryDialog();
 
-    void showInspector(DocumentInfo doc);
+    void showPreview(DocumentInfo doc);
 
     @Nullable DocumentInfo renameDocument(String name, DocumentInfo document);
 
@@ -127,6 +127,12 @@ public interface ActionHandler {
      * If the primary view type is unavailable, then fallback to the alternative type of view.
      */
     boolean openItem(ItemDetails<String> doc, @ViewType int type, @ViewType int fallback);
+
+    /**
+     * Similar to openItem but takes DocumentInfo instead of DocumentItemDetails and uses
+     * VIEW_TYPE_VIEW with no fallback.
+     */
+    void openDocumentViewOnly(DocumentInfo doc);
 
     /**
      * This is called when user hovers over a doc for enough time during a drag n' drop, to open a

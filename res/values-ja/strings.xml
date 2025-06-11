@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"移動…"</string>
     <string name="menu_compress" msgid="37539111904724188">"圧縮"</string>
     <string name="menu_extract" msgid="8171946945982532262">"次の場所に解凍…"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"すべて抽出…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"ここに抽出"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"参照"</string>
     <string name="menu_rename" msgid="1883113442688817554">"名前を変更"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"詳細情報"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"非表示のファイルを表示"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"別のアプリからファイルを移動することはできません。"</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"グリッドモードで表示しています。"</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"リストモードで表示しています。"</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"ファイル名"</string>
 </resources>

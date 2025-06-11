@@ -22,7 +22,9 @@ import static com.android.documentsui.services.FileOperationService.OPERATION_DE
 import static com.android.documentsui.services.FileOperationService.OPERATION_EXTRACT;
 import static com.android.documentsui.services.FileOperationService.OPERATION_MOVE;
 import static com.android.documentsui.services.FileOperationService.OPERATION_UNKNOWN;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -179,13 +181,28 @@ public class PickFragment extends Fragment {
         switch (mAction) {
             case State.ACTION_OPEN_TREE:
                 mPick.setText(getString(R.string.open_tree_button));
-                mPick.setWidth(Integer.MAX_VALUE);
-                mCancel.setVisibility(View.GONE);
+                // When use_material3 flag is enabled, all form factors should have the pick button
+                // wrap the text content instead of taking up the full width.
+                if (!isUseMaterial3FlagEnabled()) {
+                    mCancel.setVisibility(View.GONE);
+                    mPick.setWidth(Integer.MAX_VALUE);
+                    mPickOverlay.setVisibility(
+                            mPickTarget.isBlockedFromTree() && mRestrictScopeStorage
+                                    ? View.VISIBLE
+                                    : View.GONE);
+                } else if (!getActivity()
+                        .getPackageManager()
+                        .hasSystemFeature(PackageManager.FEATURE_PC)) {
+                    // On non-desktop devices the back gesture is used to cancel the picker, so
+                    // don't show the "Cancel" button on these devices and instead enable the pick
+                    // overlay which enables showing a toast when the disabled button is pressed.
+                    mCancel.setVisibility(View.GONE);
+                    mPickOverlay.setVisibility(
+                            mPickTarget.isBlockedFromTree() && mRestrictScopeStorage
+                                    ? View.VISIBLE
+                                    : View.GONE);
+                }
                 mPick.setEnabled(!(mPickTarget.isBlockedFromTree() && mRestrictScopeStorage));
-                mPickOverlay.setVisibility(
-                        mPickTarget.isBlockedFromTree() && mRestrictScopeStorage
-                                ? View.VISIBLE
-                                : View.GONE);
                 break;
             case State.ACTION_PICK_COPY_DESTINATION:
                 int titleId;

@@ -16,6 +16,8 @@
 
 package com.android.documentsui.dirlist;
 
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+
 import android.os.UserManager;
 import android.view.ViewGroup;
 
@@ -204,6 +206,11 @@ final class DirectoryAddonsAdapter extends DocumentsAdapter {
         mHeaderMessage.update(event);
         // If there's any fatal error (exceptions), then no need to update the rest.
         if (event.hasException()) {
+            return;
+        }
+
+        if (isUseMaterial3FlagEnabled()) {
+            // Do not add a visual break between folders and documents in Material3.
             return;
         }
 

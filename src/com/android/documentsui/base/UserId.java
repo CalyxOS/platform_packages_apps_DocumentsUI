@@ -95,6 +95,13 @@ public final class UserId {
     }
 
     /**
+     * Return this User's {@link UserHandle}.
+     */
+    public UserHandle getUserHandle() {
+        return mUserHandle;
+    }
+
+    /**
      * Return a package manager instance of this user.
      */
     public PackageManager getPackageManager(Context context) {

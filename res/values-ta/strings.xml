@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"இங்கு நகர்த்து…"</string>
     <string name="menu_compress" msgid="37539111904724188">"அளவைக் குறை"</string>
     <string name="menu_extract" msgid="8171946945982532262">"இங்கு பிரி…"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"அனைத்தையும் பிரித்தெடு…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"இங்கே பிரித்தெடு"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"பிரவுசிங் செய்"</string>
     <string name="menu_rename" msgid="1883113442688817554">"பெயர் மாற்று"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"தகவலைப் பெறு"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"மறைக்கப்பட்ட ஃபைல்களைக் காட்டு"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"வேறொரு ஆப்ஸிலிருந்து ஃபைல்களை நகர்த்த முடியாது."</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"கட்டக் காட்சியில் காட்டுகிறது."</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"பட்டியல் காட்சியில் காட்டுகிறது."</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"ஃபைல் பெயர்"</string>
 </resources>

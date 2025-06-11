@@ -20,10 +20,21 @@
     android:layout_height="wrap_content"
     android:scrollbars="none">
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/search_chip_group"
+    <!-- This additional FrameLayout layer is essential to make HorizontalScrollView work with the
+         marginHorizontal on the ChipGroup below, without this the scroll behavior is weird.
+         Alternatively we could use paddingHorizontal on the ChipGroup below to make it work with
+         HorizontalScrollView, but that cause a weird padding issue in RTL.
+    -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/search_chip_group_margin_horizontal"
-        android:paddingVertical="@dimen/search_chip_group_margin_vertical"/>
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/search_chip_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/main_container_padding_start"
+            android:paddingVertical="@dimen/search_chip_group_padding_vertical" />
+
+    </FrameLayout>
 </HorizontalScrollView>

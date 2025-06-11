@@ -109,6 +109,8 @@ public class FileOperationServiceTest extends ServiceTestCase<FileOperationServi
 
         assertNull(mService.features);
         mService.features = features;
+
+        mService.mVisualSignalsEnabled = false;
     }
 
     @Override

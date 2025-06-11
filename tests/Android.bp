@@ -25,12 +25,16 @@ java_defaults {
     ],
 
     static_libs: [
-        "androidx.test.rules",
+        "androidx.test.core",
         "androidx.test.espresso.core",
         "androidx.test.ext.truth",
+        "androidx.test.rules",
+        "androidx.test.ext.junit",
+        "androidx.test.uiautomator_uiautomator",
+        "docsui-flags-aconfig-java-lib",
+        "flag-junit",
         "guava",
         "mockito-target",
-        "androidx.test.uiautomator_uiautomator",
     ],
 }
 
@@ -38,6 +42,7 @@ android_library {
     name: "DocumentsUIPerfTests-lib",
     srcs: [
         "common/com/android/documentsui/**/*.java",
+        "common/com/android/documentsui/**/*.kt",
         "functional/com/android/documentsui/ActivityTest.java",
     ],
     resource_dirs: [],
@@ -50,11 +55,11 @@ android_library {
 
     static_libs: [
         "androidx.legacy_legacy-support-v4",
-        "androidx.test.rules",
         "androidx.test.espresso.core",
+        "androidx.test.rules",
+        "androidx.test.uiautomator_uiautomator",
         "mockito-target",
         "ub-janktesthelper",
-        "androidx.test.uiautomator_uiautomator",
     ],
 }
 
@@ -66,7 +71,9 @@ android_library {
 
     srcs: [
         "common/**/*.java",
+        "common/**/*.kt",
         "unit/**/*.java",
+        "unit/**/*.kt",
     ],
 
     libs: [
@@ -77,8 +84,8 @@ android_library {
         "res",
     ],
 
-    min_sdk_version: "29",
-    target_sdk_version: "29",
+    min_sdk_version: "30",
+    target_sdk_version: "30",
 }
 
 android_library {
@@ -89,8 +96,11 @@ android_library {
 
     srcs: [
         "common/**/*.java",
+        "common/**/*.kt",
         "functional/**/*.java",
+        "functional/**/*.kt",
         "unit/**/*.java",
+        "unit/**/*.kt",
     ],
 
     libs: [
@@ -110,8 +120,8 @@ android_library {
         "-0 .zip",
     ],
 
-    min_sdk_version: "29",
-    target_sdk_version: "29",
+    min_sdk_version: "30",
+    target_sdk_version: "30",
     lint: {
         baseline_filename: "lint-baseline.xml",
     },
@@ -141,6 +151,6 @@ android_test {
     certificate: "platform",
 
     instrumentation_for: "DocumentsUI",
-    min_sdk_version: "29",
-    target_sdk_version: "29",
+    min_sdk_version: "30",
+    target_sdk_version: "30",
 }

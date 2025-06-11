@@ -16,6 +16,8 @@
 
 package com.android.documentsui.bots;
 
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -46,7 +48,6 @@ import androidx.test.uiautomator.Until;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * A test helper class that provides support for controlling directory list
@@ -56,16 +57,13 @@ public class DirectoryListBot extends Bots.BaseBot {
 
     private static final int MAX_LAYOUT_LEVEL = 10;
 
-    private static final BySelector SNACK_DELETE =
-            By.text(Pattern.compile("^Deleting [0-9]+ item.+"));
-
     private final String mDirContainerId;
     private final String mDirListId;
     private final String mItemRootId;
     private final String mPreviewId;
     private final String mIconId;
 
-    private UiAutomation mAutomation;
+    private final UiAutomation mAutomation;
 
     public DirectoryListBot(
             UiDevice device, UiAutomation automation, Context context, int timeout) {
@@ -75,7 +73,7 @@ public class DirectoryListBot extends Bots.BaseBot {
         mDirListId = mTargetPackage + ":id/dir_list";
         mItemRootId = mTargetPackage + ":id/item_root";
         mPreviewId = mTargetPackage + ":id/preview_icon";
-        mIconId = mTargetPackage + ":id/icon";
+        mIconId = mTargetPackage + (isUseMaterial3FlagEnabled() ? ":id/icon_wrapper" : ":id/icon");
     }
 
     public void assertDocumentsCount(int count) throws UiObjectNotFoundException {
@@ -178,10 +176,6 @@ public class DirectoryListBot extends Bots.BaseBot {
         findPlaceholderMessageTextView().waitForExists(mTimeout);
     }
 
-    public void assertSnackbar(int id) {
-        assertNotNull(getSnackbar(mContext.getString(id)));
-    }
-
     public void openDocument(String label) throws UiObjectNotFoundException {
         int toolType = Configurator.getInstance().getToolType();
         Configurator.getInstance().setToolType(MotionEvent.TOOL_TYPE_FINGER);
@@ -208,13 +202,6 @@ public class DirectoryListBot extends Bots.BaseBot {
         assertSelection(number);
     }
 
-    public boolean isDocumentSelected(String label) throws UiObjectNotFoundException {
-        waitForDocument(label);
-        UiObject2 selectionHotspot = findSelectionHotspot(label);
-        return selectionHotspot.getResourceName()
-                .equals(mTargetPackage + ":id/icon_check");
-    }
-
     public UiObject2 findSelectionHotspot(String label) throws UiObjectNotFoundException {
         final BySelector list = By.res(mDirListId);
 
@@ -224,20 +211,15 @@ public class DirectoryListBot extends Bots.BaseBot {
         new UiScrollable(docList).scrollIntoView(new UiSelector().text(label));
 
         UiObject2 parent = mDevice.findObject(list).findObject(selector);
+        UiObject2 selectionHotspot = null;
         for (int i = 1; i <= MAX_LAYOUT_LEVEL; i++) {
             parent = parent.getParent();
-            if (mItemRootId.equals(parent.getResourceName())) {
+            selectionHotspot = parent.findObject(By.res(mIconId));
+            if (selectionHotspot != null) {
                 break;
             }
         }
-        return parent.findObject(By.res(mIconId));
-    }
-
-    public void copyFilesToClipboard(String...labels) throws UiObjectNotFoundException {
-        for (String label: labels) {
-            selectDocument(label);
-        }
-        mDevice.pressKeyCode(KeyEvent.KEYCODE_C, KeyEvent.META_CTRL_ON);
+        return selectionHotspot;
     }
 
     public void pasteFilesFromClipboard() {
@@ -246,21 +228,6 @@ public class DirectoryListBot extends Bots.BaseBot {
 
     public UiObject2 getSnackbar(String message) {
         return mDevice.wait(Until.findObject(By.text(message)), mTimeout);
-    }
-
-    public void clickSnackbarAction() throws UiObjectNotFoundException {
-        UiObject snackbarAction =
-                findObject(mTargetPackage + ":id/snackbar_action");
-        snackbarAction.click();
-    }
-
-    public void waitForDeleteSnackbar() {
-        mDevice.wait(Until.findObject(SNACK_DELETE), mTimeout);
-    }
-
-    public void waitForDeleteSnackbarGone() {
-        // wait a little longer for snackbar to go away, as it disappears after a timeout.
-        mDevice.wait(Until.gone(SNACK_DELETE), mTimeout * 2);
     }
 
     public void waitForDocument(String label) throws UiObjectNotFoundException {
@@ -295,9 +262,8 @@ public class DirectoryListBot extends Bots.BaseBot {
 
     public boolean hasDocumentPreview(String label) {
         final BySelector list = By.res(mDirListId);
-        final UiObject2 text = mDevice.findObject(list).findObject(By.text(label));
 
-        UiObject2 parent = text;
+        UiObject2 parent = mDevice.findObject(list).findObject(By.text(label));
         for (int i = 1; i <= MAX_LAYOUT_LEVEL; i++) {
             parent = parent.getParent();
             if (mItemRootId.equals(parent.getResourceName())) {
@@ -338,7 +304,7 @@ public class DirectoryListBot extends Bots.BaseBot {
         String assertSelectionText = numSelected + " selected";
         UiObject2 selectionText = mDevice.wait(
                 Until.findObject(By.text(assertSelectionText)), mTimeout);
-        assertTrue(selectionText != null);
+        assertNotNull(selectionText);
     }
 
     public void assertOrder(String[] dirs, String[] files) throws UiObjectNotFoundException {

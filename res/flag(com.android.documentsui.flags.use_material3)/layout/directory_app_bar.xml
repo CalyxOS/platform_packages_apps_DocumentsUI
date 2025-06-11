@@ -14,41 +14,50 @@
      limitations under the License.
 -->
 
+<!-- This is only used in DrawerLayout (compact screen) right now. -->
 <com.google.android.material.appbar.AppBarLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/app_bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/colorBackground">
+    android:touchscreenBlocksFocus="false">
 
+    <!-- Technically we don't need this CollapsingToolbarLayout wrapper when use_material3 flag
+         is ON, because we don't want to hide anything in the app header area when scrolling, but
+         some files (e.g. NavigationViewManager and others) uses the existence of this element to
+         do some specific logic, hence leaving it here with "noScroll" behavior.
+     -->
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:titleEnabled="false"
-        app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+        app:layout_scrollFlags="noScroll">
 
-        <androidx.core.widget.NestedScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="?attr/colorSurfaceBright">
 
             <include layout="@layout/directory_header" />
 
-        </androidx.core.widget.NestedScrollView>
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:dividerColor="?attr/colorSurfaceContainer"
+                app:dividerThickness="@dimen/main_container_section_gap" />
 
-        <androidx.appcompat.widget.Toolbar
+            <include layout="@layout/column_headers"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:layout_margin="@dimen/search_bar_margin"
-            android:background="?android:attr/colorBackground"
-            android:theme="?actionBarTheme"
-            android:popupTheme="?actionBarPopupTheme"
-            android:elevation="@dimen/search_bar_elevation"
-            app:collapseContentDescription="@string/button_back"
-            app:titleTextAppearance="@style/ToolbarTitle"
-            app:layout_collapseMode="pin">
+            android:layout_height="?attr/actionBarSize"
+            android:touchscreenBlocksFocus="false">
 
             <TextView
                 android:id="@+id/searchbar_title"
@@ -58,7 +67,7 @@
                 android:text="@string/search_bar_hint"
                 android:textAppearance="@style/SearchBarTitle" />
 
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 

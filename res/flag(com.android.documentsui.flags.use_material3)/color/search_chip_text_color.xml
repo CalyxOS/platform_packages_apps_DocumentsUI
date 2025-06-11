@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<!-- TODO(b/379776735): remove this file after M3 uplift -->
+<!-- TODO(b/379776735): remove this file after use_material3 flag is launched. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true" android:color="@color/search_chip_text_selected_color"/>
     <item android:state_enabled="true" android:color="?android:textColorSecondary"/>

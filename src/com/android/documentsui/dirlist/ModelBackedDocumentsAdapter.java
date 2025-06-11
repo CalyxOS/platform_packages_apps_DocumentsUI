@@ -20,6 +20,7 @@ import static com.android.documentsui.base.DocumentInfo.getCursorInt;
 import static com.android.documentsui.base.DocumentInfo.getCursorString;
 import static com.android.documentsui.base.State.MODE_GRID;
 import static com.android.documentsui.base.State.MODE_LIST;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
 import android.database.Cursor;
 import android.provider.DocumentsContract.Document;
@@ -95,8 +96,12 @@ final class ModelBackedDocumentsAdapter extends DocumentsAdapter {
             case MODE_GRID:
                 switch (viewType) {
                     case ITEM_TYPE_DIRECTORY:
-                        holder =
-                                new GridDirectoryHolder(
+                        // Under the Material3 flag, the GridDocumentHolder is the holder for all
+                        // grid items.
+                        holder = isUseMaterial3FlagEnabled()
+                                ? new GridDocumentHolder(
+                                mEnv.getContext(), parent, mIconHelper, mConfigStore)
+                                : new GridDirectoryHolder(
                                         mEnv.getContext(), parent, mIconHelper, mConfigStore);
                         break;
                     case ITEM_TYPE_DOCUMENT:

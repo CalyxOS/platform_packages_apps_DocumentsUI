@@ -26,7 +26,6 @@ import com.android.documentsui.R;
 import org.mockito.Mockito;
 
 /**
- *
  * Test copy of {@link android.view.Menu}.
  *
  * We use abstract so we don't have to implement all the necessary methods from the interface,
@@ -55,6 +54,8 @@ public abstract class TestMenu implements Menu {
                 R.id.dir_menu_paste_into_folder,
                 R.id.dir_menu_inspect,
                 R.id.dir_menu_open_in_new_window,
+                R.id.dir_menu_extract_here,
+                R.id.dir_menu_browse,
                 R.id.root_menu_eject_root,
                 R.id.root_menu_open_in_new_window,
                 R.id.root_menu_paste_into_folder,
@@ -77,6 +78,7 @@ public abstract class TestMenu implements Menu {
                 R.id.option_menu_debug,
                 R.id.option_menu_new_window,
                 R.id.option_menu_create_dir,
+                R.id.option_menu_extract_all,
                 R.id.option_menu_select_all,
                 R.id.option_menu_settings,
                 R.id.option_menu_inspect,
@@ -86,7 +88,6 @@ public abstract class TestMenu implements Menu {
                 R.id.sub_menu_grid,
                 R.id.sub_menu_list);
     }
-
 
 
     public static TestMenu create(int... ids) {
@@ -100,6 +101,12 @@ public abstract class TestMenu implements Menu {
             // Used by SearchViewManager
             if (id == R.id.option_menu_search) {
                 item.setActionView(Mockito.mock(SearchView.class));
+            }
+
+            if (id == R.id.option_menu_extract_all || id == R.id.dir_menu_extract_here
+                    || id == R.id.dir_menu_browse) {
+                item.setEnabled(false);
+                item.setVisible(false);
             }
         }
         return menu;

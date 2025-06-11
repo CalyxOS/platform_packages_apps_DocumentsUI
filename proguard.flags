@@ -23,7 +23,10 @@
 }
 
 # To prevent class not found exception in org.brotli.dec.Dictionary
--keep final class org.brotli.dec.DictionaryData
+# TODO(b/373579455): Evaluate if <init> needs to be kept.
+-keep final class org.brotli.dec.DictionaryData {
+  void <init>();
+}
 
 # keep rule generated after running trace references on the test app against DocumentsUIGoogle.jar
 # TODO(b/339312616): Remove after a more permanent fix is available
@@ -84,11 +87,13 @@
   int cross_profile;
   int cross_profile_content;
   int cross_profile_progress;
+  int dir_menu_browse;
   int dir_menu_copy_to_clipboard;
   int dir_menu_create_dir;
   int dir_menu_cut_to_clipboard;
   int dir_menu_delete;
   int dir_menu_deselect_all;
+  int dir_menu_extract_here;
   int dir_menu_inspect;
   int dir_menu_open;
   int dir_menu_open_in_new_window;
@@ -101,8 +106,10 @@
   int dir_menu_view_in_owner;
   int drawer_layout;
   int inspector_details_view;
+  int job_progress_panel_title;
   int option_menu_create_dir;
   int option_menu_debug;
+  int option_menu_extract_all;
   int option_menu_inspect;
   int option_menu_launcher;
   int option_menu_new_window;
@@ -200,3 +207,8 @@
 
 # Keep Apache Commons Compress classes
 -keep class org.apache.commons.compress.** { *; }
+
+# This is used in the unit test
+-keep class com.google.android.material.chip.Chip {
+  public android.graphics.drawable.Drawable getChipIcon();
+}

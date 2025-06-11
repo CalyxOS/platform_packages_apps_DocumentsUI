@@ -489,7 +489,7 @@ public class FileCopyUiTest extends ActivityTest<FilesActivity> {
     }
 
     @HugeLongTest
-    public void ignored_testRecursiveCopyDocuments_InternalStorageToDownloadsProvider()
+    public void testRecursiveCopyDocuments_InternalStorageToDownloadsProvider()
             throws Exception {
         // Create Download folder if it doesn't exist.
         DocumentInfo info = mStorageDocsHelper.findFile(mPrimaryRoot.documentId, "Download");

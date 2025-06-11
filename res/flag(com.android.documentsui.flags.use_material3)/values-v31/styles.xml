@@ -42,11 +42,4 @@
     <item name="android:textAppearance">@style/EmptyStateButtonTextAppearance
     </item>
   </style>
-
-  <style name="DialogTextButton" parent="@style/Widget.Material3.Button.TextButton.Dialog">
-    <item name="android:textAppearance">@style/MaterialButtonTextAppearance
-    </item>
-    <item name="android:textColor">?android:attr/colorAccent</item>
-    <item name="android:backgroundTint">@android:color/transparent</item>
-  </style>
 </resources>

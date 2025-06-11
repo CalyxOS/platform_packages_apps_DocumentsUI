@@ -18,25 +18,44 @@ package com.android.documentsui.queries;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 
+import static java.util.Objects.requireNonNull;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.platform.test.annotations.RequiresFlagsDisabled;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.provider.DocumentsContract;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
+import com.android.documentsui.IconUtils;
 import com.android.documentsui.R;
 import com.android.documentsui.base.MimeTypes;
 import com.android.documentsui.base.Shared;
+import com.android.documentsui.flags.Flags;
 import com.android.documentsui.util.VersionUtils;
 
+import com.google.android.material.chip.Chip;
+
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -62,6 +81,9 @@ public final class SearchChipViewManagerTest {
     private SearchChipViewManager mSearchChipViewManager;
     private LinearLayout mChipGroup;
 
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
     @Before
     public void setUp() {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -80,6 +102,56 @@ public final class SearchChipViewManagerTest {
 
         int totalChipLength = TEST_MIME_TYPES.length + TEST_OTHER_TYPES.length;
         assertThat(mChipGroup.getChildCount()).isEqualTo(totalChipLength);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({Flags.FLAG_USE_MATERIAL3})
+    public void testChipIcon() {
+        mSearchChipViewManager.initChipSets(
+                new String[] {"image/*", "audio/*", "video/*", "text/*"});
+        mSearchChipViewManager.updateChips(new String[] {"*/*"});
+
+        Chip imageChip = (Chip) mChipGroup.getChildAt(0);
+        assertDrawablesEqual(
+                requireNonNull(imageChip.getChipIcon()),
+                requireNonNull(mContext.getDrawable(R.drawable.ic_chip_image)));
+        Chip audioChip = (Chip) mChipGroup.getChildAt(1);
+        assertDrawablesEqual(
+                requireNonNull(audioChip.getChipIcon()),
+                requireNonNull(mContext.getDrawable(R.drawable.ic_chip_audio)));
+        Chip videoChip = (Chip) mChipGroup.getChildAt(2);
+        assertDrawablesEqual(
+                requireNonNull(videoChip.getChipIcon()),
+                requireNonNull(mContext.getDrawable(R.drawable.ic_chip_video)));
+        Chip documentChip = (Chip) mChipGroup.getChildAt(3);
+        assertDrawablesEqual(
+                requireNonNull(documentChip.getChipIcon()),
+                requireNonNull(mContext.getDrawable(R.drawable.ic_chip_document)));
+    }
+
+    @Test
+    @RequiresFlagsDisabled({Flags.FLAG_USE_MATERIAL3})
+    public void testChipIcon_M3Disabled() {
+        mSearchChipViewManager.initChipSets(
+                new String[] {"image/*", "audio/*", "video/*", "text/*"});
+        mSearchChipViewManager.updateChips(new String[] {"*/*"});
+
+        Chip imageChip = (Chip) mChipGroup.getChildAt(0);
+        assertDrawablesEqual(
+                requireNonNull(imageChip.getChipIcon()),
+                requireNonNull(IconUtils.loadMimeIcon(mContext, "image/*")));
+        Chip audioChip = (Chip) mChipGroup.getChildAt(1);
+        assertDrawablesEqual(
+                requireNonNull(audioChip.getChipIcon()),
+                requireNonNull(IconUtils.loadMimeIcon(mContext, "audio/*")));
+        Chip videoChip = (Chip) mChipGroup.getChildAt(2);
+        assertDrawablesEqual(
+                requireNonNull(videoChip.getChipIcon()),
+                requireNonNull(IconUtils.loadMimeIcon(mContext, "video/*")));
+        Chip documentChip = (Chip) mChipGroup.getChildAt(3);
+        assertDrawablesEqual(
+                requireNonNull(documentChip.getChipIcon()),
+                requireNonNull(IconUtils.loadMimeIcon(mContext, MimeTypes.GENERIC_TYPE)));
     }
 
     @Test
@@ -167,9 +239,62 @@ public final class SearchChipViewManagerTest {
         assertThat(View.VISIBLE).isEqualTo(mirror.getVisibility());
     }
 
+    @Test
+    public void testChipChecked_resetScroll() {
+        // Mock chip group's parent chain according to search_chip_row.xml.
+        FrameLayout parent = spy(new FrameLayout(mContext));
+        HorizontalScrollView grandparent = spy(new HorizontalScrollView(mContext));
+        parent.addView(mChipGroup);
+        grandparent.addView(parent);
+        // Verify that getParent().getParent() returns the HorizontalScrollView mock.
+        ViewParent result = mChipGroup.getParent().getParent();
+        assertEquals(grandparent, result);
+
+        mSearchChipViewManager.initChipSets(
+                new String[] {"image/*", "audio/*", "video/*", "text/*"});
+        mSearchChipViewManager.updateChips(new String[] {"*/*"});
+
+        // Manually set HorizontalScrollView's scrollX to something larger than 0.
+        grandparent.scrollTo(100, 0);
+        assertTrue(grandparent.getScaleX() > 0);
+
+        assertEquals(6, mChipGroup.getChildCount());
+        Chip lastChip = (Chip) mChipGroup.getChildAt(5);
+
+        // chip.setChecked will trigger reorder animation, which needs to be run inside
+        // the looper thread.
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+            // Check last chip will move it to the first child and reset scroll view.
+            lastChip.setChecked(true);
+            assertEquals(0, grandparent.getScrollX());
+        });
+    }
+
     private static Set<SearchChipData> getFakeSearchChipDataList() {
         final Set<SearchChipData> chipDataList = new HashSet<>();
         chipDataList.add(new SearchChipData(CHIP_TYPE, 0 /* titleRes */, TEST_MIME_TYPES));
         return chipDataList;
+    }
+
+    private void assertDrawablesEqual(Drawable actual, Drawable expected) {
+        Bitmap bitmap1 =
+                Bitmap.createBitmap(
+                        actual.getIntrinsicWidth(),
+                        actual.getIntrinsicHeight(),
+                        Bitmap.Config.ARGB_8888);
+        Canvas canvas1 = new Canvas(bitmap1);
+        actual.setBounds(0, 0, actual.getIntrinsicWidth(), actual.getIntrinsicHeight());
+        actual.draw(canvas1);
+
+        Bitmap bitmap2 =
+                Bitmap.createBitmap(
+                        expected.getIntrinsicWidth(),
+                        expected.getIntrinsicHeight(),
+                        Bitmap.Config.ARGB_8888);
+        Canvas canvas2 = new Canvas(bitmap2);
+        expected.setBounds(0, 0, expected.getIntrinsicWidth(), expected.getIntrinsicHeight());
+        expected.draw(canvas2);
+
+        assertTrue("Drawables are not equal", bitmap1.sameAs(bitmap2));
     }
 }

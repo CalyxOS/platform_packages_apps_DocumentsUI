@@ -20,6 +20,7 @@ import static androidx.core.util.Preconditions.checkNotNull;
 
 import static com.android.documentsui.DevicePolicyResources.Strings.PERSONAL_TAB;
 import static com.android.documentsui.DevicePolicyResources.Strings.WORK_TAB;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
 
 import android.app.admin.DevicePolicyManager;
 import android.os.Build;
@@ -155,7 +156,17 @@ public class ProfileTabs implements ProfileTabsAddons {
                         (ViewGroup.MarginLayoutParams) tab.getLayoutParams();
                 int tabMarginSide = (int) mTabsContainer.getContext().getResources()
                         .getDimension(R.dimen.profile_tab_margin_side);
-                marginLayoutParams.setMargins(tabMarginSide, 0, tabMarginSide, 0);
+                if (isUseMaterial3FlagEnabled()) {
+                    final boolean isRtl = mTabs.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+                    // if use_material3 flag is ON, we uses the margin value as the right margin
+                    // (left margin for RTL),  except for the last child.
+                    if (i != mTabs.getTabCount() - 1) {
+                        marginLayoutParams.setMargins(
+                                isRtl ? tabMarginSide : 0, 0, isRtl ? 0 : tabMarginSide, 0);
+                    }
+                } else {
+                    marginLayoutParams.setMargins(tabMarginSide, 0, tabMarginSide, 0);
+                }
                 int tabHeightInDp = (int) mTabsContainer.getContext().getResources()
                         .getDimension(R.dimen.tab_height);
                 tab.getLayoutParams().height = tabHeightInDp;

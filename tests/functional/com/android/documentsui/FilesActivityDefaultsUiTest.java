@@ -18,24 +18,46 @@ package com.android.documentsui;
 
 import static com.android.documentsui.StubProvider.ROOT_0_ID;
 import static com.android.documentsui.StubProvider.ROOT_1_ID;
+import static com.android.documentsui.flags.Flags.FLAG_HIDE_ROOTS_ON_DESKTOP_RO;
 
-import android.os.RemoteException;
+import android.content.pm.PackageManager;
+import android.platform.test.annotations.RequiresFlagsDisabled;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
 import com.android.documentsui.base.RootInfo;
 import com.android.documentsui.files.FilesActivity;
 import com.android.documentsui.filters.HugeLongTest;
 
-@LargeTest
-public class FilesActivityDefaultsUiTest extends ActivityTest<FilesActivity> {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-    public FilesActivityDefaultsUiTest() {
-        super(FilesActivity.class);
+@LargeTest
+@RunWith(AndroidJUnit4.class)
+public class FilesActivityDefaultsUiTest extends ActivityTestJunit4<FilesActivity> {
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
     }
 
     @Override
-    protected void initTestFiles() throws RemoteException {
+    protected void initTestFiles() {
         // Overriding to init with no items in test roots
     }
 
@@ -44,6 +66,7 @@ public class FilesActivityDefaultsUiTest extends ActivityTest<FilesActivity> {
         return null;  // test the default, unaffected state of the app.
     }
 
+    @Test
     @HugeLongTest
     public void testNavigate_FromEmptyDirectory() throws Exception {
         device.waitForIdle();
@@ -57,8 +80,10 @@ public class FilesActivityDefaultsUiTest extends ActivityTest<FilesActivity> {
         device.pressBack();
     }
 
+    @Test
     @HugeLongTest
-    public void testDefaultRoots() throws Exception {
+    @RequiresFlagsDisabled(FLAG_HIDE_ROOTS_ON_DESKTOP_RO)
+    public void testDefaultRoots_hideRootsOnDesktopFlagDisabled() throws Exception {
         device.waitForIdle();
 
         // Should also have Drive, but that requires pre-configuration of devices
@@ -70,5 +95,30 @@ public class FilesActivityDefaultsUiTest extends ActivityTest<FilesActivity> {
                 "Downloads",
                 ROOT_0_ID,
                 ROOT_1_ID);
+    }
+
+    @Test
+    @HugeLongTest
+    @RequiresFlagsEnabled(FLAG_HIDE_ROOTS_ON_DESKTOP_RO)
+    public void testDefaultRoots_hideRootsOnDesktopFlagEnabled() throws Exception {
+        device.waitForIdle();
+
+        String[] expectedRoots;
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC)) {
+            expectedRoots = new String[]{"Downloads",
+                    ROOT_0_ID,
+                    ROOT_1_ID};
+        } else {
+            expectedRoots = new String[]{
+                    "Images",
+                    "Videos",
+                    "Audio",
+                    "Downloads",
+                    ROOT_0_ID,
+                    ROOT_1_ID};
+        }
+        // Should also have Drive, but that requires pre-configuration of devices
+        // We omit for now.
+        bots.roots.assertRootsPresent(expectedRoots);
     }
 }

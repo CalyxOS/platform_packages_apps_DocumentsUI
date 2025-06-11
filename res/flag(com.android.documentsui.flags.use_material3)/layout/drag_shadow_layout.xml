@@ -15,34 +15,53 @@
 -->
 
 <!-- Transparent container so shadow layer can be drawn -->
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="8dp"
+    android:layout_width="@dimen/drag_shadow_width"
+    android:layout_height="@dimen/drag_shadow_height"
     android:background="@color/item_drag_shadow_container_background">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
+        android:layout_width="@dimen/drag_content_width"
+        android:layout_height="@dimen/drag_content_height"
+        android:layout_marginTop="@dimen/drag_file_counter_offset"
+        android:layout_marginStart="@dimen/drag_content_margin_start"
+        android:paddingHorizontal="@dimen/space_extra_small_4"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/drag_shadow_background">
 
-        <include layout="@layout/drop_badge"/>
+        <LinearLayout
+            android:layout_width="@dimen/drop_badge_container_size"
+            android:layout_height="@dimen/drop_badge_container_size"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:background="@drawable/drop_badge_container_background">
+
+            <include layout="@layout/drop_badge"/>
+
+        </LinearLayout>
+
 
         <TextView
             android:id="@android:id/title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_extra_small_4"
             android:maxLines="1"
             android:ellipsize="end"
             android:textAlignment="viewStart"
-            android:textAppearance="@style/Subhead"
-            android:paddingStart="6dp"
-            android:paddingBottom="1dp"/>
+            android:textAppearance="@style/DragBadgeText" />
 
     </LinearLayout>
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/drag_file_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/drag_file_counter_height"
+        android:paddingHorizontal="@dimen/space_extra_small_4"
+        android:layout_gravity="top|end"
+        android:background="@drawable/drag_file_counter_background"
+        android:textAppearance="@style/DragCounterText"
+        android:visibility="gone" />
+</FrameLayout>

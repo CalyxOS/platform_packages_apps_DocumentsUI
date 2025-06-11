@@ -28,11 +28,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- Main container -->
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="@dimen/main_container_padding_top"
+            android:background="?attr/colorSurfaceBright">
 
+            <!-- Main list area (file list/grid or search results), full height -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -60,35 +64,48 @@
                     android:layout_height="match_parent"/>
             </FrameLayout>
 
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:id="@+id/container_save"
+            <!-- Footer of right hand side: Breadcrumbs and Picker footer. -->
+            <LinearLayout
+                android:id="@+id/bottom_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:background="?android:attr/colorBackgroundFloating"
-                android:elevation="8dp" />
+                android:orientation="vertical"
+                android:layout_gravity="bottom">
 
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/breadcrumb_top_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:dividerColor="?attr/colorSurfaceContainer"
+                    app:dividerThickness="@dimen/main_container_section_gap" />
+
+                <com.android.documentsui.HorizontalBreadcrumb
+                    android:id="@+id/horizontal_breadcrumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorSurfaceBright"
+                    android:paddingHorizontal="@dimen/breadcrumb_padding_horizontal" />
+
+                <androidx.coordinatorlayout.widget.CoordinatorLayout
+                    android:id="@+id/container_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorSurfaceContainer" />
+
+            </LinearLayout>
+
+            <!-- Top section: toolbar, search chips, profile tab -->
             <include layout="@layout/directory_app_bar"/>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+        <!-- Drawer section -->
         <LinearLayout
             android:id="@+id/drawer_roots"
             android:layout_width="256dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:orientation="vertical"
-            android:elevation="0dp"
-            android:background="?android:attr/colorBackground">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/roots_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?android:attr/actionBarSize"
-                android:background="?android:attr/colorBackground"
-                android:elevation="0dp"
-                app:titleTextAppearance="@style/DrawerMenuTitle"
-                app:titleTextColor="?android:colorAccent"/>
+            android:orientation="vertical">
 
             <FrameLayout
                 android:id="@+id/container_roots"
@@ -99,4 +116,12 @@
         </LinearLayout>
 
     </androidx.drawerlayout.widget.DrawerLayout>
+
+    <!-- Peek overlay -->
+    <FrameLayout
+        android:id="@+id/peek_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

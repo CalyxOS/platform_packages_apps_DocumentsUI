@@ -16,6 +16,8 @@
 
 package com.android.documentsui.archives;
 
+import static com.android.documentsui.base.SharedMinimal.DEBUG;
+
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -29,22 +31,22 @@ import android.system.ErrnoException;
 import android.system.Os;
 import android.system.OsConstants;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
-import androidx.core.util.Preconditions;
+
+import org.apache.commons.compress.archivers.ArchiveEntry;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 
 /**
  * Provides basic implementation for creating, extracting and accessing
@@ -55,7 +57,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 public abstract class Archive implements Closeable {
     private static final String TAG = "Archive";
 
-    public static final String[] DEFAULT_PROJECTION = new String[] {
+    public static final String[] DEFAULT_PROJECTION = new String[]{
             Document.COLUMN_DOCUMENT_ID,
             Document.COLUMN_DISPLAY_NAME,
             Document.COLUMN_MIME_TYPE,
@@ -90,28 +92,85 @@ public abstract class Archive implements Closeable {
         mEntries = new HashMap<>();
     }
 
-    /**
-     * Returns a valid, normalized path for an entry.
-     */
+    /** Returns a valid, normalized path for an entry. */
     public static String getEntryPath(ArchiveEntry entry) {
-        if (entry instanceof ZipArchiveEntry) {
-            /**
-             * Some of archive entry doesn't have the same naming rule.
-             * For example: The name of 7 zip directory entry doesn't end with '/'.
-             * Only check for Zip archive.
-             */
-            Preconditions.checkArgument(entry.isDirectory() == entry.getName().endsWith("/"),
-                    "Ill-formated ZIP-file.");
+        final List<String> parts = new ArrayList<String>();
+        boolean isDir = true;
+
+        // Get the path that will be decomposed and normalized
+        final String in = entry.getName();
+
+        decompose:
+        for (int i = 0; i < in.length(); ) {
+            // Skip separators
+            if (in.charAt(i) == '/') {
+                isDir = true;
+                do {
+                    if (++i == in.length()) break decompose;
+                } while (in.charAt(i) == '/');
+            }
+
+            // Found the beginning of a part
+            final int b = i;
+            assert (b < in.length());
+            assert (in.charAt(b) != '/');
+
+            // Find the end of the part
+            do {
+                ++i;
+            } while (i < in.length() && in.charAt(i) != '/');
+
+            // Extract part
+            final String part = in.substring(b, i);
+            assert (!part.isEmpty());
+
+            // Special case if part is "."
+            if (part.equals(".")) {
+                isDir = true;
+                continue;
+            }
+
+            // Special case if part is ".."
+            if (part.equals("..")) {
+                isDir = true;
+                if (!parts.isEmpty()) parts.remove(parts.size() - 1);
+                continue;
+            }
+
+            // The part is either a directory or a file name
+            isDir = false;
+            parts.add(part);
         }
-        if (entry.getName().startsWith("/")) {
-            return entry.getName();
-        } else {
-            return "/" + entry.getName();
+
+        // If the decomposed path looks like a directory but the archive entry says that it is not
+        // a directory entry, append "?" for the file name
+        if (isDir && !entry.isDirectory()) {
+            isDir = false;
+            parts.add("?");
         }
+
+        if (parts.isEmpty()) return "/";
+
+        // Construct the normalized path
+        final StringBuilder sb = new StringBuilder(in.length() + 3);
+
+        for (final String part : parts) {
+            sb.append('/');
+            sb.append(part);
+        }
+
+        if (entry.isDirectory()) {
+            sb.append('/');
+        }
+
+        final String out = sb.toString();
+        if (DEBUG) Log.d(TAG, "getEntryPath(" + in + ") -> " + out);
+        return out;
     }
 
     /**
      * Returns true if the file descriptor is seekable.
+     *
      * @param descriptor File descriptor to check.
      */
     public static boolean canSeek(ParcelFileDescriptor descriptor) {

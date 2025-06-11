@@ -71,7 +71,7 @@ public abstract class MultiRootDocumentsLoader extends AsyncTaskLoader<Directory
     // previously returned cursors for filtering/sorting; this currently races
     // with the UI thread.
 
-    private static final int MAX_OUTSTANDING_TASK = 4;
+    public static final int MAX_OUTSTANDING_TASK = 4;
     private static final int MAX_OUTSTANDING_TASK_SVELTE = 2;
 
     /**

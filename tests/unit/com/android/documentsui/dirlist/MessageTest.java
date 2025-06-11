@@ -24,6 +24,7 @@ import static com.android.documentsui.DevicePolicyResources.Strings.WORK_PROFILE
 import static com.android.documentsui.DevicePolicyResources.Strings.WORK_PROFILE_OFF_ERROR_TITLE;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.TruthJUnit.assume;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -139,6 +140,7 @@ public final class MessageTest {
     @Test
     public void testInflateMessage_updateToCrossProfileNoPermission() {
         // Make sure this test is running on system user.
+        assume().that(UserId.CURRENT_USER.isSystem()).isTrue();
         Preconditions.checkArgument(UserId.CURRENT_USER.isSystem());
         Model.Update error = new Model.Update(
                 new CrossProfileNoPermissionException(),

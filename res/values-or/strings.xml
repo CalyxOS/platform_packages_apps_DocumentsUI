@@ -45,6 +45,9 @@
     <string name="menu_move" msgid="2310760789561129882">"ଏଠାକୁ ନିଅନ୍ତୁ…"</string>
     <string name="menu_compress" msgid="37539111904724188">"କମ୍ପ୍ରେସ୍ କରନ୍ତୁ"</string>
     <string name="menu_extract" msgid="8171946945982532262">"ଏଠାକୁ ଏକ୍ସଟ୍ରାକ୍ଟ କରନ୍ତୁ…"</string>
+    <string name="menu_extract_all" msgid="7335680068521252718">"ସବୁ ଏକ୍ସଟ୍ରାକ୍ଟ କରନ୍ତୁ…"</string>
+    <string name="menu_extract_here" msgid="8725302045721604762">"ଏଠାରେ ଏକ୍ସଟ୍ରାକ୍ଟ କରନ୍ତୁ"</string>
+    <string name="menu_browse" msgid="6007716414766674967">"ବ୍ରାଉଜ କରନ୍ତୁ"</string>
     <string name="menu_rename" msgid="1883113442688817554">"ରିନେମ କରନ୍ତୁ"</string>
     <string name="menu_inspect" msgid="7279855349299446224">"ସୂଚନା ପାଆନ୍ତୁ"</string>
     <string name="menu_show_hidden_files" msgid="5140676344684492769">"ଲୁକ୍କାୟିତ ଫାଇଲ ଦେଖାନ୍ତୁ"</string>
@@ -150,7 +153,7 @@
       <item quantity="other"><xliff:g id="COUNT_1">%1$d</xliff:g>ଟି ଆଇଟମ୍‍ ଡିଲିଟ୍‍ କରାଯାଉଛି।</item>
       <item quantity="one"><xliff:g id="COUNT_0">%1$d</xliff:g>ଟି ଆଇଟମ୍‍ ଡିଲିଟ୍‍ କରାଯାଉଛି।</item>
     </plurals>
-    <string name="undo" msgid="2902438994196400565">"ପୂର୍ବପରି କରନ୍ତୁ"</string>
+    <string name="undo" msgid="2902438994196400565">"ଅନଡୁ କରନ୍ତୁ"</string>
     <string name="copy_preparing" msgid="4759516490222449324">"ପ୍ରସ୍ତୁତ କରାଯାଉଛି…"</string>
     <string name="compress_preparing" msgid="7401605598969019696">"ପ୍ରସ୍ତୁତ କରାଯାଉଛି…"</string>
     <string name="extract_preparing" msgid="4796626960061745796">"ପ୍ରସ୍ତୁତ କରାଯାଉଛି…"</string>
@@ -289,4 +292,6 @@
     <string name="drag_from_another_app" msgid="8310249276199969905">"ଆପଣ ଅନ୍ୟ ଏକ ଆପରୁ ଫାଇଲଗୁଡ଼ିକ ମୁଭ୍ କରିପାରିବେ ନାହିଁ।"</string>
     <string name="grid_mode_showing" msgid="2803166871485028508">"ଗ୍ରିଡ୍ ମୋଡରେ ଦେଖାଉଛି।"</string>
     <string name="list_mode_showing" msgid="1225413902295895166">"ତାଲିକା ମୋଡରେ ଦେଖାଉଛି।"</string>
+    <string name="bullet" msgid="5606740650312122766">"•"</string>
+    <string name="file_name_hint" msgid="7843637320487415838">"ଫାଇଲ ନାମ"</string>
 </resources>

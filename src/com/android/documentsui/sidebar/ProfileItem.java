@@ -20,6 +20,8 @@ import android.content.pm.ResolveInfo;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.LayoutRes;
+
 import com.android.documentsui.ActionHandler;
 import com.android.documentsui.base.UserId;
 
@@ -30,6 +32,11 @@ class ProfileItem extends AppItem {
 
     public ProfileItem(ResolveInfo info, String title, ActionHandler actionHandler) {
         super(info, title, UserId.CURRENT_USER, actionHandler);
+    }
+
+    ProfileItem(
+            @LayoutRes int layoutId, ResolveInfo info, String title, ActionHandler actionHandler) {
+        super(layoutId, info, title, UserId.CURRENT_USER, actionHandler);
     }
 
     @Override

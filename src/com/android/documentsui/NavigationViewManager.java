@@ -17,6 +17,8 @@
 package com.android.documentsui;
 
 import static com.android.documentsui.base.SharedMinimal.VERBOSE;
+import static com.android.documentsui.util.FlagUtils.isUseMaterial3FlagEnabled;
+import static com.android.documentsui.util.FlagUtils.isVisualSignalsFlagEnabled;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -24,17 +26,21 @@ import android.graphics.Outline;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.selection.SelectionTracker;
 
+import com.android.documentsui.Injector.Injected;
+import com.android.documentsui.base.EventHandler;
 import com.android.documentsui.base.RootInfo;
 import com.android.documentsui.base.State;
 import com.android.documentsui.base.UserId;
@@ -47,10 +53,9 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import java.util.function.IntConsumer;
 
-/**
- * A facade over the portions of the app and drawer toolbars.
- */
-public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListener {
+/** A facade over the portions of the app and drawer toolbars. */
+public class NavigationViewManager extends SelectionTracker.SelectionObserver<String>
+        implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = "NavigationViewManager";
 
@@ -69,10 +74,11 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
     private final ViewOutlineProvider mSearchBarOutlineProvider;
     private final boolean mShowSearchBar;
     private final ConfigStore mConfigStore;
-
+    @Injected private final Injector<?> mInjector;
     private boolean mIsActionModeActivated = false;
-    @ColorRes
-    private int mDefaultStatusBarColorResId;
+    @ColorRes private int mDefaultStatusBarColorResId;
+    private MenuManager.SelectionDetails mSelectionDetails;
+    private EventHandler<MenuItem> mActionMenuItemClicker;
 
     public NavigationViewManager(
             BaseActivity activity,
@@ -82,9 +88,19 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
             Breadcrumb breadcrumb,
             View tabLayoutContainer,
             UserIdManager userIdManager,
-            ConfigStore configStore) {
-        this(activity, drawer, state, env, breadcrumb, tabLayoutContainer, userIdManager, null,
-                configStore);
+            ConfigStore configStore,
+            Injector injector) {
+        this(
+                activity,
+                drawer,
+                state,
+                env,
+                breadcrumb,
+                tabLayoutContainer,
+                userIdManager,
+                null,
+                configStore,
+                injector);
     }
 
     public NavigationViewManager(
@@ -95,9 +111,19 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
             Breadcrumb breadcrumb,
             View tabLayoutContainer,
             UserManagerState userManagerState,
-            ConfigStore configStore) {
-        this(activity, drawer, state, env, breadcrumb, tabLayoutContainer, null, userManagerState,
-                configStore);
+            ConfigStore configStore,
+            Injector injector) {
+        this(
+                activity,
+                drawer,
+                state,
+                env,
+                breadcrumb,
+                tabLayoutContainer,
+                null,
+                userManagerState,
+                configStore,
+                injector);
     }
 
     public NavigationViewManager(
@@ -109,7 +135,8 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
             View tabLayoutContainer,
             UserIdManager userIdManager,
             UserManagerState userManagerState,
-            ConfigStore configStore) {
+            ConfigStore configStore,
+            Injector injector) {
 
         mActivity = activity;
         mToolbar = activity.findViewById(R.id.toolbar);
@@ -118,8 +145,15 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
         mState = state;
         mEnv = env;
         mBreadcrumb = breadcrumb;
-        mBreadcrumb.setup(env, state, this::onNavigationItemSelected);
+        mBreadcrumb.setup(
+                env,
+                state,
+                this::onNavigationItemSelected,
+                isUseMaterial3FlagEnabled()
+                        ? activity.findViewById(R.id.breadcrumb_top_divider)
+                        : null);
         mConfigStore = configStore;
+        mInjector = injector;
         mProfileTabs =
                 getProfileTabs(tabLayoutContainer, userIdManager, userManagerState, activity);
 
@@ -130,6 +164,15 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
                         onNavigationIconClicked();
                     }
                 });
+        if (isUseMaterial3FlagEnabled()) {
+            mToolbar.setOnMenuItemClickListener(
+                    new Toolbar.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            return onToolbarMenuItemClicked(menuItem);
+                        }
+                    });
+        }
         mSearchBarView = activity.findViewById(R.id.searchbar_title);
         mCollapsingBarLayout = activity.findViewById(R.id.collapsing_toolbar);
         mDefaultActionBarBackground = mToolbar.getBackground();
@@ -225,9 +268,19 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
     }
 
     private void onNavigationIconClicked() {
-        if (mDrawer.isPresent()) {
+        if (isUseMaterial3FlagEnabled() && inSelectionMode()) {
+            closeSelectionBar();
+        } else if (mDrawer.isPresent()) {
             mDrawer.setOpen(true);
         }
+    }
+
+    private boolean onToolbarMenuItemClicked(MenuItem menuItem) {
+        if (inSelectionMode()) {
+            mActionMenuItemClicker.accept(menuItem);
+            return true;
+        }
+        return mActivity.onOptionsItemSelected(menuItem);
     }
 
     void onNavigationItemSelected(int position) {
@@ -251,7 +304,10 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
     }
 
     public void update() {
-        updateScrollFlag();
+        // If use_material3 flag is ON, we don't want any scroll behavior, thus skipping this logic.
+        if (!isUseMaterial3FlagEnabled()) {
+            updateScrollFlag();
+        }
         updateToolbar();
         mProfileTabs.updateView();
 
@@ -264,22 +320,110 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
 
         mDrawer.setTitle(mEnv.getDrawerTitle());
 
-        mToolbar.setNavigationIcon(getActionBarIcon());
-        mToolbar.setNavigationContentDescription(R.string.drawer_open);
+        boolean showBurgerMenuOnToolbar = true;
+        if (isUseMaterial3FlagEnabled()) {
+            View navRailRoots = mActivity.findViewById(R.id.nav_rail_container_roots);
+            if (navRailRoots != null) {
+                // If nav rail exists, burger menu will show on the nav rail instead.
+                showBurgerMenuOnToolbar = false;
+            }
+        }
+
+        if (showBurgerMenuOnToolbar) {
+            mToolbar.setNavigationIcon(getActionBarIcon());
+            mToolbar.setNavigationContentDescription(R.string.drawer_open);
+        } else {
+            mToolbar.setNavigationIcon(null);
+            mToolbar.setNavigationContentDescription(null);
+        }
 
         if (shouldShowSearchBar()) {
             mBreadcrumb.show(false);
             mToolbar.setTitle(null);
             mSearchBarView.setVisibility(View.VISIBLE);
-        } else {
-            mSearchBarView.setVisibility(View.GONE);
-            String title = mState.stack.size() <= 1
-                    ? mEnv.getCurrentRoot().title : mState.stack.getTitle();
-            if (VERBOSE) Log.v(TAG, "New toolbar title is: " + title);
-            mToolbar.setTitle(title);
-            mBreadcrumb.show(true);
-            mBreadcrumb.postUpdate();
+            return;
         }
+
+        mSearchBarView.setVisibility(View.GONE);
+
+        if (isUseMaterial3FlagEnabled()) {
+            updateActionMenu();
+            if (inSelectionMode()) {
+                final int quantity = mInjector.selectionMgr.getSelection().size();
+                final String title =
+                        mToolbar.getContext()
+                                .getResources()
+                                .getQuantityString(R.plurals.elements_selected, quantity, quantity);
+                mToolbar.setTitle(title);
+                mActivity.getWindow().setTitle(title);
+                mToolbar.setNavigationIcon(R.drawable.ic_cancel);
+                mToolbar.setNavigationContentDescription(android.R.string.cancel);
+                return;
+            }
+        }
+
+        String title =
+                mState.stack.size() <= 1 ? mEnv.getCurrentRoot().title : mState.stack.getTitle();
+        if (VERBOSE) Log.v(TAG, "New toolbar title is: " + title);
+        mToolbar.setTitle(title);
+        mBreadcrumb.show(true);
+        mBreadcrumb.postUpdate();
+    }
+
+    @Override
+    public void onSelectionChanged() {
+        update();
+    }
+
+    /** Identifies if the `NavigationViewManager` is in selection mode or not. */
+    public boolean inSelectionMode() {
+        return mInjector != null
+                && mInjector.selectionMgr != null
+                && mInjector.selectionMgr.hasSelection();
+    }
+
+    private boolean hasActionMenu() {
+        return mToolbar.getMenu().findItem(R.id.action_menu_open_with) != null;
+    }
+
+    /** Updates the action menu based on whether a selection is currently being made or not. */
+    public void updateActionMenu() {
+        // For the first start up of the application, the menu might not exist at all but we also
+        // don't want to inflate the menu multiple times. So along with checking if the expected
+        // menu is already inflated, validate that a menu exists at all as well.
+        boolean isMenuInflated = mToolbar.getMenu() != null && mToolbar.getMenu().size() > 0;
+        if (inSelectionMode()) {
+            if (!isMenuInflated || !hasActionMenu()) {
+                mToolbar.getMenu().clear();
+                mToolbar.inflateMenu(R.menu.action_mode_menu);
+                mToolbar.invalidateMenu();
+            }
+            mInjector.menuManager.updateActionMenu(mToolbar.getMenu(), mSelectionDetails);
+            return;
+        }
+
+        if (!isMenuInflated || hasActionMenu()) {
+            mToolbar.getMenu().clear();
+            mToolbar.inflateMenu(R.menu.activity);
+            mToolbar.invalidateMenu();
+            boolean fullBarSearch =
+                    mActivity.getResources().getBoolean(R.bool.full_bar_search_view);
+            boolean showSearchBar = mActivity.getResources().getBoolean(R.bool.show_search_bar);
+            mInjector.searchManager.install(mToolbar.getMenu(), fullBarSearch, showSearchBar);
+            if (isVisualSignalsFlagEnabled()) {
+                mInjector.menuManager.instantiateJobProgress(mToolbar.getMenu());
+            }
+        }
+        mInjector.menuManager.updateOptionMenu(mToolbar.getMenu());
+        mInjector.searchManager.showMenu(mState.stack);
+    }
+
+    /** Everytime a selection is made, update the selection. */
+    public void updateSelection(
+            MenuManager.SelectionDetails selectionDetails,
+            EventHandler<MenuItem> actionMenuItemClicker) {
+        mSelectionDetails = selectionDetails;
+        mActionMenuItemClicker = actionMenuItemClicker;
     }
 
     private void updateScrollFlag() {
@@ -336,8 +480,11 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
         }
 
         if (!mIsActionModeActivated) {
-            FrameLayout.LayoutParams headerLayoutParams =
-                    (FrameLayout.LayoutParams) mHeader.getLayoutParams();
+            // This could be either FrameLayout.LayoutParams (when use_material3 flag is OFF) or
+            // LinearLayout.LayoutParams (when use_material3 flag is ON), so use the common parent
+            // class instead to make it work for both scenarios.
+            ViewGroup.MarginLayoutParams headerLayoutParams =
+                    (ViewGroup.MarginLayoutParams) mHeader.getLayoutParams();
             headerLayoutParams.setMargins(0, /* top= */ headerTopOffset, 0, 0);
             mHeader.setLayoutParams(headerLayoutParams);
         }
@@ -361,8 +508,13 @@ public class NavigationViewManager implements AppBarLayout.OnOffsetChangedListen
         mDrawer.setOpen(open);
     }
 
+    /** Helper method to close the selection bar. */
+    public void closeSelectionBar() {
+        mInjector.selectionMgr.clearSelection();
+    }
+
     interface Breadcrumb {
-        void setup(Environment env, State state, IntConsumer listener);
+        void setup(Environment env, State state, IntConsumer listener, @Nullable View topDivider);
 
         void show(boolean visibility);
 

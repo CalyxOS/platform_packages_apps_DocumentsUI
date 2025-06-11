@@ -15,6 +15,7 @@
   limitations under the License.
   -->
 
+<!-- TODO(b/379776735): remove this file after use_material3 flag is launched. -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/vertical_divider"
