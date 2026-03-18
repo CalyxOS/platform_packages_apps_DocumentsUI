@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e2b72d5_06b3f4eb",
+        "filename": "src/com/android/documentsui/services/CopyJob.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2026-03-18T14:02:42Z",
+      "side": 0,
+      "message": "RemoteException was dropped from the catch list. This doesn\u0027t look intentional.",
+      "revId": "92cd03257c28ae007dac586f631a40362a8a9962",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8009755f_0ecb452a",
+        "filename": "src/com/android/documentsui/services/CopyJob.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 637,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2026-03-18T14:02:42Z",
+      "side": 0,
+      "message": "RemoteException dropped here as well.",
+      "revId": "92cd03257c28ae007dac586f631a40362a8a9962",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}

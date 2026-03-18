@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c64891d_bfda9968",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2026-03-18T14:02:42Z",
+      "side": 1,
+      "message": "I have really no clue how this code works, but it looks syntactically correct.",
+      "revId": "1f41c32aea92e6cc7a1985f3acf71f901cf9dfbc",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
