@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "84950dc7_08f72974",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2026-03-23T17:40:46Z",
+      "side": 1,
+      "message": "I am not sure if this change also affects this, but if I open files app and try to select files from work profile, I get the message:\n\nThis action isn\u0027t allowed\nTo learn more, contact your IT admin",
+      "revId": "8babfca315b3297177000d758b32bcfa3cf3e284",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
