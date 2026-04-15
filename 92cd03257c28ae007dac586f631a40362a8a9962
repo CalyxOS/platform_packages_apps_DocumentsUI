@@ -18,6 +18,24 @@
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "704017e5_9f65c0a3",
+        "filename": "src/com/android/documentsui/services/CopyJob.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2026-04-15T14:10:00Z",
+      "side": 0,
+      "message": "RemoteException was only thrown by `getClient()` which isn\u0027t used anymore, so removing this is correct.",
+      "parentUuid": "2e2b72d5_06b3f4eb",
+      "revId": "92cd03257c28ae007dac586f631a40362a8a9962",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8009755f_0ecb452a",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-03-18T14:02:42Z",
       "side": 0,
       "message": "RemoteException dropped here as well.",
+      "revId": "92cd03257c28ae007dac586f631a40362a8a9962",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "acf03ba8_3d24838d",
+        "filename": "src/com/android/documentsui/services/CopyJob.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 637,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2026-04-15T14:10:00Z",
+      "side": 0,
+      "message": "RemoteException was only thrown by `getClient()` which isn\u0027t used anymore, so removing this is correct.",
+      "parentUuid": "8009755f_0ecb452a",
       "revId": "92cd03257c28ae007dac586f631a40362a8a9962",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }

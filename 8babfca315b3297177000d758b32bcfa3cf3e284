@@ -33,6 +33,24 @@
       "message": "It works when using https://review.calyxos.org/c/CalyxOS/vendor_calyx/+/45339",
       "revId": "8babfca315b3297177000d758b32bcfa3cf3e284",
       "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8b1ae79_42021193",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2026-04-15T14:10:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1d037670_93351d48",
+      "revId": "8babfca315b3297177000d758b32bcfa3cf3e284",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
     }
   ]
 }
